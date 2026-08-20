@@ -13,7 +13,12 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "studio:dev": "pnpm --filter @lafkos/studio dev",
+    "studio:build": "pnpm --filter @lafkos/studio build",
+    "studio:deploy": "pnpm --filter @lafkos/studio deploy",
+    "studio:export-seed": "tsx scripts/export-sanity-seed.ts",
+    "studio:import-seed": "pnpm --filter @lafkos/studio import-seed"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.4",

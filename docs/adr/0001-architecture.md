@@ -32,8 +32,9 @@ editorial provenance than an ad-hoc JSON API.
   useful when WebGL, tiles, or network access fail.
 - PMTiles keeps the regional basemap bounded and self-hostable, but the archive
   must be refreshed when material OSM changes occur.
-- Sanity provides editorial validation, localization, media rights, sources,
-  and preview workflows, while the current seed adapter keeps development
-  credential-free.
+- Sanity Studio provides structured editorial validation, localization via document-internationalization,
+  media rights metadata, sources, and preview workflows, while the content adapter
+  seamlessly falls back to the embedded seed archive when running without credentials.
+- Seed export and import tooling enables zero-effort dataset hydration into new Sanity projects.
 - Search and map state are intentionally limited to curated content; turn-by-
   turn navigation and fully offline basemaps remain future work.
