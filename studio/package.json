@@ -7,7 +7,7 @@
     "build": "sanity build",
     "deploy": "sanity deploy",
     "export-seed": "tsx ../scripts/export-sanity-seed.ts",
-    "import-seed": "sanity dataset import data/seed-dataset.ndjson production"
+    "import-seed": "sanity dataset import data/seed-dataset.ndjson --dataset production"
   },
   "dependencies": {
     "@sanity/document-internationalization": "^6.2.31",
