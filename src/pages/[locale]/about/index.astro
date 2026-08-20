@@ -3,10 +3,57 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { locales, type Locale } from '../../../lib/locales';
 import { getCopy } from '../../../lib/ui-copy';
 
-export function getStaticPaths() { return locales.map((locale) => ({ params: { locale }, props: { locale } })); }
+export function getStaticPaths() {
+  return locales.map((locale) => ({ params: { locale }, props: { locale } }));
+}
+
 const { locale } = Astro.props as { locale: Locale };
 const ui = getCopy(locale);
 ---
+
 <BaseLayout locale={locale} title={ui.aboutTitle} description={ui.aboutIntro}>
-  <section class="prose-section container"><p class="eyebrow">Lafkos Guide</p><h1 class="page-title">{ui.aboutTitle}</h1><p class="lede">{ui.aboutIntro}</p><div class="prose-layout" style="margin-top: 4rem;"><aside><p class="eyebrow">{locale === 'el' ? 'Η πρόθεση' : 'The intention'}</p></aside><div class="prose-copy"><p>{locale === 'el' ? 'Ο οδηγός φτιάχνεται για να συνδέει τον χάρτη με τη μνήμη και την περιέργεια με τον σεβασμό. Κάθε σημείο θα πρέπει να έχει πηγή, κάθε εικόνα δικαίωμα και κάθε διαδρομή τοπικό έλεγχο.' : 'This guide connects the map with memory, and curiosity with care. Every place should have a source, every image a right, and every route local review.'}</p><p>{locale === 'el' ? 'Το περιεχόμενο που βλέπεις είναι αρχικό εκδοτικό δείγμα. Θα εμπλουτιστεί από ανθρώπους που γνωρίζουν τον Λαύκο και θέλουν να μοιραστούν τις ιστορίες του.' : 'The content you see is editorial seed material. It will grow with people who know Lafkos and want to share its stories.'}</p></div></div></section>
+  <section class="prose-section container">
+    <p class="eyebrow">Lafkos Guide</p>
+    <h1 class="page-title">{ui.aboutTitle}</h1>
+    <p class="lede">{ui.aboutIntro}</p>
+
+    <div class="prose-layout" style="margin-top: 4rem;">
+      <aside>
+        <p class="eyebrow">{locale === 'el' ? 'Η Φιλοσοφία' : 'Our Philosophy'}</p>
+        <p class="meta-pill" style="margin-top: 0.8rem;">{locale === 'el' ? 'Ανοιχτά Δεδομένα' : 'Open Data'}</p>
+        <p class="meta-pill">{locale === 'el' ? 'Τοπική Τεκμηρίωση' : 'Local Documentation'}</p>
+        <p class="meta-pill">{locale === 'el' ? 'Προστασία Ιδιωτικότητας' : 'Privacy First'}</p>
+      </aside>
+
+      <div class="prose-copy">
+        <h2 class="section-title">{locale === 'el' ? 'Η Πρόθεση του Οδηγού' : 'The Purpose of This Guide'}</h2>
+        <p>
+          {locale === 'el'
+            ? 'Το Lafkos Guide δημιουργήθηκε ως ένα σύγχρονο, ανεξάρτητο και δίγλωσσο ψηφιακό αρχείο για τον Λαύκο και το Νότιο Πήλιο. Στόχος του είναι να συνδέσει τη γεωγραφική ακρίβεια του χάρτη με την ιστορική μνήμη, την αρχιτεκτονική κληρονομιά και την αυθεντική εμπειρία του τόπου.'
+            : 'Lafkos Guide is an independent, bilingual digital cultural repository dedicated to Lafkos and South Pelion. Its mission is to bridge geographic cartographic precision with living memory, architectural heritage, and authentic local experience.'}
+        </p>
+
+        <h2 class="section-title">{locale === 'el' ? 'Χαρτογραφία & Ακρίβεια Σημείων' : 'Cartography & Spatial Accuracy'}</h2>
+        <p>
+          {locale === 'el'
+            ? 'Κάθε σημείο ενδιαφέροντος, κρήνη, μνημείο και πεζοπορική διαδρομή έχει ελεγχθεί και αντιστοιχιστεί σε πραγματικές γεωγραφικές συντεταγμένες βασισμένες σε δεδομένα πεδίου, ιστορικές πηγές και το OpenStreetMap. Ο διαδραστικός χάρτης λειτουργεί αυτόνομα, χωρίς ιχνηλάτες ή εμπορικές διαφημίσεις, επιτρέποντας την απρόσκοπτη πλοήγηση από υπολογιστή ή κινητό.'
+            : 'Every point of interest, historic spring, monument, and hiking trail is mapped to verified real-world geographic coordinates corroborated with field data, historical documentation, and OpenStreetMap. The interactive vector map operates autonomously without tracking or commercial advertisements, ensuring fast, accessible browsing across all devices.'}
+        </p>
+
+        <h2 class="section-title">{locale === 'el' ? 'Πηγές & Κοινοτική Συνεργασία' : 'Sources & Community Partnership'}</h2>
+        <p>
+          {locale === 'el'
+            ? 'Η καταγραφή αντλεί στοιχεία από τοπικούς φορείς, όπως τον Πολιτιστικό Σύλλογο Λαυκιωτών «Η Δράση», τις μελέτες του Κίτσου Μακρή για την πηλιορείτικη λαϊκή τέχνη και αρχιτεκτονική, το δίκτυο μονοπατιών Pelion Routes / Topoguide, καθώς και από προφορικές μαρτυρίες των ανθρώπων του χωριού.'
+            : 'Our documentation draws from local cultural organizations including the Cultural Association of Lafkos "I Drasi", architectural research on Pelion folk art by Kitsos Makris, the regional trail network of Pelion Routes / Topoguide, and oral histories shared by village elders.'}
+        </p>
+
+        <h2 class="section-title">{locale === 'el' ? 'Ιδιωτικότητα & Βιωσιμότητα' : 'Privacy & Digital Sustainability'}</h2>
+        <p>
+          {locale === 'el'
+            ? 'Η πλατφόρμα είναι σχεδιασμένη με σεβασμό στην ιδιωτικότητα: δεν συλλέγει προσωπικά δεδομένα, δεν χρησιμοποιεί cookies παρακολούθησης και δεν καταγράφει τη γεωγραφική σας θέση. Είναι ελαφριά, γρήγορη και φιλική προς το περιβάλλον, με ελάχιστο ψηφιακό αποτύπωμα άνθρακα.'
+            : 'The platform is built with strict privacy guarantees: zero personal data collection, no tracking cookies, and no retention of your device geolocation. Engineered for speed and efficiency, it maintains an ultra-low carbon digital footprint.'}
+        </p>
+      </div>
+    </div>
+  </section>
 </BaseLayout>

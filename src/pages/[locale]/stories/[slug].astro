@@ -1,8 +1,9 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import SeedNotice from '../../../components/SeedNotice.astro';
+import FeatureCard from '../../../components/FeatureCard.astro';
 import { findStory } from '../../../lib/content-api';
-import { stories } from '../../../data/content';
+import { categories, places, stories, trails } from '../../../data/content';
 import { locales, otherLocale, type Locale } from '../../../lib/locales';
 import { getCopy } from '../../../lib/ui-copy';
 
@@ -14,15 +15,65 @@ export function getStaticPaths() {
     })),
   );
 }
+
 const { locale, story } = Astro.props as { locale: Locale; story: NonNullable<ReturnType<typeof findStory>> };
 const ui = getCopy(locale);
+
+const relatedEntries = story.relatedKeys
+  .map((key) => {
+    const place = places.find((p) => p.entityKey === key);
+    if (place) return { entry: place, category: categories.find((c) => c.id === place.category) };
+    const trail = trails.find((t) => t.entityKey === key);
+    if (trail) return { entry: trail, category: categories.find((c) => c.id === 'trail') };
+    return null;
+  })
+  .filter((item): item is NonNullable<typeof item> => item !== null);
 ---
-<BaseLayout locale={locale} title={story.title[locale]} description={story.summary[locale]} image={story.image.src} alternateHref={`/${otherLocale(locale)}/stories/${story.slug[otherLocale(locale)]}`}>
+
+<BaseLayout
+  locale={locale}
+  title={story.title[locale]}
+  description={story.summary[locale]}
+  image={story.image.src}
+  alternateHref={`/${otherLocale(locale)}/stories/${story.slug[otherLocale(locale)]}`}
+>
   <article class="container">
     <div class="detail-hero">
       <div class="detail-media"><img src={story.image.src} alt={story.image.alt} /></div>
-      <div class="detail-copy"><p class="eyebrow">{story.eyebrow[locale]}</p><h1 class="page-title">{story.title[locale]}</h1><p class="lede">{story.summary[locale]}</p>{story.isSeed && <SeedNotice locale={locale} />}</div>
+      <div class="detail-copy">
+        <p class="eyebrow">{story.eyebrow[locale]}</p>
+        <h1 class="page-title">{story.title[locale]}</h1>
+        <p class="lede">{story.summary[locale]}</p>
+        {story.isSeed && <SeedNotice locale={locale} />}
+      </div>
     </div>
-    <div class="prose-layout prose-section"><aside><p class="eyebrow">{ui.stories}</p></aside><div class="prose-copy">{story.body[locale].map((paragraph) => <p>{paragraph}</p>)}<h2 class="section-title">{ui.sources}</h2><ul class="source-list">{story.sources.map((item) => <li><a href={item.url} rel="noreferrer">{item.label} ↗</a></li>)}</ul></div></div>
+    <div class="prose-layout prose-section">
+      <aside><p class="eyebrow">{ui.stories}</p></aside>
+      <div class="prose-copy">
+        {story.body[locale].map((paragraph) => <p>{paragraph}</p>)}
+        <h2 class="section-title">{ui.sources}</h2>
+        <ul class="source-list">
+          {story.sources.map((item) => (
+            <li><a href={item.url} rel="noreferrer">{item.label} ↗</a></li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    {relatedEntries.length > 0 && (
+      <section class="section" aria-labelledby="related-title" style="margin-top: 3rem;">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">{ui.navMap}</p>
+            <h2 id="related-title" class="section-title">{ui.related}</h2>
+          </div>
+        </div>
+        <div class="card-grid">
+          {relatedEntries.map(({ entry, category }) => (
+            <FeatureCard entry={entry} locale={locale} category={category} />
+          ))}
+        </div>
+      </section>
+    )}
   </article>
 </BaseLayout>

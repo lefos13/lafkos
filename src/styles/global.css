@@ -136,7 +136,9 @@ img { display: block; max-width: 100%; }
 .map-result-link { align-self: stretch; display: grid; width: 2.5rem; place-items: center; color: var(--terracotta); font-size: 1rem; }
 .map-result-link:hover, .map-result-link:focus-visible { background: rgba(185, 101, 74, 0.1); }
 .map-empty { padding: 1rem; color: var(--muted); font-size: 0.85rem; }
-.map-selected-card { margin: auto 0.75rem 0.75rem; padding: 1rem; border-radius: var(--radius-md); color: var(--paper); background: var(--deep-olive); }
+.map-selected-card { margin: auto 0.75rem 0.75rem; padding: 1rem; border-radius: var(--radius-md); color: var(--paper); background: var(--deep-olive); overflow: hidden; }
+.map-selected-media { margin: -1rem -1rem 0.85rem -1rem; max-height: 8.5rem; overflow: hidden; }
+.map-selected-media img { width: 100%; height: 8.5rem; object-fit: cover; display: block; }
 .map-selected-card .eyebrow { color: var(--gold); }
 .map-selected-card h3 { margin: 0; font-family: Newsreader, Georgia, serif; font-size: 1.8rem; font-weight: 500; }
 .map-selected-card p:not(.eyebrow) { margin: 0.45rem 0 1rem; color: rgba(251, 249, 244, 0.75); font-size: 0.8rem; line-height: 1.45; }

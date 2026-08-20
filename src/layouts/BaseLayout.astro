@@ -72,8 +72,29 @@ const socialImage = image ?? new URL('/icons/icon-512.svg', siteUrl).toString();
         </div>
       </footer>
     </div>
-    <script is:inline>
-      if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => undefined);
-    </script>
+    {import.meta.env.PROD ? (
+      <script is:inline>
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.register('/sw.js').catch(() => undefined);
+        }
+      </script>
+    ) : (
+      <script is:inline>
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistrations().then((registrations) => {
+            for (const registration of registrations) {
+              registration.unregister();
+            }
+          });
+          if (typeof caches !== 'undefined') {
+            caches.keys().then((keys) => {
+              for (const key of keys) {
+                caches.delete(key);
+              }
+            });
+          }
+        }
+      </script>
+    )}
   </body>
 </html>

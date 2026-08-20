@@ -28,7 +28,7 @@ const category = categories.find((item) => item.id === 'trail');
         <h1 class="page-title">{trail.title[locale]}</h1>
         <p class="lede">{trail.summary[locale]}</p>
         <div class="detail-meta"><span class="meta-pill">⌁ {formatDistance(trail.distanceMeters, locale)} {ui.distance}</span><span class="meta-pill">◷ {trail.durationMinutes}′ {ui.duration}</span><span class="meta-pill">↟ {trail.elevationGainMeters} m {ui.elevation}</span><span class="meta-pill">{ui[trail.difficulty]}</span></div>
-        <div class="hero-actions"><a class="button button-primary" href={`/${locale}/map?trail=${trail.entityKey}`}>{ui.openMap} <span aria-hidden="true">↗</span></a></div>
+        <div class="hero-actions"><a class="button button-primary" href={`/${locale}/map?trail=${trail.entityKey}`}>{ui.openMap} <span aria-hidden="true">↗</span></a><a class="button button-secondary" href={`https://www.openstreetmap.org/?mlat=${trail.geometry.coordinates[0][1]}&mlon=${trail.geometry.coordinates[0][0]}#map=16/${trail.geometry.coordinates[0][1]}/${trail.geometry.coordinates[0][0]}`} rel="noreferrer">{ui.directions}</a></div>
         {trail.isSeed && <SeedNotice locale={locale} />}
       </div>
     </div>

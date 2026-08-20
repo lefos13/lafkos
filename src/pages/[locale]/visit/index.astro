@@ -3,22 +3,68 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { locales, type Locale } from '../../../lib/locales';
 import { getCopy } from '../../../lib/ui-copy';
 
-export function getStaticPaths() { return locales.map((locale) => ({ params: { locale }, props: { locale } })); }
+export function getStaticPaths() {
+  return locales.map((locale) => ({ params: { locale }, props: { locale } }));
+}
+
 const { locale } = Astro.props as { locale: Locale };
 const ui = getCopy(locale);
 ---
+
 <BaseLayout locale={locale} title={ui.visitTitle} description={ui.visitIntro}>
   <section class="prose-section container">
-    <p class="eyebrow">{ui.navVisit}</p><h1 class="page-title">{ui.visitTitle}</h1><p class="lede">{ui.visitIntro}</p>
+    <p class="eyebrow">{ui.navVisit}</p>
+    <h1 class="page-title">{ui.visitTitle}</h1>
+    <p class="lede">{ui.visitIntro}</p>
+
     <div class="prose-layout" style="margin-top: 4rem;">
-      <aside><p class="eyebrow">{locale === 'el' ? 'Μικρός κώδικας' : 'A small code'}</p></aside>
+      <aside>
+        <p class="eyebrow">{locale === 'el' ? 'Πρακτικός οδηγός' : 'Practical guide'}</p>
+        <p class="meta-pill" style="margin-top: 0.8rem;">310 m {locale === 'el' ? 'υψόμετρο' : 'altitude'}</p>
+        <p class="meta-pill">50 km {locale === 'el' ? 'από τον Βόλο' : 'from Volos'}</p>
+        <p class="meta-pill">6 km {locale === 'el' ? 'από τη Μηλίνα' : 'from Milina'}</p>
+      </aside>
+
       <div class="prose-copy">
-        <h2 class="section-title">{locale === 'el' ? 'Έλα με χρόνο.' : 'Bring time.'}</h2>
-        <p>{locale === 'el' ? 'Οι δρόμοι, οι αυλές και οι θέες του Λαύκου αποκαλύπτονται καλύτερα όταν δεν κυνηγάς μια λίστα. Άφησε το αυτοκίνητο όπου επιτρέπεται και περπάτησε με άνετα παπούτσια.' : 'Lafkos reveals itself best when you are not chasing a checklist. Park where permitted and bring comfortable shoes for stone lanes and steps.'}</p>
-        <h2 class="section-title">{locale === 'el' ? 'Σεβάσου τον οικισμό.' : 'Respect the settlement.'}</h2>
-        <p>{locale === 'el' ? 'Οι δρόμοι είναι και κατοικίες. Κράτησε χαμηλό τον θόρυβο, μην φωτογραφίζεις ιδιωτικούς χώρους χωρίς άδεια και άφησε τις εισόδους ελεύθερες.' : 'The lanes are also people’s homes. Keep noise low, do not photograph private spaces without permission, and keep entrances clear.'}</p>
-        <h2 class="section-title">{locale === 'el' ? 'Έλεγξε τις συνθήκες.' : 'Check conditions.'}</h2>
-        <p>{locale === 'el' ? 'Οι διαδρομές του οδηγού δεν είναι πλοήγηση. Έλεγξε τον καιρό, το φως και την κατάσταση του μονοπατιού πριν ξεκινήσεις.' : 'Routes in this guide are not navigation. Check weather, daylight, and trail conditions before setting out.'}</p>
+        <h2 class="section-title">{locale === 'el' ? 'Πώς θα φτάσετε & Στάθμευση' : 'Getting Here & Parking'}</h2>
+        <p>
+          {locale === 'el'
+            ? 'Ο Λαύκος απέχει περίπου 50 χιλιόμετρα από την πόλη του Βόλου. Η διαδρομή ακολουθεί τον παραλιακό άξονα προς Αγριά, Καλά Νερά και στη συνέχεια ανηφορίζει μέσω Αργαλαστής. Η οδήγηση διαρκεί περίπου 1 ώρα και 15 λεπτά μέσα από γραφικά πηλιορείτικα τοπία. Υπάρχει επίσης τακτική σύνδεση με λεωφορεία του Υπεραστικού ΚΤΕΛ Μαγνησίας.'
+            : 'Lafkos is located roughly 50 km from the port city of Volos. The route follows the scenic coast through Agria and Kala Nera before climbing toward Argalasti, taking approximately 1 hour and 15 minutes by car. Regular regional bus services are operated by KTEL Magnesias.'}
+        </p>
+        <p>
+          {locale === 'el'
+            ? 'Ο ιστορικός πυρήνας του χωριού είναι εξ ολοκλήρου πεζοδρομημένος. Δωρεάν υπαίθριοι χώροι στάθμευσης βρίσκονται τόσο στην ανατολική είσοδο (προς Προμύρι/Μουργκές) όσο και στη δυτική είσοδο (από Αργαλαστή/Μηλίνα). Αφήστε το όχημά σας εκεί και μπείτε στο χωριό με τα πόδια (2-3 λεπτά από την πλατεία).'
+            : 'The historic village center is completely pedestrianized. Free public parking areas are situated at both the eastern entrance (toward Promyri) and western entrance (from Argalasti/Milina). Leave your vehicle there and enter on foot (2–3 minutes from the central square).'}
+        </p>
+
+        <h2 class="section-title">{locale === 'el' ? 'Περπάτημα & Καλντερίμια' : 'Walking & Cobbled Trails'}</h2>
+        <p>
+          {locale === 'el'
+            ? 'Τα καλντερίμια του Λαύκου είναι φτιαγμένα από τοπικό πηλιορείτικο ασβεστόλιθο και πλάκες. Φορέστε άνετα παπούτσια πεζοπορίας με καλή πρόσφυση, καθώς ορισμένα σημεία έχουν σκαλοπάτια ή κλίση. Το νερό στις δημόσιες πέτρινες κρήνες (Χατζή, Τουλούμπα, Παλαιοβρύση, Πλατεία) είναι πηγαίο, δροσερό και πόσιμο — ιδανικό για να γεμίσετε το παγούρι σας.'
+            : 'The village lanes and mountain footpaths are paved with native Pelion limestone flags and slate. Wear sturdy walking shoes with reliable grip, as many alleys feature stone steps or steady gradients. The water from all traditional public fountains (Chatzi, Touloumba, Palaiovrysi, Square) is fresh, cool, and potable — perfect for refilling water bottles.'}
+        </p>
+
+        <h2 class="section-title">{locale === 'el' ? 'Εποχές & Κλίμα' : 'Seasons & Climate'}</h2>
+        <p>
+          {locale === 'el'
+            ? 'Κάθε εποχή χαρίζει στον Λαύκο μια διαφορετική ατμόσφαιρα: Την Άνοιξη τα μονοπάτια γεμίζουν αγριολούλουδα και βότανα. Το Καλοκαίρι η πλατεία προσφέρει φυσική δροσιά κάτω από τα πλατάνια, ενώ οι παραλίες της Μηλίνας, του Πλατανιά και του Μικρού απέχουν μόλις λίγα λεπτά. Το Φθινόπωρο είναι η εποχή του λιομαζώματος και των παραδοσιακών αποστακτηρίων τσίπουρου, ενώ ο Χειμώνας φέρνει αναμμένες ξυλόσομπες και μυρωδιά φρεσκοψημένου ψωμιού στα σοκάκια.'
+            : 'Every season brings distinct charm to Lafkos: Spring fills the trails with blooming wildflowers and fragrant herbs. Summer offers breezy shaded afternoons under the plane trees, with the beaches of Milina, Platanias, and Mikro a short drive away. Autumn marks the olive harvest and traditional tsipouro distillation, while Winter brings cozy woodstoves and the scent of fresh wood-fired baking drifting along the alleys.'}
+        </p>
+
+        <h2 class="section-title">{locale === 'el' ? 'Τοπική Γαστρονομία & Προϊόντα' : 'Local Flavors & Gastronomy'}</h2>
+        <p>
+          {locale === 'el'
+            ? 'Μην παραλείψετε να δοκιμάσετε προζυμένιο καρβέλι από τον παραδοσιακό πέτρινο ξυλόφουρνο του Δροσίτη, παραδοσιακή μπατζίνα και χορτόπιτες, ελληνικό καφέ στη χόβολη στο ιστορικό Καφενείο Φορλίδα, εξαιρετικό παρθένο πηλιορείτικο ελαιόλαδο, μέλι ανθέων, καθώς και τσιτσίραβλα και κρίταμα τουρσί στα τοπικά μεζεδοπωλεία.'
+            : 'Be sure to savor wood-fired sourdough loaves from the historic Drositis stone bakery, traditional batzina vegetable pie, charcoal-brewed Greek coffee at Café Forlidas, extra virgin olive oil, blossom honey, and wild pickled tsitsiravla shoots at the village tavernas.'}
+        </p>
+
+        <h2 class="section-title">{locale === 'el' ? 'Σεβασμός στον Τόπο' : 'Respecting the Village'}</h2>
+        <p>
+          {locale === 'el'
+            ? 'Ο Λαύκος είναι ένας ζωντανός οικισμός με μόνιμους κατοίκους. Σεβαστείτε τις ώρες κοινής ησυχίας (15:00–17:30 και μετά τις 23:00), μην εισέρχεστε σε ιδιωτικές αυλές χωρίς άδεια, διατηρήστε τα μονοπάτια καθαρά και σεβαστείτε τα ιστορικά πέτρινα μνημεία και τις ξερολιθιές.'
+            : 'Lafkos is a living community with year-round residents. Please observe afternoon quiet hours (15:00–17:30) and evening tranquility, avoid entering private courtyards, keep trails pristine by packing out all waste, and respect the historic stone monuments and dry-stone boundary walls.'}
+        </p>
       </div>
     </div>
   </section>

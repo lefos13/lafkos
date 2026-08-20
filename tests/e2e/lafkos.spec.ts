@@ -8,7 +8,7 @@ import { expect, test } from '@playwright/test';
 
 test('Greek home exposes the map, filters, and bilingual navigation', async ({ page }) => {
   await page.goto('/el/');
-  await expect(page.getByRole('heading', { name: 'Λαύκος' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Λαύκος', exact: true })).toBeVisible();
   const mapRegion = page.getByRole('region', { name: 'Εξερεύνησε τον Λαύκο' });
   await expect(mapRegion).toBeVisible();
   await mapRegion.scrollIntoViewIfNeeded();

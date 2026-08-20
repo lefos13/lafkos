@@ -5,7 +5,7 @@
  */
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { addProtocol, Map as MapLibreMap, Marker as MapMarker, NavigationControl, removeProtocol, type MapMouseEvent } from 'maplibre-gl';
+import { addProtocol, Map as MapLibreMap, Marker as MapMarker, NavigationControl, removeProtocol, type GeoJSONSource, type MapMouseEvent, type StyleSpecification } from 'maplibre-gl';
 import { Protocol } from 'pmtiles';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type { Category, MapData, MapFeature, MapFeatureProperties } from '../lib/content';
@@ -35,8 +35,52 @@ function detailUrl(locale: Locale, properties: MapFeatureProperties) {
   return `/${locale}/${kind}/${properties.slug}`;
 }
 
-function buildPmtilesStyle(url: string) {
+function sanitizeFilter(expr: unknown): unknown {
+  if (Array.isArray(expr)) {
+    if (
+      expr.length === 3 &&
+      (expr[0] === '<=' || expr[0] === '<' || expr[0] === '>=' || expr[0] === '>')
+    ) {
+      const op = expr[0];
+      const left = expr[1];
+      const right = expr[2];
+      if (Array.isArray(left) && left.length === 2 && left[0] === 'get' && typeof right === 'number') {
+        const fallback = op === '<=' || op === '<' ? 999999 : -999999;
+        return [op, ['to-number', left, fallback], right];
+      }
+      if (typeof left === 'number' && Array.isArray(right) && right.length === 2 && right[0] === 'get') {
+        const fallback = op === '<=' || op === '<' ? -999999 : 999999;
+        return [op, left, ['to-number', right, fallback]];
+      }
+    }
+    return expr.map((item) => sanitizeFilter(item));
+  }
+  if (expr && typeof expr === 'object') {
+    const result: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(expr)) {
+      result[key] = sanitizeFilter(value);
+    }
+    return result;
+  }
+  return expr;
+}
+
+function sanitizeStyle(style: StyleSpecification): StyleSpecification {
+  if (!style || !Array.isArray(style.layers)) return style;
   return {
+    ...style,
+    layers: style.layers.map((layer) => {
+      if (!('filter' in layer) || !layer.filter) return layer;
+      return {
+        ...layer,
+        filter: sanitizeFilter(layer.filter) as never,
+      };
+    }),
+  };
+}
+
+function buildPmtilesStyle(url: string): StyleSpecification {
+  return sanitizeStyle({
     version: 8,
     glyphs: 'https://cdn.protomaps.com/fonts/{fontstack}/{range}.pbf',
     sources: { protomaps: { type: 'vector', url: `pmtiles://${url}` } },
@@ -48,7 +92,7 @@ function buildPmtilesStyle(url: string) {
       { id: 'buildings', type: 'fill', source: 'protomaps', 'source-layer': 'buildings', paint: { 'fill-color': '#e4d8c8', 'fill-opacity': 0.75 } },
       { id: 'places', type: 'symbol', source: 'protomaps', 'source-layer': 'places', layout: { 'text-field': ['get', 'name'], 'text-size': 12 }, paint: { 'text-color': '#40534e', 'text-halo-color': '#f4efe4', 'text-halo-width': 1 } },
     ],
-  };
+  });
 }
 
 export default function MapExplorer({ locale, mapData, categories, initialState, compact = false }: Props) {
@@ -57,12 +101,14 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
   const mapRef = useRef<MapLibreMap | null>(null);
   const markerRefs = useRef<MapMarker[]>([]);
   const stateRef = useRef<MapState>(initialState ?? { categories: [] });
+  const mapDataRef = useRef<MapData>(mapData);
   const [status, setStatus] = useState<MapStatus>('idle');
   const [state, setState] = useState<MapState>(initialState ?? { categories: [] });
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState<MapFeature | undefined>();
   const [locationState, setLocationState] = useState<'idle' | 'locating' | 'denied'>('idle');
   stateRef.current = state;
+  mapDataRef.current = mapData;
 
   const allFeatures = useMemo(() => [...mapData.places, ...mapData.trails], [mapData]);
   const visibleFeatures = useMemo(() => {
@@ -112,28 +158,40 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
     if (!mapElement.current || mapRef.current) return undefined;
     setStatus('loading');
     const pmtilesUrl = import.meta.env.PUBLIC_MAP_PMTILES_URL;
-    if (pmtilesUrl) addProtocol('pmtiles', new Protocol().tile);
-    const map = new MapLibreMap({
+    if (pmtilesUrl) {
+      try {
+        addProtocol('pmtiles', new Protocol().tile);
+      } catch {
+        // Protocol already registered
+      }
+    }
+    const mapOptions = {
       container: mapElement.current,
       style: pmtilesUrl ? buildPmtilesStyle(pmtilesUrl) : mapStyleUrl,
+      transformStyle: (_prev: StyleSpecification | undefined, next: StyleSpecification | undefined) =>
+        next ? sanitizeStyle(next) : (next as unknown as StyleSpecification),
       center: initialState?.view?.center ?? defaultCenter,
       zoom: initialState?.view?.zoom ?? defaultZoom,
       maxBounds: [[23.08, 39.04], [23.42, 39.32]],
       cooperativeGestures: true,
-    });
-    // The map canvas and controls are usable while remote style tiles stream in.
-    // Keeping the content list interactive avoids an indefinite loading veil.
-    setStatus('ready');
+    };
+    const map = new MapLibreMap(mapOptions as never);
     /* The map is created while Astro/React is hydrating and the surrounding
      * grid may still be resolving its final height. Keep the WebGL canvas in
      * sync with that layout so it cannot remain at MapLibre's 300px fallback. */
     const resizeObserver = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => map.resize()) : undefined;
     resizeObserver?.observe(mapElement.current);
     requestAnimationFrame(() => map.resize());
+    setTimeout(() => map.resize(), 120);
     map.addControl(new NavigationControl({ showCompass: true }), 'top-right');
-    map.on('error', () => setStatus('error'));
+    map.on('error', () => {
+      if (!map.isStyleLoaded()) {
+        setStatus('error');
+      }
+    });
     map.once('load', () => {
       setStatus('ready');
+      map.resize();
       map.addSource('lafkos-places', { type: 'geojson', data: featureCollection(mapData.places) as never });
       map.addSource('lafkos-trails', { type: 'geojson', data: featureCollection(mapData.trails) as never });
       map.addLayer({ id: 'lafkos-trails-casing', type: 'line', source: 'lafkos-trails', paint: { 'line-color': '#f7f0df', 'line-width': 6, 'line-opacity': 0.88 } });
@@ -141,12 +199,12 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
       map.addLayer({ id: 'lafkos-place-fill', type: 'fill', source: 'lafkos-places', filter: ['==', ['geometry-type'], 'Polygon'], paint: { 'fill-color': '#d1a758', 'fill-opacity': 0.22, 'fill-outline-color': '#b9654a' } });
       map.on('click', 'lafkos-trails-line', (event: MapMouseEvent) => {
         const feature = map.queryRenderedFeatures(event.point, { layers: ['lafkos-trails-line'] })[0];
-        const match = mapData.trails.find((trail) => trail.properties.entityKey === feature?.properties?.entityKey);
+        const match = mapDataRef.current.trails.find((trail) => trail.properties.entityKey === feature?.properties?.entityKey);
         if (match) selectFeature(match);
       });
       map.on('click', 'lafkos-place-fill', (event: MapMouseEvent) => {
         const feature = map.queryRenderedFeatures(event.point, { layers: ['lafkos-place-fill'] })[0];
-        const match = mapData.places.find((place) => place.properties.entityKey === feature?.properties?.entityKey);
+        const match = mapDataRef.current.places.find((place) => place.properties.entityKey === feature?.properties?.entityKey);
         if (match) selectFeature(match);
       });
       map.on('moveend', () => {
@@ -161,9 +219,24 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
       markerRefs.current = [];
       map.remove();
       mapRef.current = null;
-      if (pmtilesUrl) removeProtocol('pmtiles');
+      if (pmtilesUrl) {
+        try {
+          removeProtocol('pmtiles');
+        } catch {
+          // Protocol removal ignore
+        }
+      }
     };
   }, [initialState, mapData]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || status !== 'ready') return;
+    const placesSource = map.getSource('lafkos-places') as GeoJSONSource | undefined;
+    if (placesSource) placesSource.setData(featureCollection(mapData.places) as never);
+    const trailsSource = map.getSource('lafkos-trails') as GeoJSONSource | undefined;
+    if (trailsSource) trailsSource.setData(featureCollection(mapData.trails) as never);
+  }, [mapData, status]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -172,16 +245,22 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
     markerRefs.current = [];
     mapData.places.filter((feature) => feature.geometry.type === 'Point').forEach((feature) => {
       if (state.categories.length > 0 && !state.categories.includes(feature.properties.category)) return;
+      const category = categories.find((cat) => cat.id === feature.properties.category);
+      const isSelected = selected?.properties.entityKey === feature.properties.entityKey;
       const markerButton = document.createElement('button');
       markerButton.type = 'button';
-      markerButton.className = `map-marker ${selected?.properties.entityKey === feature.properties.entityKey ? 'is-selected' : ''}`;
+      markerButton.className = `map-marker ${isSelected ? 'is-selected' : ''}`;
+      if (category?.color) {
+        markerButton.style.setProperty('--marker-bg', category.color);
+        if (!isSelected) markerButton.style.backgroundColor = category.color;
+      }
       markerButton.setAttribute('aria-label', feature.properties.title);
-      markerButton.innerHTML = '<span aria-hidden="true">✦</span>';
+      markerButton.innerHTML = `<span aria-hidden="true">${category?.icon || '✦'}</span>`;
       markerButton.addEventListener('click', () => selectFeature(feature));
       const coordinates = feature.geometry.type === 'Point' ? feature.geometry.coordinates : defaultCenter;
       markerRefs.current.push(new MapMarker({ element: markerButton, anchor: 'bottom' }).setLngLat(coordinates).addTo(map));
     });
-  }, [mapData.places, selected?.properties.entityKey, state.categories, status]);
+  }, [categories, mapData.places, selected?.properties.entityKey, state.categories, status]);
 
   useEffect(() => {
     if (typeof window === 'undefined' || initialState) return;
@@ -237,7 +316,21 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
             })}
             {visibleFeatures.length === 0 && <p className="map-empty">{locale === 'el' ? 'Δεν βρέθηκαν σημεία.' : 'No features found.'}</p>}
           </div>
-          {selected && <div className="map-selected-card"><p className="eyebrow">{selected.properties.kind === 'trail' ? ui.trailsOnly : ui.places}</p><h3>{selected.properties.title}</h3><p>{selected.properties.summary}</p><a className="button button-primary" href={detailUrl(locale, selected.properties)}>{locale === 'el' ? 'Άνοιξε τη σελίδα' : 'Open detail'}</a></div>}
+          {selected && (
+            <div className="map-selected-card">
+              {selected.properties.thumbnail && (
+                <div className="map-selected-media">
+                  <img src={selected.properties.thumbnail} alt={selected.properties.title} loading="lazy" />
+                </div>
+              )}
+              <p className="eyebrow">{selected.properties.kind === 'trail' ? ui.trailsOnly : ui.places}</p>
+              <h3>{selected.properties.title}</h3>
+              <p>{selected.properties.summary}</p>
+              <a className="button button-primary" href={detailUrl(locale, selected.properties)}>
+                {locale === 'el' ? 'Άνοιξε τη σελίδα' : 'Open detail'}
+              </a>
+            </div>
+          )}
         </aside>
       </div>
     </section>
