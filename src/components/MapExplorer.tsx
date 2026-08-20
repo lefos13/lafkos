@@ -97,8 +97,10 @@ function buildPmtilesStyle(url: string): StyleSpecification {
 
 export default function MapExplorer({ locale, mapData, categories, initialState, compact = false }: Props) {
   const ui = getCopy(locale);
+  const containerRef = useRef<HTMLElement>(null);
   const mapElement = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
+  const listRef = useRef<HTMLDivElement>(null);
   const markerRefs = useRef<MapMarker[]>([]);
   const popupRef = useRef<MapLibrePopup | null>(null);
   const stateRef = useRef<MapState>(initialState ?? { categories: [] });
@@ -108,6 +110,8 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState<MapFeature | undefined>();
   const [locationState, setLocationState] = useState<'idle' | 'locating' | 'denied'>('idle');
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isListHidden, setIsListHidden] = useState(false);
   stateRef.current = state;
   mapDataRef.current = mapData;
 
@@ -129,7 +133,7 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
     }
   }
 
-  function selectFeature(feature: MapFeature) {
+  function selectFeature(feature: MapFeature, scrollList = false) {
     setSelected(feature);
     const next = { ...state, place: feature.properties.kind === 'place' ? feature.properties.entityKey : undefined, trail: feature.properties.kind === 'trail' ? feature.properties.entityKey : undefined };
     writeState(next);
@@ -138,10 +142,34 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
       const coordinates = geometry.type === 'Point' ? geometry.coordinates : geometry.type === 'LineString' ? geometry.coordinates[0] : geometry.coordinates[0][0];
       mapRef.current.flyTo({ center: coordinates, zoom: Math.max(mapRef.current.getZoom(), 15), duration: 650 });
     }
-    if (typeof document !== 'undefined') {
+    if (scrollList && listRef.current) {
+      const list = listRef.current;
       const itemElem = document.getElementById(`map-item-${feature.properties.entityKey}`);
-      itemElem?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      if (itemElem) {
+        const itemTop = itemElem.offsetTop - list.offsetTop;
+        const itemBottom = itemTop + itemElem.offsetHeight;
+        if (itemTop < list.scrollTop) {
+          list.scrollTo({ top: itemTop, behavior: 'smooth' });
+        } else if (itemBottom > list.scrollTop + list.clientHeight) {
+          list.scrollTo({ top: itemBottom - list.clientHeight, behavior: 'smooth' });
+        }
+      }
     }
+  }
+  function toggleFullscreen() {
+    setIsFullscreen((prev) => {
+      const next = !prev;
+      if (next) {
+        if (containerRef.current && document.fullscreenEnabled && !document.fullscreenElement) {
+          containerRef.current.requestFullscreen?.().catch(() => {});
+        }
+      } else {
+        if (document.fullscreenElement) {
+          document.exitFullscreen?.().catch(() => {});
+        }
+      }
+      return next;
+    });
   }
 
   function requestLocation() {
@@ -159,6 +187,50 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
       { enableHighAccuracy: false, maximumAge: 60_000, timeout: 8_000 },
     );
   }
+
+  useEffect(() => {
+    function handleFullscreenChange() {
+      const isNative = Boolean(document.fullscreenElement);
+      if (!isNative && isFullscreen) {
+        setIsFullscreen(false);
+      }
+    }
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape' && isFullscreen) {
+        if (document.fullscreenElement) {
+          document.exitFullscreen?.().catch(() => {});
+        }
+        setIsFullscreen(false);
+      }
+    }
+
+    if (isFullscreen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    window.addEventListener('keydown', handleKeyDown);
+
+    const timer = setTimeout(() => {
+      mapRef.current?.resize();
+    }, 60);
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+      clearTimeout(timer);
+    };
+  }, [isFullscreen]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      mapRef.current?.resize();
+    }, 60);
+    return () => clearTimeout(timer);
+  }, [isListHidden]);
 
   useEffect(() => {
     if (!mapElement.current || mapRef.current) return undefined;
@@ -205,7 +277,7 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
       map.on('click', 'lafkos-trails-line', (event: MapMouseEvent) => {
         const feature = map.queryRenderedFeatures(event.point, { layers: ['lafkos-trails-line'] })[0];
         const match = mapDataRef.current.trails.find((trail) => trail.properties.entityKey === feature?.properties?.entityKey);
-        if (match) selectFeature(match);
+        if (match) selectFeature(match, true);
       });
       map.on('moveend', () => {
         const center = map.getCenter();
@@ -260,7 +332,7 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
       }
       markerButton.setAttribute('aria-label', feature.properties.title);
       markerButton.innerHTML = `<span aria-hidden="true">${category?.icon || '✦'}</span>`;
-      markerButton.addEventListener('click', () => selectFeature(feature));
+      markerButton.addEventListener('click', () => selectFeature(feature, true));
       const coordinates = feature.geometry.type === 'Point' ? feature.geometry.coordinates : defaultCenter;
       markerRefs.current.push(new MapMarker({ element: markerButton, anchor: 'bottom' }).setLngLat(coordinates).addTo(map));
     });
@@ -318,17 +390,19 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
         </span>
         <h4 class="map-popover-title">${selected.properties.title}</h4>
         <p class="map-popover-summary">${selected.properties.summary}</p>
-        <a class="button button-primary map-popover-link" href="${link}">
-          ${locale === 'el' ? 'Περισσότερα ↗' : 'Learn more ↗'}
+        <a class="map-popover-link" href="${link}">
+          <span>${locale === 'el' ? 'Περισσότερα' : 'Learn more'}</span>
+          <span class="map-popover-arrow">↗</span>
         </a>
       </div>
     `;
 
     const popup = new MapLibrePopup({
-      offset: 32,
+      offset: 18,
       closeButton: true,
       closeOnClick: false,
-      maxWidth: '280px',
+      focusAfterOpen: false,
+      maxWidth: '260px',
       className: 'map-popover-wrap',
     })
       .setLngLat(coordinates)
@@ -339,16 +413,27 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
   }, [categories, locale, selected, status]);
 
   return (
-    <section className={`map-explorer ${compact ? 'map-explorer--compact' : ''}`} aria-label={ui.explore}>
+    <section ref={containerRef} className={`map-explorer ${compact ? 'map-explorer--compact' : ''} ${isFullscreen ? 'is-fullscreen' : ''}`} aria-label={ui.explore}>
       <div className="map-toolbar">
         <div className="map-search-wrap">
           <label className="sr-only" htmlFor="map-search">{ui.search}</label>
           <input id="map-search" className="map-search" type="search" placeholder={ui.search} value={search} onChange={(event) => setSearch(event.target.value)} />
           <span aria-hidden="true">⌕</span>
         </div>
-        <button className="location-button" type="button" onClick={requestLocation} disabled={locationState === 'locating'}>
-          <span aria-hidden="true">⌖</span> {locationState === 'locating' ? ui.locating : ui.locate}
-        </button>
+        <div className="map-toolbar-actions">
+          <button className="location-button" type="button" onClick={requestLocation} disabled={locationState === 'locating'}>
+            <span aria-hidden="true">⌖</span> {locationState === 'locating' ? ui.locating : ui.locate}
+          </button>
+          <button
+            className={`fullscreen-button ${isFullscreen ? 'is-active' : ''}`}
+            type="button"
+            onClick={toggleFullscreen}
+            aria-label={isFullscreen ? ui.exitFullscreen : ui.fullscreen}
+            title={isFullscreen ? ui.exitFullscreen : ui.fullscreen}
+          >
+            <span aria-hidden="true">{isFullscreen ? '✕' : '⛶'}</span> {isFullscreen ? ui.exitFullscreen : ui.fullscreen}
+          </button>
+        </div>
       </div>
       <div className="map-filter-row" aria-label={ui.categories}>
         <button className={`filter-chip ${state.categories.length === 0 ? 'is-active' : ''}`} type="button" onClick={() => writeState({ ...state, categories: [] })}>{ui.all}</button>
@@ -366,9 +451,23 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
           {locationState === 'denied' && <div className="map-location-note" role="status">{ui.locateDenied}</div>}
           <div className="map-credit">© OpenStreetMap contributors · MapLibre</div>
         </div>
-        <aside className="map-results" aria-label={locale === 'el' ? 'Αποτελέσματα χάρτη' : 'Map results'}>
-          <div className="map-results-head"><span>{visibleFeatures.length} {locale === 'el' ? 'σημεία' : 'features'}</span><span className="map-hint">{ui.mapHint}</span></div>
-          <div className="map-result-list">
+        <aside className={`map-results ${isListHidden ? 'is-collapsed' : ''}`} aria-label={locale === 'el' ? 'Αποτελέσματα χάρτη' : 'Map results'}>
+          <div className="map-results-head">
+            <span>{visibleFeatures.length} {locale === 'el' ? 'σημεία' : 'features'}</span>
+            <div className="map-results-actions">
+              <span className="map-hint">{ui.mapHint}</span>
+              <button
+                className="list-toggle-button"
+                type="button"
+                onClick={() => setIsListHidden((prev) => !prev)}
+                aria-label={isListHidden ? ui.showList : ui.hideList}
+                title={isListHidden ? ui.showList : ui.hideList}
+              >
+                <span aria-hidden="true">{isListHidden ? '▼' : '▲'}</span>
+              </button>
+            </div>
+          </div>
+          <div className="map-result-list" ref={listRef}>
             {visibleFeatures.map((feature) => {
               const active = selected?.properties.entityKey === feature.properties.entityKey;
               const category = categories.find((item) => item.id === feature.properties.category);
