@@ -47,10 +47,14 @@ const defaultDataset: ContentDataset = {
 let cachedDataset: ContentDataset | null = null;
 
 export async function fetchSanityContent(): Promise<ContentDataset> {
-  if (cachedDataset) {
+  const isDev = Boolean(
+    (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') ||
+      (typeof import.meta !== 'undefined' && import.meta.env?.DEV),
+  );
+
+  if (cachedDataset && !isDev) {
     return cachedDataset;
   }
-
   if (!isSanityConfigured()) {
     cachedDataset = defaultDataset;
     return defaultDataset;

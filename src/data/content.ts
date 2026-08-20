@@ -2092,7 +2092,7 @@ export const stories: Story[] = [
   {
     kind: 'story',
     entityKey: 'reading-lafkos',
-    slug: { el: 'diavazontas-ton-lafko', en: 'reading-lafkos' },
+    slug: { el: 'reading-lafkos', en: 'reading-lafkos' },
     title: { el: 'Πώς διαβάζεται ένας ορεινός οικισμός', en: 'How to Read a Mountain Village' },
     eyebrow: { el: 'Μικρός οδηγός παρατήρησης', en: 'A field guide to observation' },
     summary: {
@@ -2102,12 +2102,14 @@ export const stories: Story[] = [
     body: {
       el: [
         'Ένας τόπος όπως ο Λαύκος δεν αποκαλύπτεται με μια βιαστική βόλτα. Για να τον κατανοήσεις, χρειάζεται να παρατηρήσεις πώς η πέτρα, η κλίση του εδάφους και τα φυσικά περάσματα όρισαν τη ζωή των ανθρώπων για αιώνες.',
-        'Ξεκίνα από την πλατεία κάτω από τα πλατάνια. Παρατήρησε πώς όλες οι γειτονιές συνδέονται με καλντερίμια σχεδιασμένα για τα βήματα των ανθρώπων και τα φορτία των μουλαριών. Δες τις πέτρινες κρήνες — καθεμία χτισμένη εκεί όπου ανάβλυζε φυσική πηγή, αποτελώντας σημείο συνάντησης και καθημερινής επιβίωσης.',
+        'Ξεκίνα από την πλατεία κάτω από τα αιωνόβια πλατάνια. Παρατήρησε πώς όλες οι γειτονιές συνδέονται με καλντερίμια σχεδιασμένα για τα βήματα των ανθρώπων και τα φορτία των μουλαριών. Δες τις πέτρινες κρήνες — καθεμία χτισμένη εκεί όπου ανάβλυζε φυσική πηγή, αποτελώντας σημείο συνάντησης και καθημερινής επιβίωσης.',
+        'Παρατήρησε την τοπική αρχιτεκτονική: οι πέτρινες πλάκες Πηλίου στις στέγες, τα συμπαγή ισόγεια χτισμένα για προστασία από τον άνεμο και τα πάνω πατώματα με τα ξύλινα σαχνισιά που αγναντεύουν το φως και τον Παγασητικό.',
         'Ανηφόρισε προς τον Προφήτη Ηλία την ώρα που πέφτει το φως. Από εκεί ψηλά, η σχέση του χωριού με τη θάλασσα και τα απέναντι βουνά γίνεται ξεκάθαρη: ο Λαύκος υπήρξε πάντοτε ένα ασφαλές ορεινό οχυρό με το βλέμμα στραμμένο στον ορίζοντα του εμπορίου και των ταξιδιών.',
       ],
       en: [
         'A place like Lafkos does not reveal its character to rushed sightseeing. Understanding it requires observing how stone, topography, and natural passages shaped centuries of community life.',
         'Begin at the central square under the ancient plane trees. Notice how every neighborhood is joined by cobbled lanes engineered for human footsteps and pack mules. Look closely at the stone fountains — each built over a natural spring, once serving as vital social hubs and freshwater lifelines.',
+        'Observe the vernacular architecture: local Pelion slate on the rooflines, fortress-like ground floors built for shelter and defense, and timber-framed upper floors (sahnisi) reaching out toward the coastal breeze and Pagasetic light.',
         'Climb toward Prophet Elias as evening approaches. From that crest, the village’s relationship with both sea and mountain becomes evident: Lafkos was always a secure mountain haven with its eyes cast outward upon maritime trade routes and horizons.',
       ],
     },

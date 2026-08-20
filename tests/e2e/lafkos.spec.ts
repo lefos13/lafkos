@@ -45,3 +45,14 @@ test('place pages switch to the translated slug', async ({ page }) => {
   await expect(page).toHaveURL('/en/places/lafkos-square');
   await expect(page.getByRole('heading', { name: 'Lafkos square' })).toBeVisible();
 });
+
+test('reading-lafkos story renders beautifully in Greek and switches to English', async ({ page }) => {
+  await page.goto('/el/stories/reading-lafkos');
+  await expect(page.getByRole('heading', { name: 'Πώς διαβάζεται ένας ορεινός οικισμός' })).toBeVisible();
+  await expect(page.locator('.story-hero-img')).toBeVisible();
+  await expect(page.locator('.story-prose-body')).toBeVisible();
+  await expect(page.locator('.story-sources-panel')).toBeVisible();
+  await page.locator('footer').getByRole('link', { name: 'English' }).click();
+  await expect(page).toHaveURL('/en/stories/reading-lafkos');
+  await expect(page.getByRole('heading', { name: 'How to Read a Mountain Village' })).toBeVisible();
+});

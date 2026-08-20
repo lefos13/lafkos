@@ -37,12 +37,17 @@ export function getSanityConfig(): SanityConfig {
     (import.meta.env?.PUBLIC_SANITY_TOKEN as string | undefined) ??
     undefined;
 
+  const isDev = Boolean(
+    (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') ||
+      (typeof import.meta !== 'undefined' && import.meta.env?.DEV),
+  );
+
   return {
     projectId: projectId.trim(),
     dataset: dataset.trim(),
     apiVersion: apiVersion.trim(),
     token: token?.trim(),
-    useCdn: !token,
+    useCdn: isDev ? false : !token,
   };
 }
 

@@ -5,10 +5,10 @@ import StoryCard from '../../components/StoryCard.astro';
 import SeedNotice from '../../components/SeedNotice.astro';
 import MapExplorer from '../../components/MapExplorer';
 import {
-  categories,
   featuredPlaces,
   featuredStories,
   featuredTrails,
+  fetchSanityContent,
   publicMapData,
 } from '../../lib/content-api';
 import { locales, type Locale } from '../../lib/locales';
@@ -20,9 +20,11 @@ export function getStaticPaths() {
 
 const { locale } = Astro.props as { locale: Locale };
 const ui = getCopy(locale);
-const places = featuredPlaces();
-const trails = featuredTrails();
-const stories = featuredStories();
+const dataset = await fetchSanityContent();
+const places = featuredPlaces(dataset.places);
+const trails = featuredTrails(dataset.trails);
+const stories = featuredStories(dataset.stories);
+const categories = dataset.categories;
 ---
 
 <BaseLayout locale={locale} title={ui.explore} description={ui.introLong} darkHeader>
@@ -52,7 +54,7 @@ const stories = featuredStories();
     <MapExplorer
       client:load
       locale={locale}
-      mapData={publicMapData(locale)}
+      mapData={publicMapData(locale, dataset)}
       categories={categories}
     />
   </section>

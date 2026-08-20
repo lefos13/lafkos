@@ -2,34 +2,48 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import SeedNotice from '../../../components/SeedNotice.astro';
 import FeatureCard from '../../../components/FeatureCard.astro';
-import { categories, findStory, places, stories, trails } from '../../../lib/content-api';
+import { fetchSanityContent, type ContentDataset } from '../../../lib/content-api';
 import { locales, otherLocale, type Locale } from '../../../lib/locales';
 import { getCopy } from '../../../lib/ui-copy';
+import type { Story } from '../../../lib/content';
 
-export function getStaticPaths() {
+export async function getStaticPaths() {
+  const dataset = await fetchSanityContent();
   return locales.flatMap((locale) =>
-    stories.map((story) => ({
+    dataset.stories.map((story) => ({
       params: { locale, slug: story.slug[locale] },
-      props: { locale, story },
+      props: { locale, story, dataset },
     })),
   );
 }
 
-const { locale, story } = Astro.props as {
+const { locale, story, dataset } = Astro.props as {
   locale: Locale;
-  story: NonNullable<ReturnType<typeof findStory>>;
+  story: Story;
+  dataset: ContentDataset;
 };
 const ui = getCopy(locale);
+const other = otherLocale(locale);
 
 const relatedEntries = story.relatedKeys
   .map((key) => {
-    const place = places.find((p) => p.entityKey === key);
-    if (place) return { entry: place, category: categories.find((c) => c.id === place.category) };
-    const trail = trails.find((t) => t.entityKey === key);
-    if (trail) return { entry: trail, category: categories.find((c) => c.id === 'trail') };
+    const place = dataset.places.find((p) => p.entityKey === key);
+    if (place) return { entry: place, category: dataset.categories.find((c) => c.id === place.category) };
+    const trail = dataset.trails.find((t) => t.entityKey === key);
+    if (trail) return { entry: trail, category: dataset.categories.find((c) => c.id === 'trail') };
     return null;
   })
   .filter((item): item is NonNullable<typeof item> => item !== null);
+
+const wordCount = story.body[locale].join(' ').split(/\s+/).filter(Boolean).length;
+const readingMinutes = Math.max(2, Math.ceil(wordCount / 100));
+const readingTimeLabel =
+  locale === 'el' ? `~${readingMinutes} λεπτά ανάγνωση` : `~${readingMinutes} min read`;
+
+const backToGuideLabel = locale === 'el' ? '← Πίσω στον οδηγό' : '← Back to village guide';
+const photoCreditLabel = locale === 'el' ? 'Φωτογραφία' : 'Photo';
+const exploreMapLabel = locale === 'el' ? 'Εξερεύνηση στον χάρτη' : 'Explore on map';
+const fieldNotesLabel = locale === 'el' ? 'Σημειώσεις πεδίου' : 'Field observations';
 ---
 
 <BaseLayout
@@ -37,40 +51,98 @@ const relatedEntries = story.relatedKeys
   title={story.title[locale]}
   description={story.summary[locale]}
   image={story.image.src}
-  alternateHref={`/${otherLocale(locale)}/stories/${story.slug[otherLocale(locale)]}`}
+  alternateHref={`/${other}/stories/${story.slug[other]}`}
 >
-  <article class="container">
-    <div class="detail-hero">
-      <div class="detail-media"><img src={story.image.src} alt={story.image.alt} /></div>
-      <div class="detail-copy">
-        <p class="eyebrow">{story.eyebrow[locale]}</p>
-        <h1 class="page-title">{story.title[locale]}</h1>
-        <p class="lede">{story.summary[locale]}</p>
-        {story.isSeed && <SeedNotice locale={locale} />}
+  <article class="container story-page">
+    <nav class="story-breadcrumb" aria-label="Breadcrumb">
+      <a href={`/${locale}/`} class="story-back-link">{backToGuideLabel}</a>
+      <span class="breadcrumb-separator" aria-hidden="true">/</span>
+      <span class="breadcrumb-current">{story.eyebrow[locale]}</span>
+    </nav>
+
+    <header class="story-hero-header">
+      <div class="story-hero-meta">
+        <span class="story-eyebrow-pill">{story.eyebrow[locale]}</span>
+        <span class="story-read-time">{readingTimeLabel}</span>
       </div>
-    </div>
-    <div class="prose-layout prose-section">
-      <aside><p class="eyebrow">{ui.stories}</p></aside>
-      <div class="prose-copy">
-        {story.body[locale].map((paragraph) => <p>{paragraph}</p>)}
-        <h2 class="section-title">{ui.sources}</h2>
-        <ul class="source-list">
-          {
-            story.sources.map((item) => (
-              <li>
-                <a href={item.url} rel="noreferrer">
-                  {item.label} ↗
-                </a>
-              </li>
-            ))
-          }
-        </ul>
+      <h1 class="story-headline">{story.title[locale]}</h1>
+      <p class="story-lede">{story.summary[locale]}</p>
+      {story.isSeed && <SeedNotice locale={locale} />}
+    </header>
+
+    <figure class="story-feature-media">
+      <div class="story-media-wrapper">
+        <img src={story.image.src} alt={story.image.alt} class="story-hero-img" />
+      </div>
+      <figcaption class="story-media-caption">
+        <span class="caption-desc">{story.image.alt}</span>
+        <span class="caption-credit">
+          {photoCreditLabel}: <strong>{story.image.credit}</strong> · <em>{story.image.license}</em>
+        </span>
+      </figcaption>
+    </figure>
+
+    <div class="story-content-grid">
+      <aside class="story-sidebar">
+        <div class="story-sidebar-card">
+          <p class="sidebar-label">{fieldNotesLabel}</p>
+          <p class="sidebar-note">
+            {
+              locale === 'el'
+                ? 'Ο Λαύκος διατηρεί ατόφιο τον παραδοσιακό πολεοδομικό ιστό του Νοτίου Πηλίου: πέτρινα καλντερίμια, σκιερές κρήνες και κτίσματα προσανατολισμένα στον Παγασητικό.'
+                : 'Lafkos preserves the authentic vernacular urban layout of South Pelion: stone kalderimia, shaded springs, and architecture oriented toward the Pagasetic Gulf.'
+            }
+          </p>
+          <a class="button button-secondary sidebar-action" href={`/${locale}/map`}>
+            {exploreMapLabel} <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </aside>
+
+      <div class="story-prose-body">
+        {
+          story.body[locale].map((paragraph, index) => {
+            if (index === 0) {
+              return <p class="story-first-paragraph">{paragraph}</p>;
+            }
+            if (index === 1 && story.body[locale].length > 2) {
+              return (
+                <>
+                  <p>{paragraph}</p>
+                  <blockquote class="story-pullquote">
+                    <p>
+                      {locale === 'el'
+                        ? '«Ένας τόπος όπως ο Λαύκος δεν αποκαλύπτεται με μια βιαστική βόλτα. Χρειάζεται να παρατηρήσεις πώς η πέτρα, τα νερά και το φως όρισαν τη ζωή των ανθρώπων.»'
+                        : '“A place like Lafkos does not reveal its character to rushed sightseeing. Look closely at how stone, waters, and light shaped everyday life.”'}
+                    </p>
+                  </blockquote>
+                </>
+              );
+            }
+            return <p>{paragraph}</p>;
+          })
+        }
+
+        <div class="story-sources-panel">
+          <h2 class="sources-title">{ui.sources}</h2>
+          <ul class="source-list">
+            {
+              story.sources.map((item) => (
+                <li>
+                  <a href={item.url} target="_blank" rel="noreferrer">
+                    {item.label} <span aria-hidden="true">↗</span>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
       </div>
     </div>
 
     {
       relatedEntries.length > 0 && (
-        <section class="section" aria-labelledby="related-title" style="margin-top: 3rem;">
+        <section class="section story-related-section" aria-labelledby="related-title">
           <div class="section-header">
             <div>
               <p class="eyebrow">{ui.navMap}</p>
@@ -78,6 +150,9 @@ const relatedEntries = story.relatedKeys
                 {ui.related}
               </h2>
             </div>
+            <a class="button button-ghost" href={`/${locale}/map`}>
+              {exploreMapLabel}
+            </a>
           </div>
           <div class="card-grid">
             {relatedEntries.map(({ entry, category }) => (

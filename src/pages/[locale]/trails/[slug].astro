@@ -1,25 +1,28 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import SeedNotice from '../../../components/SeedNotice.astro';
-import { categories, findTrail, trails } from '../../../lib/content-api';
+import { fetchSanityContent, type ContentDataset } from '../../../lib/content-api';
 import { locales, otherLocale, type Locale } from '../../../lib/locales';
 import { getCopy } from '../../../lib/ui-copy';
 import { formatDistance } from '../../../lib/geometry';
+import type { Trail } from '../../../lib/content';
 
-export function getStaticPaths() {
+export async function getStaticPaths() {
+  const dataset = await fetchSanityContent();
   return locales.flatMap((locale) =>
-    trails.map((trail) => ({
+    dataset.trails.map((trail) => ({
       params: { locale, slug: trail.slug[locale] },
-      props: { locale, trail },
+      props: { locale, trail, dataset },
     })),
   );
 }
-const { locale, trail } = Astro.props as {
+const { locale, trail, dataset } = Astro.props as {
   locale: Locale;
-  trail: NonNullable<ReturnType<typeof findTrail>>;
+  trail: Trail;
+  dataset: ContentDataset;
 };
 const ui = getCopy(locale);
-const category = categories.find((item) => item.id === 'trail');
+const category = dataset.categories.find((item) => item.id === 'trail');
 ---
 
 <BaseLayout

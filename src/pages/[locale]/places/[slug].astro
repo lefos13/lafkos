@@ -1,24 +1,27 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import SeedNotice from '../../../components/SeedNotice.astro';
-import { categories, findPlace, places } from '../../../lib/content-api';
+import { fetchSanityContent, type ContentDataset } from '../../../lib/content-api';
 import { locales, otherLocale, type Locale } from '../../../lib/locales';
 import { getCopy } from '../../../lib/ui-copy';
+import type { Place } from '../../../lib/content';
 
-export function getStaticPaths() {
+export async function getStaticPaths() {
+  const dataset = await fetchSanityContent();
   return locales.flatMap((locale) =>
-    places.map((place) => ({
+    dataset.places.map((place) => ({
       params: { locale, slug: place.slug[locale] },
-      props: { locale, place },
+      props: { locale, place, dataset },
     })),
   );
 }
-const { locale, place } = Astro.props as {
+const { locale, place, dataset } = Astro.props as {
   locale: Locale;
-  place: NonNullable<ReturnType<typeof findPlace>>;
+  place: Place;
+  dataset: ContentDataset;
 };
 const ui = getCopy(locale);
-const category = categories.find((item) => item.id === place.category);
+const category = dataset.categories.find((item) => item.id === place.category);
 ---
 
 <BaseLayout

@@ -327,7 +327,7 @@ describe('Content API Adapter', () => {
     expect(milinaTrail).toBeDefined();
     expect(milinaTrail?.entityKey).toBe('lafkos-milina-trail');
 
-    const readingStory = findStory('el', 'diavazontas-ton-lafko');
+    const readingStory = findStory('el', 'reading-lafkos');
     expect(readingStory).toBeDefined();
     expect(readingStory?.entityKey).toBe('reading-lafkos');
   });

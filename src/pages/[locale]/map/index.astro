@@ -2,7 +2,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import MapExplorer from '../../../components/MapExplorer';
 import SeedNotice from '../../../components/SeedNotice.astro';
-import { categories, publicMapData } from '../../../lib/content-api';
+import { fetchSanityContent, publicMapData } from '../../../lib/content-api';
 import { locales, type Locale } from '../../../lib/locales';
 import { getCopy } from '../../../lib/ui-copy';
 import { parseMapState } from '../../../lib/map-state';
@@ -12,6 +12,9 @@ export function getStaticPaths() {
 }
 const { locale } = Astro.props as { locale: Locale };
 const ui = getCopy(locale);
+const dataset = await fetchSanityContent();
+const categories = dataset.categories;
+const mapData = publicMapData(locale, dataset);
 ---
 
 <BaseLayout locale={locale} title={ui.explore} description={ui.introLong}>
@@ -26,7 +29,7 @@ const ui = getCopy(locale);
     <MapExplorer
       client:load
       locale={locale}
-      mapData={publicMapData(locale)}
+      mapData={mapData}
       categories={categories}
       initialState={parseMapState(Astro.url.search)}
     />
