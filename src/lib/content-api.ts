@@ -1,27 +1,124 @@
 /*
- * The local adapter mirrors the future Sanity query boundary. Pages ask for
- * already-shaped content and never know whether it came from seed data or a
- * published CMS document.
+ * Content API Adapter: Unifies access to content across the local seed dataset
+ * and the Sanity Content Lake. Pages request structured content through these
+ * boundary functions without coupling to CMS implementation details.
  */
 
-import { categories, places, stories, trails } from '../data/content';
+import {
+  categories as seedCategories,
+  places as seedPlaces,
+  stories as seedStories,
+  trails as seedTrails,
+} from '../data/content';
+import type { Coordinate, MapData, MapFeature, Place, Story, Trail, Category } from './content';
 import type { Locale } from './locales';
-import type { Coordinate, MapData, MapFeature, Place, Story, Trail } from './content';
+import { isSanityConfigured, getSanityClient } from './sanity-client';
+import {
+  CATEGORIES_QUERY,
+  PLACES_QUERY,
+  STORIES_QUERY,
+  TRAILS_QUERY,
+  transformSanityCategories,
+  transformSanityPlaces,
+  transformSanityStories,
+  transformSanityTrails,
+  type SanityCategoryDoc,
+  type SanityPlaceDoc,
+  type SanityStoryDoc,
+  type SanityTrailDoc,
+} from './sanity-transform';
 
-export function findPlace(locale: Locale, slug: string): Place | undefined {
-  return places.find((place) => place.slug[locale] === slug);
+export interface ContentDataset {
+  places: Place[];
+  trails: Trail[];
+  stories: Story[];
+  categories: Category[];
+  source: 'sanity' | 'seed';
 }
 
-export function findTrail(locale: Locale, slug: string): Trail | undefined {
-  return trails.find((trail) => trail.slug[locale] === slug);
+const defaultDataset: ContentDataset = {
+  places: seedPlaces,
+  trails: seedTrails,
+  stories: seedStories,
+  categories: seedCategories,
+  source: 'seed',
+};
+
+let cachedDataset: ContentDataset | null = null;
+
+export async function fetchSanityContent(): Promise<ContentDataset> {
+  if (cachedDataset) {
+    return cachedDataset;
+  }
+
+  if (!isSanityConfigured()) {
+    cachedDataset = defaultDataset;
+    return defaultDataset;
+  }
+
+  try {
+    const client = getSanityClient();
+    const [rawPlaces, rawTrails, rawStories, rawCategories] = await Promise.all([
+      client.fetch<SanityPlaceDoc[]>(PLACES_QUERY),
+      client.fetch<SanityTrailDoc[]>(TRAILS_QUERY),
+      client.fetch<SanityStoryDoc[]>(STORIES_QUERY),
+      client.fetch<SanityCategoryDoc[]>(CATEGORIES_QUERY),
+    ]);
+
+    const places = rawPlaces?.length ? transformSanityPlaces(rawPlaces) : seedPlaces;
+    const trails = rawTrails?.length ? transformSanityTrails(rawTrails) : seedTrails;
+    const stories = rawStories?.length ? transformSanityStories(rawStories) : seedStories;
+    const categories = rawCategories?.length
+      ? transformSanityCategories(rawCategories)
+      : seedCategories;
+
+    cachedDataset = {
+      places,
+      trails,
+      stories,
+      categories,
+      source: rawPlaces?.length ? 'sanity' : 'seed',
+    };
+    return cachedDataset;
+  } catch (error) {
+    console.warn(
+      'Failed to fetch content from Sanity Content Lake, falling back to seed dataset:',
+      error,
+    );
+    cachedDataset = defaultDataset;
+    return defaultDataset;
+  }
 }
 
-export function findStory(locale: Locale, slug: string): Story | undefined {
-  return stories.find((story) => story.slug[locale] === slug);
+export function findPlace(
+  locale: Locale,
+  slug: string,
+  dataset: Place[] = defaultDataset.places,
+): Place | undefined {
+  return dataset.find((place) => place.slug[locale] === slug);
 }
 
-export function publicMapData(locale: Locale): MapData {
-  const placeFeatures: MapFeature[] = places.map((place) => ({
+export function findTrail(
+  locale: Locale,
+  slug: string,
+  dataset: Trail[] = defaultDataset.trails,
+): Trail | undefined {
+  return dataset.find((trail) => trail.slug[locale] === slug);
+}
+
+export function findStory(
+  locale: Locale,
+  slug: string,
+  dataset: Story[] = defaultDataset.stories,
+): Story | undefined {
+  return dataset.find((story) => story.slug[locale] === slug);
+}
+
+export function publicMapData(
+  locale: Locale,
+  dataset: { places: Place[]; trails: Trail[] } = defaultDataset,
+): MapData {
+  const placeFeatures: MapFeature[] = dataset.places.map((place) => ({
     type: 'Feature',
     geometry: place.geometry,
     properties: {
@@ -34,7 +131,7 @@ export function publicMapData(locale: Locale): MapData {
       thumbnail: place.images[0]?.src,
     },
   }));
-  const trailFeatures: MapFeature[] = trails.map((trail) => ({
+  const trailFeatures: MapFeature[] = dataset.trails.map((trail) => ({
     type: 'Feature',
     geometry: trail.geometry,
     properties: {
@@ -51,15 +148,10 @@ export function publicMapData(locale: Locale): MapData {
     generatedAt: 'seed',
     places: placeFeatures,
     trails: trailFeatures,
-    waypoints: waypointFeatures(locale, placeFeatures),
+    waypoints: waypointFeatures(locale, placeFeatures, dataset.trails),
   };
 }
 
-/* A drawn trail that runs off to an unmarked destination reads as a bug on the
- * map, so every waypoint a path actually passes gets its own marker. Waypoints
- * a place marker already covers are skipped, and so are ones that describe a
- * broad area away from the drawn line — planting a marker in empty ground is
- * the same defect in reverse. */
 const waypointMergeMetres = 70;
 const waypointOnPathMetres = 150;
 
@@ -69,12 +161,16 @@ function metresBetween([lonA, latA]: Coordinate, [lonB, latB]: Coordinate): numb
   return Math.hypot((lonA - lonB) * lonScale, (latA - latB) * latScale);
 }
 
-function waypointFeatures(locale: Locale, placeFeatures: MapFeature[]): MapFeature[] {
-  const taken: Coordinate[] = placeFeatures
-    .filter((feature) => feature.geometry.type === 'Point')
-    .map((feature) => (feature.geometry as { coordinates: Coordinate }).coordinates);
+function waypointFeatures(
+  locale: Locale,
+  placeFeatures: MapFeature[],
+  trailsList: Trail[] = defaultDataset.trails,
+): MapFeature[] {
+  const taken: Coordinate[] = placeFeatures.flatMap((feature) =>
+    feature.geometry.type === 'Point' ? [feature.geometry.coordinates] : [],
+  );
   const features: MapFeature[] = [];
-  trails.forEach((trail) => {
+  trailsList.forEach((trail) => {
     trail.waypoints.forEach((waypoint, index) => {
       const onPath = trail.geometry.coordinates.some(
         (vertex) => metresBetween(vertex, waypoint.coordinate) <= waypointOnPathMetres,
@@ -104,16 +200,19 @@ function waypointFeatures(locale: Locale, placeFeatures: MapFeature[]): MapFeatu
   return features;
 }
 
-export function featuredPlaces(): Place[] {
-  return places.filter((place) => place.featured);
+export function featuredPlaces(dataset: Place[] = defaultDataset.places): Place[] {
+  return dataset.filter((place) => place.featured);
 }
 
-export function featuredTrails(): Trail[] {
-  return trails.filter((trail) => trail.featured);
+export function featuredTrails(dataset: Trail[] = defaultDataset.trails): Trail[] {
+  return dataset.filter((trail) => trail.featured);
 }
 
-export function featuredStories(): Story[] {
-  return stories.filter((story) => story.featured);
+export function featuredStories(dataset: Story[] = defaultDataset.stories): Story[] {
+  return dataset.filter((story) => story.featured);
 }
 
-export { categories, places, stories, trails };
+export const categories = seedCategories;
+export const places = seedPlaces;
+export const stories = seedStories;
+export const trails = seedTrails;
