@@ -5,7 +5,7 @@
  */
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { addProtocol, Map as MapLibreMap, Marker as MapMarker, NavigationControl, removeProtocol, type GeoJSONSource, type MapMouseEvent, type StyleSpecification } from 'maplibre-gl';
+import { addProtocol, Map as MapLibreMap, Marker as MapMarker, NavigationControl, Popup as MapLibrePopup, removeProtocol, type GeoJSONSource, type MapMouseEvent, type StyleSpecification } from 'maplibre-gl';
 import { Protocol } from 'pmtiles';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type { Category, MapData, MapFeature, MapFeatureProperties } from '../lib/content';
@@ -100,6 +100,7 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
   const mapElement = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const markerRefs = useRef<MapMarker[]>([]);
+  const popupRef = useRef<MapLibrePopup | null>(null);
   const stateRef = useRef<MapState>(initialState ?? { categories: [] });
   const mapDataRef = useRef<MapData>(mapData);
   const [status, setStatus] = useState<MapStatus>('idle');
@@ -135,6 +136,10 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
       const geometry = feature.geometry;
       const coordinates = geometry.type === 'Point' ? geometry.coordinates : geometry.type === 'LineString' ? geometry.coordinates[0] : geometry.coordinates[0][0];
       mapRef.current.flyTo({ center: coordinates, zoom: Math.max(mapRef.current.getZoom(), 15), duration: 650 });
+    }
+    if (typeof document !== 'undefined') {
+      const itemElem = document.getElementById(`map-item-${feature.properties.entityKey}`);
+      itemElem?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
   }
 
@@ -196,15 +201,9 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
       map.addSource('lafkos-trails', { type: 'geojson', data: featureCollection(mapData.trails) as never });
       map.addLayer({ id: 'lafkos-trails-casing', type: 'line', source: 'lafkos-trails', paint: { 'line-color': '#f7f0df', 'line-width': 6, 'line-opacity': 0.88 } });
       map.addLayer({ id: 'lafkos-trails-line', type: 'line', source: 'lafkos-trails', paint: { 'line-color': '#b9654a', 'line-width': 3, 'line-dasharray': [1, 1.5] } });
-      map.addLayer({ id: 'lafkos-place-fill', type: 'fill', source: 'lafkos-places', filter: ['==', ['geometry-type'], 'Polygon'], paint: { 'fill-color': '#d1a758', 'fill-opacity': 0.22, 'fill-outline-color': '#b9654a' } });
       map.on('click', 'lafkos-trails-line', (event: MapMouseEvent) => {
         const feature = map.queryRenderedFeatures(event.point, { layers: ['lafkos-trails-line'] })[0];
         const match = mapDataRef.current.trails.find((trail) => trail.properties.entityKey === feature?.properties?.entityKey);
-        if (match) selectFeature(match);
-      });
-      map.on('click', 'lafkos-place-fill', (event: MapMouseEvent) => {
-        const feature = map.queryRenderedFeatures(event.point, { layers: ['lafkos-place-fill'] })[0];
-        const match = mapDataRef.current.places.find((place) => place.properties.entityKey === feature?.properties?.entityKey);
         if (match) selectFeature(match);
       });
       map.on('moveend', () => {
@@ -215,6 +214,10 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
     mapRef.current = map;
     return () => {
       resizeObserver?.disconnect();
+      if (popupRef.current) {
+        popupRef.current.remove();
+        popupRef.current = null;
+      }
       markerRefs.current.forEach((marker) => marker.remove());
       markerRefs.current = [];
       map.remove();
@@ -272,6 +275,56 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
     setSelected(allFeatures.find((feature) => feature.properties.entityKey === selectedKey));
   }, [allFeatures, state.place, state.trail]);
 
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || status !== 'ready') return;
+    if (popupRef.current) {
+      popupRef.current.remove();
+      popupRef.current = null;
+    }
+    if (!selected) return;
+
+    const geometry = selected.geometry;
+    const coordinates =
+      geometry.type === 'Point'
+        ? geometry.coordinates
+        : geometry.type === 'LineString'
+          ? geometry.coordinates[Math.floor(geometry.coordinates.length / 2)]
+          : geometry.coordinates[0][0];
+
+    const category = categories.find((c) => c.id === selected.properties.category);
+    const link = detailUrl(locale, selected.properties);
+
+    const popupDiv = document.createElement('div');
+    popupDiv.className = 'map-popover-content';
+    popupDiv.innerHTML = `
+      ${selected.properties.thumbnail ? `<div class="map-popover-media"><img src="${selected.properties.thumbnail}" alt="${selected.properties.title}" /></div>` : ''}
+      <div class="map-popover-body">
+        <span class="map-popover-badge" style="background-color: ${category?.color || '#b66c45'}">
+          ${selected.properties.kind === 'trail' ? (locale === 'el' ? 'Διαδρομή' : 'Trail') : (category?.label[locale] || '')}
+        </span>
+        <h4 class="map-popover-title">${selected.properties.title}</h4>
+        <p class="map-popover-summary">${selected.properties.summary}</p>
+        <a class="button button-primary map-popover-link" href="${link}">
+          ${locale === 'el' ? 'Περισσότερα ↗' : 'Learn more ↗'}
+        </a>
+      </div>
+    `;
+
+    const popup = new MapLibrePopup({
+      offset: 32,
+      closeButton: true,
+      closeOnClick: false,
+      maxWidth: '280px',
+      className: 'map-popover-wrap',
+    })
+      .setLngLat(coordinates)
+      .setDOMContent(popupDiv)
+      .addTo(map);
+
+    popupRef.current = popup;
+  }, [categories, locale, selected, status]);
+
   return (
     <section className={`map-explorer ${compact ? 'map-explorer--compact' : ''}`} aria-label={ui.explore}>
       <div className="map-toolbar">
@@ -306,31 +359,18 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
             {visibleFeatures.map((feature) => {
               const active = selected?.properties.entityKey === feature.properties.entityKey;
               const category = categories.find((item) => item.id === feature.properties.category);
-              return <article className={`map-result ${active ? 'is-active' : ''}`} key={feature.properties.entityKey}>
-                <button type="button" className="map-result-button" onClick={() => selectFeature(feature)}>
-                  <span className="map-result-icon" style={{ backgroundColor: category?.color }}>{feature.properties.kind === 'trail' ? '⌁' : category?.icon}</span>
-                  <span><strong>{feature.properties.title}</strong><small>{feature.properties.summary}</small></span>
-                </button>
-                <a className="map-result-link" href={detailUrl(locale, feature.properties)} aria-label={`${feature.properties.title} — ${locale === 'el' ? 'περισσότερα' : 'more'}`}>↗</a>
-              </article>;
+              return (
+                <article id={`map-item-${feature.properties.entityKey}`} className={`map-result ${active ? 'is-active' : ''}`} key={feature.properties.entityKey}>
+                  <button type="button" className="map-result-button" onClick={() => selectFeature(feature)}>
+                    <span className="map-result-icon" style={{ backgroundColor: category?.color }}>{feature.properties.kind === 'trail' ? '⌁' : category?.icon}</span>
+                    <span><strong>{feature.properties.title}</strong><small>{feature.properties.summary}</small></span>
+                  </button>
+                  <a className="map-result-link" href={detailUrl(locale, feature.properties)} aria-label={`${feature.properties.title} — ${locale === 'el' ? 'περισσότερα' : 'more'}`}>↗</a>
+                </article>
+              );
             })}
             {visibleFeatures.length === 0 && <p className="map-empty">{locale === 'el' ? 'Δεν βρέθηκαν σημεία.' : 'No features found.'}</p>}
           </div>
-          {selected && (
-            <div className="map-selected-card">
-              {selected.properties.thumbnail && (
-                <div className="map-selected-media">
-                  <img src={selected.properties.thumbnail} alt={selected.properties.title} loading="lazy" />
-                </div>
-              )}
-              <p className="eyebrow">{selected.properties.kind === 'trail' ? ui.trailsOnly : ui.places}</p>
-              <h3>{selected.properties.title}</h3>
-              <p>{selected.properties.summary}</p>
-              <a className="button button-primary" href={detailUrl(locale, selected.properties)}>
-                {locale === 'el' ? 'Άνοιξε τη σελίδα' : 'Open detail'}
-              </a>
-            </div>
-          )}
         </aside>
       </div>
     </section>
