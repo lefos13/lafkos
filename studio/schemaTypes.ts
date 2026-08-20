@@ -37,6 +37,11 @@ const imageMetaFields = [
     type: 'string',
     validation: (rule) => rule.required(),
   }),
+  defineField({
+    name: 'externalUrl',
+    title: 'External Image URL (e.g. Wikimedia Commons fallback)',
+    type: 'url',
+  }),
 ];
 
 const sourceField = defineField({
