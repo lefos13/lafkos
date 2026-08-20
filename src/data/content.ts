@@ -69,8 +69,22 @@ const milinaCoastImage = {
 };
 
 const promyriChurchImage = {
-  src: 'https://upload.wikimedia.org/wikipedia/commons/e/e0/%CE%9D%CE%B1%CF%8C%CF%82_%CE%9A%CE%BF%CE%B9%CE%BC%CE%AE%CF%83%CE%B5%CF%89%CF%82_%CE%98%CE%B5%CE%BF%CF%84%CF%8C%CE%BA%CE%BF%CF%85_%CF%83%CF%84%CE%BF_%CE%A0%CF%81%CE%BF%CE%BC%CF%8D%CF%81%CE%B9_9166.jpg',
+  src: 'https://upload.wikimedia.org/wikipedia/commons/6/6c/%CE%9D%CE%B1%CF%8C%CF%82_%CE%9A%CE%BF%CE%B9%CE%BC%CE%AE%CF%83%CE%B5%CF%89%CF%82_%CE%98%CE%B5%CE%BF%CF%84%CF%8C%CE%BA%CE%BF%CF%85_%CF%83%CF%84%CE%BF_%CE%A0%CF%81%CE%BF%CE%BC%CF%8D%CF%81%CE%B9_9166.jpg',
   alt: 'Παραδοσιακός πέτρινος ναός και καμπαναριό στο Νότιο Πήλιο',
+  credit: 'Photo by C messier (Wikimedia Commons)',
+  license: 'CC BY-SA 4.0',
+};
+
+const lafkosChurchImage = {
+  src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Lafkos_Platia_Zypressen_01.jpg/1280px-Lafkos_Platia_Zypressen_01.jpg',
+  alt: 'Ο Ιερός Ναός Γεννήσεως της Θεοτόκου με το καμπαναριό του δίπλα στο αιωνόβιο κυπαρίσσι της πλατείας του Λαύκου',
+  credit: 'Photo by Chondriammos (Wikimedia Commons)',
+  license: 'CC BY-SA 4.0',
+};
+
+const lafkosVillageAerialImage = {
+  src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/%CE%9B%CE%B1%CF%8D%CE%BA%CE%BF%CF%82_DJI_5252.jpg/1920px-%CE%9B%CE%B1%CF%8D%CE%BA%CE%BF%CF%82_DJI_5252.jpg',
+  alt: 'Αεροφωτογραφία του Λαύκου με τον Ναό Γεννήσεως της Θεοτόκου και τις κεραμοσκεπές του οικισμού',
   credit: 'Photo by C messier (Wikimedia Commons)',
   license: 'CC BY-SA 4.0',
 };
@@ -265,16 +279,16 @@ export const places: Place[] = [
       ],
     },
     category: 'heritage',
-    geometry: { type: 'Point', coordinates: [23.24715, 39.17765] },
-    mapAnchor: [23.24715, 39.17765],
+    geometry: { type: 'Point', coordinates: [23.24814, 39.17402] },
+    mapAnchor: [23.24814, 39.17402],
     images: [historicalPostcardImage, architectureImage],
     practical: {
       el: [
-        'Βρίσκεται κοντά στην ανατολική είσοδο του οικισμού, σε απόσταση 1 λεπτού από την πλατεία.',
+        'Στεγάζεται στην παλιά αποθήκη του Αγροτικού Συνεταιρισμού, στη διασταύρωση για Μηλίνα και Προμύρι, περίπου 400 μ. νότια της πλατείας (8 λεπτά με τα πόδια).',
         'Διαθέτει επεξηγηματικές πινακίδες για την ιστορία των ραδιοκυμάτων και της τεχνολογίας.',
       ],
       en: [
-        'Located near the eastern entrance of the village, a one-minute walk from the square.',
+        'Housed in the old Agricultural Cooperative warehouse at the Milina/Promyri junction, about 400 m south of the square (an 8-minute walk).',
         'Features explanatory documentation on the history of radio technology and broadcasting.',
       ],
     },
@@ -339,7 +353,7 @@ export const places: Place[] = [
     category: 'sacred',
     geometry: { type: 'Point', coordinates: [23.24634, 39.17784] },
     mapAnchor: [23.24634, 39.17784],
-    images: [promyriChurchImage, squareImage],
+    images: [lafkosChurchImage, lafkosVillageAerialImage],
     practical: {
       el: [
         'Ανοιχτός κατά τις ιερές ακολουθίες και τα πρωινά του σαββατοκύριακου.',
@@ -794,8 +808,8 @@ export const places: Place[] = [
       ],
     },
     category: 'viewpoint',
-    geometry: { type: 'Point', coordinates: [23.24341, 39.17970] },
-    mapAnchor: [23.24341, 39.17970],
+    geometry: { type: 'Point', coordinates: [23.24332, 39.17820] },
+    mapAnchor: [23.24332, 39.17820],
     images: [pagaseticViewImage, architectureImage],
     practical: {
       el: [
@@ -1231,11 +1245,11 @@ export const trails: Trail[] = [
     summary: { el: 'Κυκλική διαδρομή που συνδέει όλες τις ιστορικές κρήνες, τον πέτρινο φούρνο Δροσίτη, τα μουσεία και τις παραδοσιακές γειτονιές.', en: 'A curated loop linking all historic stone fountains, the Drositis stone bakery, museums, and quiet village quarters.' },
     body: {
       el: [
-        'Ένας σχεδιασμένος πολιτιστικός περίπατος μέσα στον διατηρητέο οικισμό του Λαύκου. Ξεκινά από την κεντρική πλατεία και την κρήνη της, κατηφορίζει στον παραδοσιακό φούρνο του Δροσίτη και στην Παλαιοβρύση, συνεχίζει στην Κρήνη Τουλούμπα στα Λειβαδάκια, περνά από το Μουσείο Ραδιοφώνου και ολοκληρώνεται στην Κρήνη Χατζή και στο Φάμπειο Μουσείο.',
+        'Ένας σχεδιασμένος πολιτιστικός περίπατος μέσα στον διατηρητέο οικισμό του Λαύκου. Ξεκινά από την κεντρική πλατεία και την κρήνη της, κατηφορίζει στον παραδοσιακό φούρνο του Δροσίτη και στην Παλαιοβρύση, συνεχίζει στην Κρήνη Τουλούμπα στα Λειβαδάκια, και ολοκληρώνεται στην Κρήνη Χατζή και στο Φάμπειο Μουσείο. Το Μουσείο Ραδιοφώνου βρίσκεται πλέον στη διασταύρωση Μηλίνας–Προμυρίου, σε μια σύντομη παράκαμψη νότια της πλατείας.',
         'Είναι ο ιδανικός τρόπος για να γνωρίσει ο επισκέπτης την αρχιτεκτονική συνοχή, τα τρεχούμενα νερά και τη ζωντανή καθημερινότητα του χωριού.',
       ],
       en: [
-        'A delightful cultural village circuit within the protected core of Lafkos. Starting at the central square and marble fountain, it visits the historic Drositis bakery, the ancient Palaiovrysi spring, Touloumba spring in Livadakia quarter, the Radio Museum, and concludes via Chatzi Spring and the Fampas Museum.',
+        'A delightful cultural village circuit within the protected core of Lafkos. Starting at the central square and marble fountain, it visits the historic Drositis bakery, the ancient Palaiovrysi spring, Touloumba spring in Livadakia quarter, and concludes via Chatzi Spring and the Fampas Museum. The Radio Museum now sits at the Milina/Promyri junction, a short detour south of the square.',
         'It offers the perfect slow-paced introduction to the architectural texture, flowing waters, and daily life of Lafkos.',
       ],
     },
@@ -1394,7 +1408,6 @@ export const trails: Trail[] = [
       { title: { el: 'Φούρνος Δροσίτη (1904)', en: 'Drositis Stone Bakery' }, coordinate: [23.24666, 39.17654], image: architectureImage },
       { title: { el: 'Παλαιοβρύση', en: 'Palaiovrysi Spring' }, coordinate: [23.24510, 39.17520], image: squarePlaneTreesImage },
       { title: { el: 'Κρήνη Τουλούμπα (1910)', en: 'Touloumba Spring' }, coordinate: [23.24835, 39.17580], image: lafkosAerialWideImage },
-      { title: { el: 'Μουσείο Ραδιοφώνου', en: 'Radio Museum' }, coordinate: [23.24715, 39.17765], image: historicalPostcardImage },
       { title: { el: 'Κρήνη Χατζή (1800)', en: 'Chatzi Spring' }, coordinate: [23.24412, 39.18205], image: squarePlaneTreesImage },
     ],
     sources: [localHeritageSource, wikimediaSource, osmSource],

@@ -112,6 +112,7 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
   mapDataRef.current = mapData;
 
   const allFeatures = useMemo(() => [...mapData.places, ...mapData.trails], [mapData]);
+  const trailVisible = state.categories.length === 0 || state.categories.includes('trail');
   const visibleFeatures = useMemo(() => {
     const query = search.trim().toLocaleLowerCase(locale === 'el' ? 'el-GR' : 'en-GB');
     return allFeatures.filter((feature) => {
@@ -263,7 +264,19 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
       const coordinates = feature.geometry.type === 'Point' ? feature.geometry.coordinates : defaultCenter;
       markerRefs.current.push(new MapMarker({ element: markerButton, anchor: 'bottom' }).setLngLat(coordinates).addTo(map));
     });
-  }, [categories, mapData.places, selected?.properties.entityKey, state.categories, status]);
+    if (!trailVisible) return;
+    mapData.waypoints.forEach((feature) => {
+      if (feature.geometry.type !== 'Point') return;
+      const isSelected = selected?.properties.entityKey === feature.properties.entityKey;
+      const markerButton = document.createElement('button');
+      markerButton.type = 'button';
+      markerButton.className = `map-marker map-marker--waypoint ${isSelected ? 'is-selected' : ''}`;
+      markerButton.setAttribute('aria-label', `${feature.properties.title} — ${feature.properties.summary}`);
+      markerButton.innerHTML = '<span aria-hidden="true">●</span>';
+      markerButton.addEventListener('click', () => setSelected(feature));
+      markerRefs.current.push(new MapMarker({ element: markerButton, anchor: 'center' }).setLngLat(feature.geometry.coordinates).addTo(map));
+    });
+  }, [categories, mapData.places, mapData.waypoints, selected?.properties.entityKey, state.categories, status, trailVisible]);
 
   useEffect(() => {
     if (typeof window === 'undefined' || initialState) return;
@@ -301,7 +314,7 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
       ${selected.properties.thumbnail ? `<div class="map-popover-media"><img src="${selected.properties.thumbnail}" alt="${selected.properties.title}" /></div>` : ''}
       <div class="map-popover-body">
         <span class="map-popover-badge" style="background-color: ${category?.color || '#b66c45'}">
-          ${selected.properties.kind === 'trail' ? (locale === 'el' ? 'Διαδρομή' : 'Trail') : (category?.label[locale] || '')}
+          ${selected.properties.kind === 'place' ? (category?.label[locale] || '') : selected.properties.kind === 'trail' ? (locale === 'el' ? 'Διαδρομή' : 'Trail') : (locale === 'el' ? 'Στάση διαδρομής' : 'Trail stop')}
         </span>
         <h4 class="map-popover-title">${selected.properties.title}</h4>
         <p class="map-popover-summary">${selected.properties.summary}</p>

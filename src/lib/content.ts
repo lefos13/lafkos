@@ -113,12 +113,15 @@ export interface Story {
 
 export interface MapFeatureProperties {
   entityKey: string;
-  kind: 'place' | 'trail';
+  kind: 'place' | 'trail' | 'waypoint';
   category: CategoryId;
   slug: string;
   title: string;
   summary: string;
   thumbnail?: string;
+  /* Waypoints borrow the slug and entityKey of the trail they belong to so the
+   * popover can link back to the trail page they were sampled from. */
+  parentKey?: string;
 }
 
 export interface MapFeature {
@@ -132,6 +135,9 @@ export interface MapData {
   generatedAt: string;
   places: MapFeature[];
   trails: MapFeature[];
+  /* Trail waypoints that no place marker already covers, so a drawn path never
+   * runs off to an unmarked destination. */
+  waypoints: MapFeature[];
 }
 
 export const contentConfig = {

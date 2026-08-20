@@ -6,7 +6,7 @@
 
 import { categories, places, stories, trails } from '../data/content';
 import type { Locale } from './locales';
-import type { MapData, MapFeature, Place, Story, Trail } from './content';
+import type { Coordinate, MapData, MapFeature, Place, Story, Trail } from './content';
 
 export function findPlace(locale: Locale, slug: string): Place | undefined {
   return places.find((place) => place.slug[locale] === slug);
@@ -34,7 +34,46 @@ export function publicMapData(locale: Locale): MapData {
       slug: trail.slug[locale], title: trail.title[locale], summary: trail.summary[locale],
     },
   }));
-  return { schemaVersion: 1, generatedAt: 'seed', places: placeFeatures, trails: trailFeatures };
+  return { schemaVersion: 1, generatedAt: 'seed', places: placeFeatures, trails: trailFeatures, waypoints: waypointFeatures(locale, placeFeatures) };
+}
+
+/* A drawn trail that runs off to an unmarked destination reads as a bug on the
+ * map, so every waypoint a path actually passes gets its own marker. Waypoints
+ * a place marker already covers are skipped, and so are ones that describe a
+ * broad area away from the drawn line — planting a marker in empty ground is
+ * the same defect in reverse. */
+const waypointMergeMetres = 70;
+const waypointOnPathMetres = 150;
+
+function metresBetween([lonA, latA]: Coordinate, [lonB, latB]: Coordinate): number {
+  const latScale = 110_574;
+  const lonScale = 111_320 * Math.cos(((latA + latB) / 2) * (Math.PI / 180));
+  return Math.hypot((lonA - lonB) * lonScale, (latA - latB) * latScale);
+}
+
+function waypointFeatures(locale: Locale, placeFeatures: MapFeature[]): MapFeature[] {
+  const taken: Coordinate[] = placeFeatures
+    .filter((feature) => feature.geometry.type === 'Point')
+    .map((feature) => (feature.geometry as { coordinates: Coordinate }).coordinates);
+  const features: MapFeature[] = [];
+  trails.forEach((trail) => {
+    trail.waypoints.forEach((waypoint, index) => {
+      const onPath = trail.geometry.coordinates.some(
+        (vertex) => metresBetween(vertex, waypoint.coordinate) <= waypointOnPathMetres,
+      );
+      if (!onPath) return;
+      if (taken.some((claimed) => metresBetween(claimed, waypoint.coordinate) <= waypointMergeMetres)) return;
+      taken.push(waypoint.coordinate);
+      features.push({
+        type: 'Feature', geometry: { type: 'Point', coordinates: waypoint.coordinate }, properties: {
+          entityKey: `${trail.entityKey}-waypoint-${index}`, kind: 'waypoint', category: 'trail',
+          slug: trail.slug[locale], title: waypoint.title[locale], summary: trail.title[locale],
+          thumbnail: waypoint.image?.src, parentKey: trail.entityKey,
+        },
+      });
+    });
+  });
+  return features;
 }
 
 export function featuredPlaces(): Place[] {

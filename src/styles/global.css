@@ -59,7 +59,7 @@ img { display: block; max-width: 100%; }
 .nav-links a:hover, .nav-links a:focus-visible { color: var(--terracotta); }
 .language-link { padding: 0.55rem 0.75rem; border: 1px solid var(--line); border-radius: 999px; color: var(--deep-olive); }
 
-.hero { position: relative; display: grid; min-height: min(52rem, 86vh); align-items: end; margin-top: -4.5rem; padding: 7.5rem 0 2rem; color: var(--paper); background: linear-gradient(120deg, rgba(19, 43, 39, 0.94), rgba(36, 67, 63, 0.52) 57%, rgba(36, 67, 63, 0.2)), url('https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=2000&q=85') center/cover; }
+.hero { position: relative; display: grid; min-height: min(52rem, 86vh); align-items: end; margin-top: -4.5rem; padding: 7.5rem 0 2rem; color: var(--paper); background: linear-gradient(120deg, rgba(19, 43, 39, 0.94), rgba(36, 67, 63, 0.52) 57%, rgba(36, 67, 63, 0.2)), url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/%CE%9B%CE%B1%CF%8D%CE%BA%CE%BF%CF%82_DJI_5252.jpg/1920px-%CE%9B%CE%B1%CF%8D%CE%BA%CE%BF%CF%82_DJI_5252.jpg') center/cover; }
 .hero::after { position: absolute; inset: auto 0 0; height: 10rem; background: linear-gradient(transparent, var(--limestone)); content: ''; pointer-events: none; }
 .hero-content { position: relative; z-index: 1; width: min(calc(100% - 2rem), var(--max-width)); margin: 0 auto; }
 .hero .eyebrow { color: var(--gold); }
@@ -121,6 +121,9 @@ img { display: block; max-width: 100%; }
 .map-marker { display: grid; width: 2.2rem; height: 2.2rem; place-items: center; border: 2px solid var(--paper); border-radius: 50% 50% 50% 0; color: var(--paper); background: var(--terracotta); box-shadow: 0 5px 14px rgba(36, 67, 63, 0.25); transform: rotate(-45deg); transition: transform 180ms ease, background 180ms ease; }
 .map-marker span { transform: rotate(45deg); }
 .map-marker:hover, .map-marker:focus-visible, .map-marker.is-selected { background: var(--sea); transform: rotate(-45deg) scale(1.15); }
+.map-marker--waypoint { width: 1.15rem; height: 1.15rem; border-width: 2px; border-radius: 50%; background: #b9654a; box-shadow: 0 2px 6px rgba(36, 67, 63, 0.35); transform: none; font-size: 0.4rem; }
+.map-marker--waypoint span { transform: none; }
+.map-marker--waypoint:hover, .map-marker--waypoint:focus-visible, .map-marker--waypoint.is-selected { background: var(--sea); transform: scale(1.25); }
 .map-results { display: flex; flex-direction: column; overflow: hidden; }
 .map-results-head { flex-shrink: 0; display: flex; justify-content: space-between; gap: 1rem; padding: 0.8rem 1rem; border-bottom: 1px solid var(--line); color: var(--deep-olive); font-size: 0.76rem; font-weight: 700; }
 .map-hint { color: var(--muted); font-weight: 500; text-align: right; }
