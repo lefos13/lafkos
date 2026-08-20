@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://lafkos.guide/sitemap-index.xml
