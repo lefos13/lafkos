@@ -9,10 +9,21 @@ interface Props {
   description: string;
   image?: string;
   darkHeader?: boolean;
+  minimalHeader?: boolean;
+  isMapPage?: boolean;
   alternateHref?: string;
 }
 
-const { locale, title, description, image, darkHeader = false, alternateHref } = Astro.props;
+const {
+  locale,
+  title,
+  description,
+  image,
+  darkHeader = false,
+  minimalHeader = false,
+  isMapPage = false,
+  alternateHref,
+} = Astro.props;
 const ui = getCopy(locale);
 const alternateLocale = otherLocale(locale);
 const alternatePath =
@@ -46,10 +57,18 @@ const socialImage = image ?? new URL('/icons/icon-512.svg', siteUrl).toString();
   <body>
     <a class="skip-link" href="#main-content">{ui.skipToContent}</a>
     <div class="site-shell">
-      <header class:list={['site-header', { 'site-header--dark': darkHeader }]}>
+      <header
+        class:list={[
+          'site-header',
+          {
+            'site-header--dark': darkHeader,
+            'site-header--minimal': minimalHeader || isMapPage,
+          },
+        ]}
+      >
         <a class="brand" href={`/${locale}/`} aria-label={ui.home}>
           <span class="brand-mark" aria-hidden="true">λ</span>
-          <span>Lafkos Guide</span>
+          <span class="brand-name">Lafkos Guide</span>
         </a>
         <nav class="nav-links" aria-label={ui.primaryNav}>
           <a href={`/${locale}/map`}>{ui.navMap}</a>
@@ -58,6 +77,9 @@ const socialImage = image ?? new URL('/icons/icon-512.svg', siteUrl).toString();
           <a href={`/${locale}/about`}>{ui.navAbout}</a>
           <a class="language-link" href={alternatePath}>{ui.language}</a>
         </nav>
+        <a class="mobile-lang-link" href={alternatePath} aria-label={ui.language}>
+          {alternateLocale.toUpperCase()}
+        </a>
       </header>
       <main id="main-content"><slot /></main>
       <footer class="site-footer">

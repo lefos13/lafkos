@@ -17,15 +17,20 @@ const categories = dataset.categories;
 const mapData = publicMapData(locale, dataset);
 ---
 
-<BaseLayout locale={locale} title={ui.explore} description={ui.introLong}>
-  <section class="prose-section container">
-    <p class="eyebrow">{ui.explore}</p>
-    <h1 class="page-title">
-      {locale === 'el' ? 'Ο Λαύκος, σημείο προς σημείο.' : 'Lafkos, point by point.'}
-    </h1>
-    <p class="lede">{ui.introLong}</p>
-  </section>
-  <section class="map-section container" aria-label={ui.explore}>
+<BaseLayout locale={locale} title={ui.explore} description={ui.introLong} isMapPage>
+  <div class="map-page-intro sr-only-mobile">
+    <section class="prose-section container">
+      <p class="eyebrow">{ui.explore}</p>
+      <h1 class="page-title">
+        {locale === 'el' ? 'Ο Λαύκος, σημείο προς σημείο.' : 'Lafkos, point by point.'}
+      </h1>
+      <p class="lede">{ui.introLong}</p>
+    </section>
+  </div>
+  <h1 class="sr-only sr-only-non-mobile">
+    {locale === 'el' ? 'Ο Λαύκος, σημείο προς σημείο.' : 'Lafkos, point by point.'}
+  </h1>
+  <section class="map-section map-page-section container" aria-label={ui.explore}>
     <MapExplorer
       client:load
       locale={locale}
@@ -33,6 +38,8 @@ const mapData = publicMapData(locale, dataset);
       categories={categories}
       initialState={parseMapState(Astro.url.search)}
     />
-    <SeedNotice locale={locale} />
+    <div class="map-page-notice">
+      <SeedNotice locale={locale} />
+    </div>
   </section>
 </BaseLayout>

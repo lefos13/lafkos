@@ -898,9 +898,15 @@ export default function MapExplorer({
             type="button"
             onClick={requestLocation}
             disabled={locationState === 'locating'}
+            aria-label={locationState === 'locating' ? ui.locating : ui.locate}
+            title={locationState === 'locating' ? ui.locating : ui.locate}
           >
-            <span aria-hidden="true">⌖</span>{' '}
-            {locationState === 'locating' ? ui.locating : ui.locate}
+            <span className="btn-icon" aria-hidden="true">
+              ⌖
+            </span>
+            <span className="btn-label">
+              {locationState === 'locating' ? ui.locating : ui.locate}
+            </span>
           </button>
           <button
             className={`fullscreen-button ${isFullscreen ? 'is-active' : ''}`}
@@ -909,8 +915,10 @@ export default function MapExplorer({
             aria-label={isFullscreen ? ui.exitFullscreen : ui.fullscreen}
             title={isFullscreen ? ui.exitFullscreen : ui.fullscreen}
           >
-            <span aria-hidden="true">{isFullscreen ? '✕' : '⛶'}</span>{' '}
-            {isFullscreen ? ui.exitFullscreen : ui.fullscreen}
+            <span className="btn-icon" aria-hidden="true">
+              {isFullscreen ? '✕' : '⛶'}
+            </span>
+            <span className="btn-label">{isFullscreen ? ui.exitFullscreen : ui.fullscreen}</span>
           </button>
         </div>
       </div>
