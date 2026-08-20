@@ -107,6 +107,10 @@ img { display: block; max-width: 100%; }
 .map-grid { display: grid; min-height: 40rem; overflow: hidden; border: 1px solid var(--line); border-radius: 0 0 var(--radius-md) var(--radius-md); background: var(--paper); box-shadow: var(--shadow); }
 .map-canvas-wrap { position: relative; min-height: 27rem; background: #d7ded7; }
 .map-canvas { position: absolute; inset: 0; }
+/* MapLibre adds its own `.maplibregl-map` class and resets the absolutely
+ * positioned island to `height: 100%`. A min-height parent has no definite
+ * percentage height, so keep the map rooted to the full grid cell instead. */
+.map-canvas.maplibregl-map { position: absolute; inset: 0; height: auto; }
 .map-canvas .maplibregl-canvas { outline: none; }
 .map-credit { position: absolute; right: 0.6rem; bottom: 0.5rem; z-index: 3; padding: 0.25rem 0.4rem; border-radius: 0.2rem; color: rgba(36, 67, 63, 0.72); background: rgba(251, 249, 244, 0.82); font-size: 0.62rem; }
 .map-status { position: absolute; inset: 0; z-index: 2; display: grid; place-content: center; gap: 0.7rem; color: var(--deep-olive); background: rgba(244, 239, 228, 0.75); font-size: 0.82rem; font-weight: 700; text-align: center; backdrop-filter: blur(3px); }

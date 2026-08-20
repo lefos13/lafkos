@@ -12,6 +12,9 @@ test('Greek home exposes the map, filters, and bilingual navigation', async ({ p
   const mapRegion = page.getByRole('region', { name: 'Εξερεύνησε τον Λαύκο' });
   await expect(mapRegion).toBeVisible();
   await mapRegion.scrollIntoViewIfNeeded();
+  const mapCanvas = page.locator('.map-canvas .maplibregl-canvas');
+  await expect(mapCanvas).toBeVisible();
+  await expect.poll(() => mapCanvas.evaluate((element) => element.clientHeight)).toBeGreaterThan(0);
   await mapRegion.getByRole('button', { name: 'Ιστορία' }).click();
   await expect(page).toHaveURL(/categories=heritage/);
   await expect(page.getByRole('link', { name: /Μουσείο Φάμπα — περισσότερα/ })).toBeVisible();

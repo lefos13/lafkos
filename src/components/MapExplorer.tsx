@@ -124,6 +124,12 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
     // The map canvas and controls are usable while remote style tiles stream in.
     // Keeping the content list interactive avoids an indefinite loading veil.
     setStatus('ready');
+    /* The map is created while Astro/React is hydrating and the surrounding
+     * grid may still be resolving its final height. Keep the WebGL canvas in
+     * sync with that layout so it cannot remain at MapLibre's 300px fallback. */
+    const resizeObserver = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => map.resize()) : undefined;
+    resizeObserver?.observe(mapElement.current);
+    requestAnimationFrame(() => map.resize());
     map.addControl(new NavigationControl({ showCompass: true }), 'top-right');
     map.on('error', () => setStatus('error'));
     map.once('load', () => {
@@ -150,6 +156,7 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
     });
     mapRef.current = map;
     return () => {
+      resizeObserver?.disconnect();
       markerRefs.current.forEach((marker) => marker.remove());
       markerRefs.current = [];
       map.remove();

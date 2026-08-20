@@ -8,6 +8,11 @@ export default defineConfig({
   output: 'static',
   prefetch: true,
   vite: {
+    optimizeDeps: {
+      /* MapLibre ships a separate worker entry that Vite's optimizer cannot
+       * serve reliably when it is prebundled as a dependency. */
+      exclude: ['maplibre-gl'],
+    },
     ssr: { noExternal: ['maplibre-gl'] },
   },
 });
