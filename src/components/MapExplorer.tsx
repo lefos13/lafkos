@@ -12,12 +12,22 @@ import {
   NavigationControl,
   Popup as MapLibrePopup,
   removeProtocol,
+  setWorkerUrl,
   type GeoJSONSource,
   type MapMouseEvent,
   type StyleSpecification,
 } from 'maplibre-gl';
 import { Protocol } from 'pmtiles';
 import 'maplibre-gl/dist/maplibre-gl.css';
+/* MapLibre 6 loads its tile worker from a separate ESM chunk and resolves it
+ * with `new URL('./maplibre-gl-worker.mjs', import.meta.url)`. Rollup cannot
+ * see that string, so the file is never emitted next to the hashed bundle and
+ * the worker 404s in any built output — vector sources then never finish
+ * loading and the map hangs on its spinner without raising an error. Importing
+ * it through Vite's worker pipeline emits a real, self-contained asset. */
+import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
+
+setWorkerUrl(maplibreWorkerUrl);
 import type {
   Category,
   Coordinate,
@@ -466,7 +476,11 @@ export default function MapExplorer({
         } catch {
           setStatus('error');
         }
+        return;
       }
+      /* Registering any error listener suppresses MapLibre's own console
+       * reporting, so log here or map failures become invisible. */
+      console.error('MapLibre error:', e.error ?? e);
     });
 
     map.on('style.load', setupLayers);
