@@ -18,7 +18,8 @@
     "studio:build": "pnpm --filter @lafkos/studio build",
     "studio:deploy": "pnpm --filter @lafkos/studio deploy",
     "studio:export-seed": "tsx scripts/export-sanity-seed.ts",
-    "studio:import-seed": "pnpm --filter @lafkos/studio import-seed"
+    "studio:import-seed": "pnpm --filter @lafkos/studio import-seed",
+    "vercel-ignore": "bash scripts/ignore-app-build.sh"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.4",
