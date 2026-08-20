@@ -1,0 +1,10 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { locales, type Locale } from '../../../lib/locales';
+import { getCopy } from '../../../lib/ui-copy';
+export function getStaticPaths() { return locales.map((locale) => ({ params: { locale }, props: { locale } })); }
+const { locale } = Astro.props as { locale: Locale }; const ui = getCopy(locale);
+---
+<BaseLayout locale={locale} title={ui.accessibilityTitle} description={ui.accessibilityTitle}>
+  <section class="prose-section container"><p class="eyebrow">{ui.accessibilityTitle}</p><h1 class="page-title">{ui.accessibilityTitle}</h1><div class="prose-layout" style="margin-top: 4rem;"><aside><p class="eyebrow">{locale === 'el' ? 'Για όλους τους ρυθμούς' : 'For every pace'}</p></aside><div class="prose-copy"><p>{locale === 'el' ? 'Ο χάρτης συνοδεύεται από συγχρονισμένη λίστα σημείων ώστε η εξερεύνηση να μη βασίζεται μόνο στο WebGL. Όλα τα χειριστήρια έχουν ετικέτες, τα άρθρα έχουν δομή επικεφαλίδων και οι εικόνες απαιτούν εναλλακτικό κείμενο.' : 'The map is paired with a synchronized feature list so discovery does not depend on WebGL alone. Controls are labeled, articles use heading structure, and images require alternative text.'}</p><p>{locale === 'el' ? 'Αν βρεις εμπόδιο ή χρειάζεσαι πληροφορία σε διαφορετική μορφή, επικοινώνησε με την ομάδα του οδηγού.' : 'If you find a barrier or need information in another format, please contact the guide team.'}</p></div></div></section>
+</BaseLayout>

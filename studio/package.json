@@ -1,0 +1,19 @@
+{
+  "name": "@lafkos/studio",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "sanity dev",
+    "build": "sanity build",
+    "deploy": "sanity deploy"
+  },
+  "dependencies": {
+    "@sanity/document-internationalization": "^6.2.31",
+    "@sanity/vision": "^6.10.1",
+    "sanity": "^6.10.1",
+    "styled-components": "^6.1.19"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}

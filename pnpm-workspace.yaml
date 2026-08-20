@@ -1,5 +1,12 @@
+packages:
+  - studio
+
 allowBuilds:
   esbuild: true
+overrides:
+  js-yaml: 4.3.1
+  smol-toml: 1.6.1
+  uuid: 11.1.1
 minimumReleaseAgeExclude:
   - '@astrojs/internal-helpers@0.10.4'
   - '@astrojs/markdown-satteri@0.3.7'

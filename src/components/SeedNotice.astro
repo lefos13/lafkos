@@ -1,0 +1,7 @@
+---
+import type { Locale } from '../lib/locales';
+import { getCopy } from '../lib/ui-copy';
+const { locale } = Astro.props as { locale: Locale };
+const ui = getCopy(locale);
+---
+<div class="notice" role="note">{ui.seedNotice}</div>

@@ -1,0 +1,79 @@
+---
+import '../styles/global.css';
+import { otherLocale, type Locale } from '../lib/locales';
+import { getCopy } from '../lib/ui-copy';
+
+interface Props {
+  locale: Locale;
+  title: string;
+  description: string;
+  image?: string;
+  darkHeader?: boolean;
+  alternateHref?: string;
+}
+
+const { locale, title, description, image, darkHeader = false, alternateHref } = Astro.props;
+const ui = getCopy(locale);
+const alternateLocale = otherLocale(locale);
+const alternatePath = alternateHref ?? Astro.url.pathname.replace(`/${locale}`, `/${alternateLocale}`);
+const siteUrl = Astro.site ?? new URL('https://lafkos.guide');
+const canonical = new URL(Astro.url.pathname, siteUrl).toString();
+const socialImage = image ?? new URL('/icons/icon-512.svg', siteUrl).toString();
+---
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="theme-color" content="#24433f" />
+    <meta name="description" content={description} />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang={locale} href={canonical} />
+    <link rel="alternate" hreflang={alternateLocale} href={new URL(alternatePath, siteUrl)} />
+    <link rel="alternate" hreflang="x-default" href={new URL('/el/', siteUrl)} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={socialImage} />
+    <title>{title} · Lafkos Guide</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">{ui.skipToContent}</a>
+    <div class="site-shell">
+      <header class:list={['site-header', { 'site-header--dark': darkHeader }]}>
+        <a class="brand" href={`/${locale}/`} aria-label={ui.home}>
+          <span class="brand-mark" aria-hidden="true">λ</span>
+          <span>Lafkos Guide</span>
+        </a>
+        <nav class="nav-links" aria-label={ui.primaryNav}>
+          <a href={`/${locale}/map`}>{ui.navMap}</a>
+          <a href={`/${locale}/stories/reading-lafkos`}>{ui.navStories}</a>
+          <a href={`/${locale}/visit`}>{ui.navVisit}</a>
+          <a href={`/${locale}/about`}>{ui.navAbout}</a>
+          <a class="language-link" href={alternatePath}>{ui.language}</a>
+        </nav>
+      </header>
+      <main id="main-content"><slot /></main>
+      <footer class="site-footer">
+        <div class="container footer-inner">
+          <div>
+            <a class="brand" href={`/${locale}/`}><span class="brand-mark" aria-hidden="true">λ</span><span>Lafkos Guide</span></a>
+            <p class="footer-copy">{ui.footer}</p>
+          </div>
+          <nav class="footer-links" aria-label={ui.footerNav}>
+            <a href={`/${locale}/about`}>{ui.navAbout}</a>
+            <a href={`/${locale}/privacy`}>{ui.privacyTitle}</a>
+            <a href={`/${locale}/accessibility`}>{ui.accessibilityTitle}</a>
+            <a href={alternatePath}>{ui.language}</a>
+          </nav>
+        </div>
+      </footer>
+    </div>
+    <script is:inline>
+      if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => undefined);
+    </script>
+  </body>
+</html>

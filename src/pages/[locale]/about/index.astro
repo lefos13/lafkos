@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { locales, type Locale } from '../../../lib/locales';
+import { getCopy } from '../../../lib/ui-copy';
+
+export function getStaticPaths() { return locales.map((locale) => ({ params: { locale }, props: { locale } })); }
+const { locale } = Astro.props as { locale: Locale };
+const ui = getCopy(locale);
+---
+<BaseLayout locale={locale} title={ui.aboutTitle} description={ui.aboutIntro}>
+  <section class="prose-section container"><p class="eyebrow">Lafkos Guide</p><h1 class="page-title">{ui.aboutTitle}</h1><p class="lede">{ui.aboutIntro}</p><div class="prose-layout" style="margin-top: 4rem;"><aside><p class="eyebrow">{locale === 'el' ? 'Η πρόθεση' : 'The intention'}</p></aside><div class="prose-copy"><p>{locale === 'el' ? 'Ο οδηγός φτιάχνεται για να συνδέει τον χάρτη με τη μνήμη και την περιέργεια με τον σεβασμό. Κάθε σημείο θα πρέπει να έχει πηγή, κάθε εικόνα δικαίωμα και κάθε διαδρομή τοπικό έλεγχο.' : 'This guide connects the map with memory, and curiosity with care. Every place should have a source, every image a right, and every route local review.'}</p><p>{locale === 'el' ? 'Το περιεχόμενο που βλέπεις είναι αρχικό εκδοτικό δείγμα. Θα εμπλουτιστεί από ανθρώπους που γνωρίζουν τον Λαύκο και θέλουν να μοιραστούν τις ιστορίες του.' : 'The content you see is editorial seed material. It will grow with people who know Lafkos and want to share its stories.'}</p></div></div></section>
+</BaseLayout>

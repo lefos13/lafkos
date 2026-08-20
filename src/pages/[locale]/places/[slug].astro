@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import SeedNotice from '../../../components/SeedNotice.astro';
+import { categories, findPlace } from '../../../lib/content-api';
+import { places } from '../../../data/content';
+import { locales, otherLocale, type Locale } from '../../../lib/locales';
+import { getCopy } from '../../../lib/ui-copy';
+
+export function getStaticPaths() {
+  return locales.flatMap((locale) =>
+    places.map((place) => ({
+      params: { locale, slug: place.slug[locale] },
+      props: { locale, place },
+    })),
+  );
+}
+const { locale, place } = Astro.props as { locale: Locale; place: NonNullable<ReturnType<typeof findPlace>> };
+const ui = getCopy(locale);
+const category = categories.find((item) => item.id === place.category);
+---
+<BaseLayout locale={locale} title={place.title[locale]} description={place.summary[locale]} image={place.images[0]?.src} alternateHref={`/${otherLocale(locale)}/places/${place.slug[otherLocale(locale)]}`}>
+  <article class="container">
+    <div class="detail-hero">
+      <div class="detail-media"><img src={place.images[0].src} alt={place.images[0].alt} /></div>
+      <div class="detail-copy">
+        <p class="eyebrow">{category?.label[locale]} · {place.eyebrow[locale]}</p>
+        <h1 class="page-title">{place.title[locale]}</h1>
+        <p class="lede">{place.summary[locale]}</p>
+        <div class="hero-actions"><a class="button button-primary" href={`/${locale}/map?place=${place.entityKey}`}>{ui.openMap} <span aria-hidden="true">↗</span></a><a class="button button-secondary" href={`https://www.openstreetmap.org/?mlat=${place.mapAnchor[1]}&mlon=${place.mapAnchor[0]}#map=18/${place.mapAnchor[1]}/${place.mapAnchor[0]}`} rel="noreferrer">{ui.directions}</a></div>
+        {place.isSeed && <SeedNotice locale={locale} />}
+      </div>
+    </div>
+    <div class="prose-layout prose-section">
+      <aside><p class="eyebrow">{ui.practical}</p></aside>
+      <div class="prose-copy">
+        {place.body[locale].map((paragraph) => <p>{paragraph}</p>)}
+        <ul>{place.practical[locale].map((item) => <li>{item}</li>)}</ul>
+        <h2 class="section-title">{ui.sources}</h2>
+        <ul class="source-list">{place.sources.map((item) => <li><a href={item.url} rel="noreferrer">{item.label} ↗</a></li>)}</ul>
+      </div>
+    </div>
+  </article>
+</BaseLayout>

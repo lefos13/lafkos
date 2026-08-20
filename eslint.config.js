@@ -2,7 +2,7 @@ import eslintPluginAstro from 'eslint-plugin-astro';
 
 export default [
   {
-    ignores: ['dist/**', '.astro/**', 'node_modules/**'],
+    ignores: ['dist/**', 'studio/dist/**', 'studio/.sanity/**', '.astro/**', 'node_modules/**', 'output/**'],
   },
-  ...eslintPluginAstro.configs.recommended,
+  ...eslintPluginAstro.configs['flat/recommended'],
 ];

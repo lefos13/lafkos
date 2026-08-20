@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { locales, type Locale } from '../../../lib/locales';
+import { getCopy } from '../../../lib/ui-copy';
+
+export function getStaticPaths() { return locales.map((locale) => ({ params: { locale }, props: { locale } })); }
+const { locale } = Astro.props as { locale: Locale };
+const ui = getCopy(locale);
+---
+<BaseLayout locale={locale} title={ui.visitTitle} description={ui.visitIntro}>
+  <section class="prose-section container">
+    <p class="eyebrow">{ui.navVisit}</p><h1 class="page-title">{ui.visitTitle}</h1><p class="lede">{ui.visitIntro}</p>
+    <div class="prose-layout" style="margin-top: 4rem;">
+      <aside><p class="eyebrow">{locale === 'el' ? 'Μικρός κώδικας' : 'A small code'}</p></aside>
+      <div class="prose-copy">
+        <h2 class="section-title">{locale === 'el' ? 'Έλα με χρόνο.' : 'Bring time.'}</h2>
+        <p>{locale === 'el' ? 'Οι δρόμοι, οι αυλές και οι θέες του Λαύκου αποκαλύπτονται καλύτερα όταν δεν κυνηγάς μια λίστα. Άφησε το αυτοκίνητο όπου επιτρέπεται και περπάτησε με άνετα παπούτσια.' : 'Lafkos reveals itself best when you are not chasing a checklist. Park where permitted and bring comfortable shoes for stone lanes and steps.'}</p>
+        <h2 class="section-title">{locale === 'el' ? 'Σεβάσου τον οικισμό.' : 'Respect the settlement.'}</h2>
+        <p>{locale === 'el' ? 'Οι δρόμοι είναι και κατοικίες. Κράτησε χαμηλό τον θόρυβο, μην φωτογραφίζεις ιδιωτικούς χώρους χωρίς άδεια και άφησε τις εισόδους ελεύθερες.' : 'The lanes are also people’s homes. Keep noise low, do not photograph private spaces without permission, and keep entrances clear.'}</p>
+        <h2 class="section-title">{locale === 'el' ? 'Έλεγξε τις συνθήκες.' : 'Check conditions.'}</h2>
+        <p>{locale === 'el' ? 'Οι διαδρομές του οδηγού δεν είναι πλοήγηση. Έλεγξε τον καιρό, το φως και την κατάσταση του μονοπατιού πριν ξεκινήσεις.' : 'Routes in this guide are not navigation. Check weather, daylight, and trail conditions before setting out.'}</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

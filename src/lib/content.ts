@@ -31,7 +31,7 @@ export const polygonSchema = z.object({
 });
 
 export const imageSchema = z.object({
-  src: z.string().url(),
+  src: z.url(),
   alt: z.string().min(1).max(240),
   credit: z.string().min(1),
   license: z.string().min(1),
@@ -39,7 +39,7 @@ export const imageSchema = z.object({
 
 export const sourceSchema = z.object({
   label: z.string().min(1),
-  url: z.string().url(),
+  url: z.url(),
 });
 
 export const geometrySchema = z.union([pointSchema, lineStringSchema, polygonSchema]);

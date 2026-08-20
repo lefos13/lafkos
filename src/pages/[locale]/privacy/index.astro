@@ -1,0 +1,10 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { locales, type Locale } from '../../../lib/locales';
+import { getCopy } from '../../../lib/ui-copy';
+export function getStaticPaths() { return locales.map((locale) => ({ params: { locale }, props: { locale } })); }
+const { locale } = Astro.props as { locale: Locale }; const ui = getCopy(locale);
+---
+<BaseLayout locale={locale} title={ui.privacyTitle} description={ui.privacyTitle}>
+  <section class="prose-section container"><p class="eyebrow">{ui.privacyTitle}</p><h1 class="page-title">{ui.privacyTitle}</h1><div class="prose-layout" style="margin-top: 4rem;"><aside><p class="eyebrow">{locale === 'el' ? 'Απλά και καθαρά' : 'Simple and clear'}</p></aside><div class="prose-copy"><p>{locale === 'el' ? 'Το Lafkos Guide δεν ζητά λογαριασμό και δεν αποθηκεύει τη θέση σου. Το GPS ενεργοποιείται μόνο όταν το επιλέξεις και χρησιμοποιείται στον browser για να μετακινήσει τον χάρτη.' : 'Lafkos Guide does not require an account and does not store your location. GPS is activated only when you choose it and is used in the browser to move the map.'}</p><p>{locale === 'el' ? 'Τα στατιστικά επισκεψιμότητας, όταν ενεργοποιηθούν, θα χρησιμοποιούν privacy-first εργαλεία χωρίς διαφημιστικά cookies. Οι εξωτερικές εικόνες, χάρτες και σύνδεσμοι έχουν τις δικές τους πολιτικές.' : 'When analytics are enabled, they will use privacy-first tools without advertising cookies. External images, maps, and links have their own policies.'}</p></div></div></section>
+</BaseLayout>

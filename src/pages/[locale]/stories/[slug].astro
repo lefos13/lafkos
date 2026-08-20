@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import SeedNotice from '../../../components/SeedNotice.astro';
+import { findStory } from '../../../lib/content-api';
+import { stories } from '../../../data/content';
+import { locales, otherLocale, type Locale } from '../../../lib/locales';
+import { getCopy } from '../../../lib/ui-copy';
+
+export function getStaticPaths() {
+  return locales.flatMap((locale) =>
+    stories.map((story) => ({
+      params: { locale, slug: story.slug[locale] },
+      props: { locale, story },
+    })),
+  );
+}
+const { locale, story } = Astro.props as { locale: Locale; story: NonNullable<ReturnType<typeof findStory>> };
+const ui = getCopy(locale);
+---
+<BaseLayout locale={locale} title={story.title[locale]} description={story.summary[locale]} image={story.image.src} alternateHref={`/${otherLocale(locale)}/stories/${story.slug[otherLocale(locale)]}`}>
+  <article class="container">
+    <div class="detail-hero">
+      <div class="detail-media"><img src={story.image.src} alt={story.image.alt} /></div>
+      <div class="detail-copy"><p class="eyebrow">{story.eyebrow[locale]}</p><h1 class="page-title">{story.title[locale]}</h1><p class="lede">{story.summary[locale]}</p>{story.isSeed && <SeedNotice locale={locale} />}</div>
+    </div>
+    <div class="prose-layout prose-section"><aside><p class="eyebrow">{ui.stories}</p></aside><div class="prose-copy">{story.body[locale].map((paragraph) => <p>{paragraph}</p>)}<h2 class="section-title">{ui.sources}</h2><ul class="source-list">{story.sources.map((item) => <li><a href={item.url} rel="noreferrer">{item.label} ↗</a></li>)}</ul></div></div>
+  </article>
+</BaseLayout>
