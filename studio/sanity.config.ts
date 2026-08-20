@@ -8,6 +8,7 @@ import { visionTool } from '@sanity/vision';
 import { defineConfig } from 'sanity';
 import { structureTool } from 'sanity/structure';
 import { schema } from './schemaTypes';
+import { structure } from './structure';
 
 export default defineConfig({
   name: 'lafkos-guide',
@@ -15,7 +16,7 @@ export default defineConfig({
   projectId: process.env.PUBLIC_SANITY_PROJECT_ID ?? 'replace-with-project-id',
   dataset: process.env.PUBLIC_SANITY_DATASET ?? 'production',
   plugins: [
-    structureTool(),
+    structureTool({ structure }),
     visionTool(),
     documentInternationalization({
       supportedLanguages: [
