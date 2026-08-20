@@ -15,20 +15,50 @@ export function getStaticPaths() {
     })),
   );
 }
-const { locale, trail } = Astro.props as { locale: Locale; trail: NonNullable<ReturnType<typeof findTrail>> };
+const { locale, trail } = Astro.props as {
+  locale: Locale;
+  trail: NonNullable<ReturnType<typeof findTrail>>;
+};
 const ui = getCopy(locale);
 const category = categories.find((item) => item.id === 'trail');
 ---
-<BaseLayout locale={locale} title={trail.title[locale]} description={trail.summary[locale]} image={trail.waypoints[0]?.image?.src} alternateHref={`/${otherLocale(locale)}/trails/${trail.slug[otherLocale(locale)]}`}>
+
+<BaseLayout
+  locale={locale}
+  title={trail.title[locale]}
+  description={trail.summary[locale]}
+  image={trail.waypoints[0]?.image?.src}
+  alternateHref={`/${otherLocale(locale)}/trails/${trail.slug[otherLocale(locale)]}`}
+>
   <article class="container">
     <div class="detail-hero">
-      <div class="detail-media"><img src={trail.waypoints[0]?.image?.src ?? 'https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=1400&q=82'} alt={trail.waypoints[0]?.image?.alt ?? trail.title[locale]} /></div>
+      <div class="detail-media">
+        <img
+          src={trail.waypoints[0]?.image?.src ??
+            'https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=1400&q=82'}
+          alt={trail.waypoints[0]?.image?.alt ?? trail.title[locale]}
+        />
+      </div>
       <div class="detail-copy">
         <p class="eyebrow">{category?.label[locale]} · {trail.eyebrow[locale]}</p>
         <h1 class="page-title">{trail.title[locale]}</h1>
         <p class="lede">{trail.summary[locale]}</p>
-        <div class="detail-meta"><span class="meta-pill">⌁ {formatDistance(trail.distanceMeters, locale)} {ui.distance}</span><span class="meta-pill">◷ {trail.durationMinutes}′ {ui.duration}</span><span class="meta-pill">↟ {trail.elevationGainMeters} m {ui.elevation}</span><span class="meta-pill">{ui[trail.difficulty]}</span></div>
-        <div class="hero-actions"><a class="button button-primary" href={`/${locale}/map?trail=${trail.entityKey}`}>{ui.openMap} <span aria-hidden="true">↗</span></a><a class="button button-secondary" href={`https://www.openstreetmap.org/?mlat=${trail.geometry.coordinates[0][1]}&mlon=${trail.geometry.coordinates[0][0]}#map=16/${trail.geometry.coordinates[0][1]}/${trail.geometry.coordinates[0][0]}`} rel="noreferrer">{ui.directions}</a></div>
+        <div class="detail-meta">
+          <span class="meta-pill"
+            >⌁ {formatDistance(trail.distanceMeters, locale)} {ui.distance}</span
+          ><span class="meta-pill">◷ {trail.durationMinutes}′ {ui.duration}</span><span
+            class="meta-pill">↟ {trail.elevationGainMeters} m {ui.elevation}</span
+          ><span class="meta-pill">{ui[trail.difficulty]}</span>
+        </div>
+        <div class="hero-actions">
+          <a class="button button-primary" href={`/${locale}/map?trail=${trail.entityKey}`}
+            >{ui.openMap} <span aria-hidden="true">↗</span></a
+          ><a
+            class="button button-secondary"
+            href={`https://www.openstreetmap.org/?mlat=${trail.geometry.coordinates[0][1]}&mlon=${trail.geometry.coordinates[0][0]}#map=16/${trail.geometry.coordinates[0][1]}/${trail.geometry.coordinates[0][0]}`}
+            rel="noreferrer">{ui.directions}</a
+          >
+        </div>
         {trail.isSeed && <SeedNotice locale={locale} />}
       </div>
     </div>
@@ -38,9 +68,35 @@ const category = categories.find((item) => item.id === 'trail');
         {trail.body[locale].map((paragraph) => <p>{paragraph}</p>)}
         <ul>{trail.safety[locale].map((item) => <li>{item}</li>)}</ul>
         <h2 class="section-title">{locale === 'el' ? 'Σημεία στη διαδρομή' : 'Waypoints'}</h2>
-        {trail.waypoints.map((waypoint) => <div class="story-card" style="margin: 1rem 0;"><div class="story-card-copy"><p class="eyebrow">{waypoint.title[locale]}</p><p>{waypoint.coordinate[1].toFixed(4)}, {waypoint.coordinate[0].toFixed(4)}</p></div>{waypoint.image && <img src={waypoint.image.src} alt={waypoint.image.alt} loading="lazy" />}</div>)}
+        {
+          trail.waypoints.map((waypoint) => (
+            <div class="story-card" style="margin: 1rem 0;">
+              <div class="story-card-copy">
+                <>
+                  <p class="eyebrow">{waypoint.title[locale]}</p>
+                  <p>
+                    {waypoint.coordinate[1].toFixed(4)}, {waypoint.coordinate[0].toFixed(4)}
+                  </p>
+                </>
+              </div>
+              {waypoint.image && (
+                <img src={waypoint.image.src} alt={waypoint.image.alt} loading="lazy" />
+              )}
+            </div>
+          ))
+        }
         <h2 class="section-title">{ui.sources}</h2>
-        <ul class="source-list">{trail.sources.map((item) => <li><a href={item.url} rel="noreferrer">{item.label} ↗</a></li>)}</ul>
+        <ul class="source-list">
+          {
+            trail.sources.map((item) => (
+              <li>
+                <a href={item.url} rel="noreferrer">
+                  {item.label} ↗
+                </a>
+              </li>
+            ))
+          }
+        </ul>
       </div>
     </div>
   </article>

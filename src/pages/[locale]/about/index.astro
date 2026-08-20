@@ -20,38 +20,56 @@ const ui = getCopy(locale);
     <div class="prose-layout" style="margin-top: 4rem;">
       <aside>
         <p class="eyebrow">{locale === 'el' ? 'Η Φιλοσοφία' : 'Our Philosophy'}</p>
-        <p class="meta-pill" style="margin-top: 0.8rem;">{locale === 'el' ? 'Ανοιχτά Δεδομένα' : 'Open Data'}</p>
+        <p class="meta-pill" style="margin-top: 0.8rem;">
+          {locale === 'el' ? 'Ανοιχτά Δεδομένα' : 'Open Data'}
+        </p>
         <p class="meta-pill">{locale === 'el' ? 'Τοπική Τεκμηρίωση' : 'Local Documentation'}</p>
         <p class="meta-pill">{locale === 'el' ? 'Προστασία Ιδιωτικότητας' : 'Privacy First'}</p>
       </aside>
 
       <div class="prose-copy">
-        <h2 class="section-title">{locale === 'el' ? 'Η Πρόθεση του Οδηγού' : 'The Purpose of This Guide'}</h2>
+        <h2 class="section-title">
+          {locale === 'el' ? 'Η Πρόθεση του Οδηγού' : 'The Purpose of This Guide'}
+        </h2>
         <p>
-          {locale === 'el'
-            ? 'Το Lafkos Guide δημιουργήθηκε ως ένα σύγχρονο, ανεξάρτητο και δίγλωσσο ψηφιακό αρχείο για τον Λαύκο και το Νότιο Πήλιο. Στόχος του είναι να συνδέσει τη γεωγραφική ακρίβεια του χάρτη με την ιστορική μνήμη, την αρχιτεκτονική κληρονομιά και την αυθεντική εμπειρία του τόπου.'
-            : 'Lafkos Guide is an independent, bilingual digital cultural repository dedicated to Lafkos and South Pelion. Its mission is to bridge geographic cartographic precision with living memory, architectural heritage, and authentic local experience.'}
+          {
+            locale === 'el'
+              ? 'Το Lafkos Guide δημιουργήθηκε ως ένα σύγχρονο, ανεξάρτητο και δίγλωσσο ψηφιακό αρχείο για τον Λαύκο και το Νότιο Πήλιο. Στόχος του είναι να συνδέσει τη γεωγραφική ακρίβεια του χάρτη με την ιστορική μνήμη, την αρχιτεκτονική κληρονομιά και την αυθεντική εμπειρία του τόπου.'
+              : 'Lafkos Guide is an independent, bilingual digital cultural repository dedicated to Lafkos and South Pelion. Its mission is to bridge geographic cartographic precision with living memory, architectural heritage, and authentic local experience.'
+          }
         </p>
 
-        <h2 class="section-title">{locale === 'el' ? 'Χαρτογραφία & Ακρίβεια Σημείων' : 'Cartography & Spatial Accuracy'}</h2>
+        <h2 class="section-title">
+          {locale === 'el' ? 'Χαρτογραφία & Ακρίβεια Σημείων' : 'Cartography & Spatial Accuracy'}
+        </h2>
         <p>
-          {locale === 'el'
-            ? 'Κάθε σημείο ενδιαφέροντος, κρήνη, μνημείο και πεζοπορική διαδρομή έχει ελεγχθεί και αντιστοιχιστεί σε πραγματικές γεωγραφικές συντεταγμένες βασισμένες σε δεδομένα πεδίου, ιστορικές πηγές και το OpenStreetMap. Ο διαδραστικός χάρτης λειτουργεί αυτόνομα, χωρίς ιχνηλάτες ή εμπορικές διαφημίσεις, επιτρέποντας την απρόσκοπτη πλοήγηση από υπολογιστή ή κινητό.'
-            : 'Every point of interest, historic spring, monument, and hiking trail is mapped to verified real-world geographic coordinates corroborated with field data, historical documentation, and OpenStreetMap. The interactive vector map operates autonomously without tracking or commercial advertisements, ensuring fast, accessible browsing across all devices.'}
+          {
+            locale === 'el'
+              ? 'Κάθε σημείο ενδιαφέροντος, κρήνη, μνημείο και πεζοπορική διαδρομή έχει ελεγχθεί και αντιστοιχιστεί σε πραγματικές γεωγραφικές συντεταγμένες βασισμένες σε δεδομένα πεδίου, ιστορικές πηγές και το OpenStreetMap. Ο διαδραστικός χάρτης λειτουργεί αυτόνομα, χωρίς ιχνηλάτες ή εμπορικές διαφημίσεις, επιτρέποντας την απρόσκοπτη πλοήγηση από υπολογιστή ή κινητό.'
+              : 'Every point of interest, historic spring, monument, and hiking trail is mapped to verified real-world geographic coordinates corroborated with field data, historical documentation, and OpenStreetMap. The interactive vector map operates autonomously without tracking or commercial advertisements, ensuring fast, accessible browsing across all devices.'
+          }
         </p>
 
-        <h2 class="section-title">{locale === 'el' ? 'Πηγές & Κοινοτική Συνεργασία' : 'Sources & Community Partnership'}</h2>
+        <h2 class="section-title">
+          {locale === 'el' ? 'Πηγές & Κοινοτική Συνεργασία' : 'Sources & Community Partnership'}
+        </h2>
         <p>
-          {locale === 'el'
-            ? 'Η καταγραφή αντλεί στοιχεία από τοπικούς φορείς, όπως τον Πολιτιστικό Σύλλογο Λαυκιωτών «Η Δράση», τις μελέτες του Κίτσου Μακρή για την πηλιορείτικη λαϊκή τέχνη και αρχιτεκτονική, το δίκτυο μονοπατιών Pelion Routes / Topoguide, καθώς και από προφορικές μαρτυρίες των ανθρώπων του χωριού.'
-            : 'Our documentation draws from local cultural organizations including the Cultural Association of Lafkos "I Drasi", architectural research on Pelion folk art by Kitsos Makris, the regional trail network of Pelion Routes / Topoguide, and oral histories shared by village elders.'}
+          {
+            locale === 'el'
+              ? 'Η καταγραφή αντλεί στοιχεία από τοπικούς φορείς, όπως τον Πολιτιστικό Σύλλογο Λαυκιωτών «Η Δράση», τις μελέτες του Κίτσου Μακρή για την πηλιορείτικη λαϊκή τέχνη και αρχιτεκτονική, το δίκτυο μονοπατιών Pelion Routes / Topoguide, καθώς και από προφορικές μαρτυρίες των ανθρώπων του χωριού.'
+              : 'Our documentation draws from local cultural organizations including the Cultural Association of Lafkos "I Drasi", architectural research on Pelion folk art by Kitsos Makris, the regional trail network of Pelion Routes / Topoguide, and oral histories shared by village elders.'
+          }
         </p>
 
-        <h2 class="section-title">{locale === 'el' ? 'Ιδιωτικότητα & Βιωσιμότητα' : 'Privacy & Digital Sustainability'}</h2>
+        <h2 class="section-title">
+          {locale === 'el' ? 'Ιδιωτικότητα & Βιωσιμότητα' : 'Privacy & Digital Sustainability'}
+        </h2>
         <p>
-          {locale === 'el'
-            ? 'Η πλατφόρμα είναι σχεδιασμένη με σεβασμό στην ιδιωτικότητα: δεν συλλέγει προσωπικά δεδομένα, δεν χρησιμοποιεί cookies παρακολούθησης και δεν καταγράφει τη γεωγραφική σας θέση. Είναι ελαφριά, γρήγορη και φιλική προς το περιβάλλον, με ελάχιστο ψηφιακό αποτύπωμα άνθρακα.'
-            : 'The platform is built with strict privacy guarantees: zero personal data collection, no tracking cookies, and no retention of your device geolocation. Engineered for speed and efficiency, it maintains an ultra-low carbon digital footprint.'}
+          {
+            locale === 'el'
+              ? 'Η πλατφόρμα είναι σχεδιασμένη με σεβασμό στην ιδιωτικότητα: δεν συλλέγει προσωπικά δεδομένα, δεν χρησιμοποιεί cookies παρακολούθησης και δεν καταγράφει τη γεωγραφική σας θέση. Είναι ελαφριά, γρήγορη και φιλική προς το περιβάλλον, με ελάχιστο ψηφιακό αποτύπωμα άνθρακα.'
+              : 'The platform is built with strict privacy guarantees: zero personal data collection, no tracking cookies, and no retention of your device geolocation. Engineered for speed and efficiency, it maintains an ultra-low carbon digital footprint.'
+          }
         </p>
       </div>
     </div>

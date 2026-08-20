@@ -15,11 +15,13 @@ interface Props {
 const { locale, title, description, image, darkHeader = false, alternateHref } = Astro.props;
 const ui = getCopy(locale);
 const alternateLocale = otherLocale(locale);
-const alternatePath = alternateHref ?? Astro.url.pathname.replace(`/${locale}`, `/${alternateLocale}`);
+const alternatePath =
+  alternateHref ?? Astro.url.pathname.replace(`/${locale}`, `/${alternateLocale}`);
 const siteUrl = Astro.site ?? new URL('https://lafkos.guide');
 const canonical = new URL(Astro.url.pathname, siteUrl).toString();
 const socialImage = image ?? new URL('/icons/icon-512.svg', siteUrl).toString();
 ---
+
 <!doctype html>
 <html lang={locale}>
   <head>
@@ -60,7 +62,9 @@ const socialImage = image ?? new URL('/icons/icon-512.svg', siteUrl).toString();
       <footer class="site-footer">
         <div class="container footer-inner">
           <div>
-            <a class="brand" href={`/${locale}/`}><span class="brand-mark" aria-hidden="true">λ</span><span>Lafkos Guide</span></a>
+            <a class="brand" href={`/${locale}/`}
+              ><span class="brand-mark" aria-hidden="true">λ</span><span>Lafkos Guide</span></a
+            >
             <p class="footer-copy">{ui.footer}</p>
           </div>
           <nav class="footer-links" aria-label={ui.footerNav}>
@@ -72,15 +76,11 @@ const socialImage = image ?? new URL('/icons/icon-512.svg', siteUrl).toString();
         </div>
       </footer>
     </div>
-    {import.meta.env.PROD ? (
-      <script is:inline>
-        if ('serviceWorker' in navigator) {
+    <script define:vars={{ isProd: import.meta.env.PROD }} is:inline>
+      if ('serviceWorker' in navigator) {
+        if (isProd) {
           navigator.serviceWorker.register('/sw.js').catch(() => undefined);
-        }
-      </script>
-    ) : (
-      <script is:inline>
-        if ('serviceWorker' in navigator) {
+        } else {
           navigator.serviceWorker.getRegistrations().then((registrations) => {
             for (const registration of registrations) {
               registration.unregister();
@@ -94,7 +94,7 @@ const socialImage = image ?? new URL('/icons/icon-512.svg', siteUrl).toString();
             });
           }
         }
-      </script>
-    )}
+      }
+    </script>
   </body>
 </html>

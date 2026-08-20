@@ -5,10 +5,26 @@
  */
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { addProtocol, Map as MapLibreMap, Marker as MapMarker, NavigationControl, Popup as MapLibrePopup, removeProtocol, type GeoJSONSource, type MapMouseEvent, type StyleSpecification } from 'maplibre-gl';
+import {
+  addProtocol,
+  Map as MapLibreMap,
+  Marker as MapMarker,
+  NavigationControl,
+  Popup as MapLibrePopup,
+  removeProtocol,
+  type GeoJSONSource,
+  type MapMouseEvent,
+  type StyleSpecification,
+} from 'maplibre-gl';
 import { Protocol } from 'pmtiles';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import type { Category, MapData, MapFeature, MapFeatureProperties } from '../lib/content';
+import type {
+  Category,
+  Coordinate,
+  MapData,
+  MapFeature,
+  MapFeatureProperties,
+} from '../lib/content';
 import type { Locale } from '../lib/locales';
 import { parseMapState, serializeMapState, type MapState } from '../lib/map-state';
 import { getCopy } from '../lib/ui-copy';
@@ -24,7 +40,8 @@ interface Props {
 type MapStatus = 'idle' | 'loading' | 'ready' | 'error';
 const defaultCenter: [number, number] = [23.24665, 39.17795];
 const defaultZoom = 13.6;
-const mapStyleUrl = import.meta.env.PUBLIC_MAP_STYLE_URL || 'https://tiles.openfreemap.org/styles/liberty';
+const mapStyleUrl =
+  import.meta.env.PUBLIC_MAP_STYLE_URL || 'https://tiles.openfreemap.org/styles/liberty';
 
 function featureCollection(features: MapFeature[]) {
   return { type: 'FeatureCollection', features } as const;
@@ -44,11 +61,21 @@ function sanitizeFilter(expr: unknown): unknown {
       const op = expr[0];
       const left = expr[1];
       const right = expr[2];
-      if (Array.isArray(left) && left.length === 2 && left[0] === 'get' && typeof right === 'number') {
+      if (
+        Array.isArray(left) &&
+        left.length === 2 &&
+        left[0] === 'get' &&
+        typeof right === 'number'
+      ) {
         const fallback = op === '<=' || op === '<' ? 999999 : -999999;
         return [op, ['to-number', left, fallback], right];
       }
-      if (typeof left === 'number' && Array.isArray(right) && right.length === 2 && right[0] === 'get') {
+      if (
+        typeof left === 'number' &&
+        Array.isArray(right) &&
+        right.length === 2 &&
+        right[0] === 'get'
+      ) {
         const fallback = op === '<=' || op === '<' ? -999999 : 999999;
         return [op, left, ['to-number', right, fallback]];
       }
@@ -65,17 +92,37 @@ function sanitizeFilter(expr: unknown): unknown {
   return expr;
 }
 
+function isNativePoiOrLegacyPlaceLayer(layer: StyleSpecification['layers'][number]): boolean {
+  const id = layer.id || '';
+  const sourceLayer = (layer as { 'source-layer'?: string })['source-layer'] || '';
+  if (sourceLayer === 'poi' || sourceLayer === 'poi_label' || sourceLayer === 'aerodrome_label')
+    return true;
+  if (id.startsWith('poi_') || id.includes('poi') || id === 'airport') return true;
+  if (
+    sourceLayer === 'place' &&
+    (id === 'label_other' ||
+      id.includes('neighbourhood') ||
+      id.includes('suburb') ||
+      id.includes('hamlet') ||
+      id.includes('quarter'))
+  )
+    return true;
+  return false;
+}
+
 function sanitizeStyle(style: StyleSpecification): StyleSpecification {
   if (!style || !Array.isArray(style.layers)) return style;
   return {
     ...style,
-    layers: style.layers.map((layer) => {
-      if (!('filter' in layer) || !layer.filter) return layer;
-      return {
-        ...layer,
-        filter: sanitizeFilter(layer.filter) as never,
-      };
-    }),
+    layers: style.layers
+      .filter((layer) => !isNativePoiOrLegacyPlaceLayer(layer))
+      .map((layer) => {
+        if (!('filter' in layer) || !layer.filter) return layer;
+        return {
+          ...layer,
+          filter: sanitizeFilter(layer.filter) as never,
+        };
+      }),
   };
 }
 
@@ -86,16 +133,56 @@ function buildPmtilesStyle(url: string): StyleSpecification {
     sources: { protomaps: { type: 'vector', url: `pmtiles://${url}` } },
     layers: [
       { id: 'background', type: 'background', paint: { 'background-color': '#e8e3d8' } },
-      { id: 'landuse', type: 'fill', source: 'protomaps', 'source-layer': 'landuse', paint: { 'fill-color': '#dce1d4', 'fill-opacity': 0.75 } },
-      { id: 'water', type: 'fill', source: 'protomaps', 'source-layer': 'water', paint: { 'fill-color': '#b7d9d4' } },
-      { id: 'roads', type: 'line', source: 'protomaps', 'source-layer': 'roads', paint: { 'line-color': '#c6b9a5', 'line-width': ['interpolate', ['linear'], ['zoom'], 10, 0.4, 15, 2] } },
-      { id: 'buildings', type: 'fill', source: 'protomaps', 'source-layer': 'buildings', paint: { 'fill-color': '#e4d8c8', 'fill-opacity': 0.75 } },
-      { id: 'places', type: 'symbol', source: 'protomaps', 'source-layer': 'places', layout: { 'text-field': ['get', 'name'], 'text-size': 12 }, paint: { 'text-color': '#40534e', 'text-halo-color': '#f4efe4', 'text-halo-width': 1 } },
+      {
+        id: 'landuse',
+        type: 'fill',
+        source: 'protomaps',
+        'source-layer': 'landuse',
+        paint: { 'fill-color': '#dce1d4', 'fill-opacity': 0.75 },
+      },
+      {
+        id: 'water',
+        type: 'fill',
+        source: 'protomaps',
+        'source-layer': 'water',
+        paint: { 'fill-color': '#b7d9d4' },
+      },
+      {
+        id: 'roads',
+        type: 'line',
+        source: 'protomaps',
+        'source-layer': 'roads',
+        paint: {
+          'line-color': '#c6b9a5',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 10, 0.4, 15, 2],
+        },
+      },
+      {
+        id: 'buildings',
+        type: 'fill',
+        source: 'protomaps',
+        'source-layer': 'buildings',
+        paint: { 'fill-color': '#e4d8c8', 'fill-opacity': 0.75 },
+      },
+      {
+        id: 'places',
+        type: 'symbol',
+        source: 'protomaps',
+        'source-layer': 'places',
+        layout: { 'text-field': ['get', 'name'], 'text-size': 12 },
+        paint: { 'text-color': '#40534e', 'text-halo-color': '#f4efe4', 'text-halo-width': 1 },
+      },
     ],
   });
 }
 
-export default function MapExplorer({ locale, mapData, categories, initialState, compact = false }: Props) {
+export default function MapExplorer({
+  locale,
+  mapData,
+  categories,
+  initialState,
+  compact = false,
+}: Props) {
   const ui = getCopy(locale);
   const containerRef = useRef<HTMLElement>(null);
   const mapElement = useRef<HTMLDivElement>(null);
@@ -120,8 +207,13 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
   const visibleFeatures = useMemo(() => {
     const query = search.trim().toLocaleLowerCase(locale === 'el' ? 'el-GR' : 'en-GB');
     return allFeatures.filter((feature) => {
-      const categoryMatch = state.categories.length === 0 || state.categories.includes(feature.properties.category);
-      const textMatch = !query || `${feature.properties.title} ${feature.properties.summary}`.toLocaleLowerCase().includes(query);
+      const categoryMatch =
+        state.categories.length === 0 || state.categories.includes(feature.properties.category);
+      const textMatch =
+        !query ||
+        `${feature.properties.title} ${feature.properties.summary}`
+          .toLocaleLowerCase()
+          .includes(query);
       return categoryMatch && textMatch;
     });
   }, [allFeatures, locale, search, state.categories]);
@@ -129,18 +221,35 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
   function writeState(next: MapState) {
     setState(next);
     if (typeof window !== 'undefined') {
-      window.history.replaceState(null, '', `${window.location.pathname}${serializeMapState(next)}`);
+      window.history.replaceState(
+        null,
+        '',
+        `${window.location.pathname}${serializeMapState(next)}`,
+      );
     }
   }
 
   function selectFeature(feature: MapFeature, scrollList = false) {
     setSelected(feature);
-    const next = { ...state, place: feature.properties.kind === 'place' ? feature.properties.entityKey : undefined, trail: feature.properties.kind === 'trail' ? feature.properties.entityKey : undefined };
+    const next = {
+      ...state,
+      place: feature.properties.kind === 'place' ? feature.properties.entityKey : undefined,
+      trail: feature.properties.kind === 'trail' ? feature.properties.entityKey : undefined,
+    };
     writeState(next);
     if (mapRef.current) {
       const geometry = feature.geometry;
-      const coordinates = geometry.type === 'Point' ? geometry.coordinates : geometry.type === 'LineString' ? geometry.coordinates[0] : geometry.coordinates[0][0];
-      mapRef.current.flyTo({ center: coordinates, zoom: Math.max(mapRef.current.getZoom(), 15), duration: 650 });
+      const coordinates =
+        geometry.type === 'Point'
+          ? geometry.coordinates
+          : geometry.type === 'LineString'
+            ? geometry.coordinates[0]
+            : geometry.coordinates[0][0];
+      mapRef.current.flyTo({
+        center: coordinates,
+        zoom: Math.max(mapRef.current.getZoom(), 15),
+        duration: 650,
+      });
     }
     if (scrollList && listRef.current) {
       const list = listRef.current;
@@ -180,7 +289,11 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
     setLocationState('locating');
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        mapRef.current?.flyTo({ center: [position.coords.longitude, position.coords.latitude], zoom: 16, duration: 850 });
+        mapRef.current?.flyTo({
+          center: [position.coords.longitude, position.coords.latitude],
+          zoom: 16,
+          duration: 850,
+        });
         setLocationState('idle');
       },
       () => setLocationState('denied'),
@@ -246,42 +359,79 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
     const mapOptions = {
       container: mapElement.current,
       style: pmtilesUrl ? buildPmtilesStyle(pmtilesUrl) : mapStyleUrl,
-      transformStyle: (_prev: StyleSpecification | undefined, next: StyleSpecification | undefined) =>
-        next ? sanitizeStyle(next) : (next as unknown as StyleSpecification),
+      transformStyle: (
+        _prev: StyleSpecification | undefined,
+        next: StyleSpecification | undefined,
+      ) => (next ? sanitizeStyle(next) : (next as unknown as StyleSpecification)),
       center: initialState?.view?.center ?? defaultCenter,
       zoom: initialState?.view?.zoom ?? defaultZoom,
-      maxBounds: [[23.08, 39.04], [23.42, 39.32]],
+      maxBounds: [
+        [23.08, 39.04],
+        [23.42, 39.32],
+      ],
       cooperativeGestures: true,
     };
     const map = new MapLibreMap(mapOptions as never);
     /* The map is created while Astro/React is hydrating and the surrounding
      * grid may still be resolving its final height. Keep the WebGL canvas in
      * sync with that layout so it cannot remain at MapLibre's 300px fallback. */
-    const resizeObserver = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => map.resize()) : undefined;
+    const resizeObserver =
+      typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => map.resize()) : undefined;
     resizeObserver?.observe(mapElement.current);
     requestAnimationFrame(() => map.resize());
     setTimeout(() => map.resize(), 120);
     map.addControl(new NavigationControl({ showCompass: true }), 'top-right');
-    map.on('error', () => {
-      if (!map.isStyleLoaded()) {
-        setStatus('error');
-      }
-    });
     map.once('load', () => {
       setStatus('ready');
       map.resize();
-      map.addSource('lafkos-places', { type: 'geojson', data: featureCollection(mapData.places) as never });
-      map.addSource('lafkos-trails', { type: 'geojson', data: featureCollection(mapData.trails) as never });
-      map.addLayer({ id: 'lafkos-trails-casing', type: 'line', source: 'lafkos-trails', paint: { 'line-color': '#f7f0df', 'line-width': 6, 'line-opacity': 0.88 } });
-      map.addLayer({ id: 'lafkos-trails-line', type: 'line', source: 'lafkos-trails', paint: { 'line-color': '#b9654a', 'line-width': 3, 'line-dasharray': [1, 1.5] } });
+
+      // Remove any legacy native POI, transit, and micro-place layers
+      const styleLayers = map.getStyle().layers || [];
+      styleLayers.forEach((layer) => {
+        if (isNativePoiOrLegacyPlaceLayer(layer as StyleSpecification['layers'][number])) {
+          try {
+            if (map.getLayer(layer.id)) map.removeLayer(layer.id);
+          } catch {
+            // Ignore
+          }
+        }
+      });
+
+      map.addSource('lafkos-places', {
+        type: 'geojson',
+        data: featureCollection(mapData.places) as never,
+      });
+      map.addSource('lafkos-trails', {
+        type: 'geojson',
+        data: featureCollection(mapData.trails) as never,
+      });
+      map.addLayer({
+        id: 'lafkos-trails-casing',
+        type: 'line',
+        source: 'lafkos-trails',
+        paint: { 'line-color': '#f7f0df', 'line-width': 6, 'line-opacity': 0.88 },
+      });
+      map.addLayer({
+        id: 'lafkos-trails-line',
+        type: 'line',
+        source: 'lafkos-trails',
+        paint: { 'line-color': '#b9654a', 'line-width': 3, 'line-dasharray': [1, 1.5] },
+      });
       map.on('click', 'lafkos-trails-line', (event: MapMouseEvent) => {
-        const feature = map.queryRenderedFeatures(event.point, { layers: ['lafkos-trails-line'] })[0];
-        const match = mapDataRef.current.trails.find((trail) => trail.properties.entityKey === feature?.properties?.entityKey);
+        const feature = map.queryRenderedFeatures(event.point, {
+          layers: ['lafkos-trails-line'],
+        })[0];
+        const match = mapDataRef.current.trails.find(
+          (trail) => trail.properties.entityKey === feature?.properties?.entityKey,
+        );
         if (match) selectFeature(match, true);
       });
       map.on('moveend', () => {
         const center = map.getCenter();
-        writeState({ ...stateRef.current, view: { center: [center.lng, center.lat], zoom: map.getZoom() } });
+        writeState({
+          ...stateRef.current,
+          view: { center: [center.lng, center.lat], zoom: map.getZoom() },
+        });
       });
     });
     mapRef.current = map;
@@ -319,36 +469,256 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
     if (!map || status !== 'ready') return;
     markerRefs.current.forEach((marker) => marker.remove());
     markerRefs.current = [];
-    mapData.places.filter((feature) => feature.geometry.type === 'Point').forEach((feature) => {
-      if (state.categories.length > 0 && !state.categories.includes(feature.properties.category)) return;
-      const category = categories.find((cat) => cat.id === feature.properties.category);
-      const isSelected = selected?.properties.entityKey === feature.properties.entityKey;
-      const markerButton = document.createElement('button');
-      markerButton.type = 'button';
-      markerButton.className = `map-marker ${isSelected ? 'is-selected' : ''}`;
-      if (category?.color) {
-        markerButton.style.setProperty('--marker-bg', category.color);
-        if (!isSelected) markerButton.style.backgroundColor = category.color;
+
+    interface MarkerLabelItem {
+      key: string;
+      coordinates: Coordinate;
+      labelElem: HTMLElement;
+      title: string;
+      priority: number;
+    }
+
+    const labelItems: MarkerLabelItem[] = [];
+
+    mapData.places
+      .filter((feature) => feature.geometry.type === 'Point')
+      .forEach((feature) => {
+        if (state.categories.length > 0 && !state.categories.includes(feature.properties.category))
+          return;
+        const category = categories.find((cat) => cat.id === feature.properties.category);
+        const isSelected = selected?.properties.entityKey === feature.properties.entityKey;
+
+        const markerButton = document.createElement('button');
+        markerButton.type = 'button';
+        markerButton.className = `map-marker-btn ${isSelected ? 'is-selected' : ''}`;
+        markerButton.setAttribute('aria-label', feature.properties.title);
+
+        const pinElem = document.createElement('span');
+        pinElem.className = `map-marker ${isSelected ? 'is-selected' : ''}`;
+        if (category?.color) {
+          pinElem.style.setProperty('--marker-bg', category.color);
+          if (!isSelected) pinElem.style.backgroundColor = category.color;
+        }
+        pinElem.innerHTML = `<span aria-hidden="true">${category?.icon || '✦'}</span>`;
+
+        const labelElem = document.createElement('span');
+        labelElem.className = `map-marker-label ${isSelected ? 'is-visible' : ''}`;
+        labelElem.setAttribute('aria-hidden', 'true');
+        labelElem.textContent = feature.properties.title;
+
+        markerButton.appendChild(pinElem);
+        markerButton.appendChild(labelElem);
+
+        markerButton.addEventListener('click', () => selectFeature(feature, true));
+        const coordinates =
+          feature.geometry.type === 'Point' ? feature.geometry.coordinates : defaultCenter;
+        markerRefs.current.push(
+          new MapMarker({ element: markerButton, anchor: 'bottom' })
+            .setLngLat(coordinates)
+            .addTo(map),
+        );
+
+        labelItems.push({
+          key: feature.properties.entityKey,
+          coordinates,
+          labelElem,
+          title: feature.properties.title,
+          priority: isSelected ? 0 : 1,
+        });
+      });
+
+    if (trailVisible) {
+      mapData.waypoints.forEach((feature) => {
+        if (feature.geometry.type !== 'Point') return;
+        const isSelected = selected?.properties.entityKey === feature.properties.entityKey;
+
+        const markerButton = document.createElement('button');
+        markerButton.type = 'button';
+        markerButton.className = `map-marker-btn map-marker-btn--waypoint ${isSelected ? 'is-selected' : ''}`;
+        markerButton.setAttribute(
+          'aria-label',
+          `${feature.properties.title} — ${feature.properties.summary}`,
+        );
+
+        const pinElem = document.createElement('span');
+        pinElem.className = `map-marker map-marker--waypoint ${isSelected ? 'is-selected' : ''}`;
+        pinElem.innerHTML = '<span aria-hidden="true">●</span>';
+
+        const labelElem = document.createElement('span');
+        labelElem.className = `map-marker-label map-marker-label--waypoint ${isSelected ? 'is-visible' : ''}`;
+        labelElem.setAttribute('aria-hidden', 'true');
+        labelElem.textContent = feature.properties.title;
+
+        markerButton.appendChild(pinElem);
+        markerButton.appendChild(labelElem);
+
+        markerButton.addEventListener('click', () => setSelected(feature));
+        markerRefs.current.push(
+          new MapMarker({ element: markerButton, anchor: 'center' })
+            .setLngLat(feature.geometry.coordinates)
+            .addTo(map),
+        );
+
+        labelItems.push({
+          key: feature.properties.entityKey,
+          coordinates: feature.geometry.coordinates,
+          labelElem,
+          title: feature.properties.title,
+          priority: isSelected ? 0 : 2,
+        });
+      });
+    }
+
+    const MIN_LABEL_ZOOM = 14.6;
+
+    function updateLabels() {
+      if (!mapRef.current) return;
+      const map = mapRef.current;
+      const zoom = map.getZoom();
+      const selectedKey = selected?.properties.entityKey;
+      const container = map.getContainer();
+      const mapWidth = container.clientWidth || 800;
+      const mapHeight = container.clientHeight || 600;
+
+      if (zoom < MIN_LABEL_ZOOM) {
+        labelItems.forEach((item) => {
+          if (item.key === selectedKey) {
+            item.labelElem.dataset.placement = 'bottom';
+            item.labelElem.classList.add('is-visible');
+          } else {
+            item.labelElem.classList.remove('is-visible');
+          }
+        });
+        return;
       }
-      markerButton.setAttribute('aria-label', feature.properties.title);
-      markerButton.innerHTML = `<span aria-hidden="true">${category?.icon || '✦'}</span>`;
-      markerButton.addEventListener('click', () => selectFeature(feature, true));
-      const coordinates = feature.geometry.type === 'Point' ? feature.geometry.coordinates : defaultCenter;
-      markerRefs.current.push(new MapMarker({ element: markerButton, anchor: 'bottom' }).setLngLat(coordinates).addTo(map));
-    });
-    if (!trailVisible) return;
-    mapData.waypoints.forEach((feature) => {
-      if (feature.geometry.type !== 'Point') return;
-      const isSelected = selected?.properties.entityKey === feature.properties.entityKey;
-      const markerButton = document.createElement('button');
-      markerButton.type = 'button';
-      markerButton.className = `map-marker map-marker--waypoint ${isSelected ? 'is-selected' : ''}`;
-      markerButton.setAttribute('aria-label', `${feature.properties.title} — ${feature.properties.summary}`);
-      markerButton.innerHTML = '<span aria-hidden="true">●</span>';
-      markerButton.addEventListener('click', () => setSelected(feature));
-      markerRefs.current.push(new MapMarker({ element: markerButton, anchor: 'center' }).setLngLat(feature.geometry.coordinates).addTo(map));
-    });
-  }, [categories, mapData.places, mapData.waypoints, selected?.properties.entityKey, state.categories, status, trailVisible]);
+
+      const sorted = [...labelItems].sort((a, b) => {
+        if (a.key === selectedKey) return -1;
+        if (b.key === selectedKey) return 1;
+        return a.priority - b.priority;
+      });
+
+      // Pre-calculate screen points and pin footprints for all visible markers
+      const itemPoints: {
+        item: MarkerLabelItem;
+        point: { x: number; y: number };
+        pinBox: { x1: number; y1: number; x2: number; y2: number };
+      }[] = [];
+      const occupiedBoxes: { x1: number; y1: number; x2: number; y2: number; ownerKey?: string }[] =
+        [];
+
+      sorted.forEach((item) => {
+        const point = map.project(item.coordinates);
+        if (point.x < -60 || point.x > mapWidth + 60 || point.y < -60 || point.y > mapHeight + 60)
+          return;
+
+        const pinBox = {
+          x1: point.x - 18,
+          y1: point.y - 36,
+          x2: point.x + 18,
+          y2: point.y + 4,
+          ownerKey: item.key,
+        };
+        itemPoints.push({ item, point, pinBox });
+        occupiedBoxes.push(pinBox);
+      });
+
+      itemPoints.forEach(({ item, point }) => {
+        const labelWidth = Math.min(180, Math.max(60, item.title.length * 6.8 + 20));
+        const labelHeight = 22;
+        const padX = 8;
+        const padY = 6;
+
+        const candidates: {
+          placement: 'bottom' | 'top' | 'right' | 'left';
+          box: { x1: number; y1: number; x2: number; y2: number; ownerKey?: string };
+        }[] = [
+          {
+            placement: 'bottom',
+            box: {
+              x1: point.x - labelWidth / 2 - padX,
+              y1: point.y + 3 - padY,
+              x2: point.x + labelWidth / 2 + padX,
+              y2: point.y + labelHeight + 3 + padY,
+              ownerKey: item.key,
+            },
+          },
+          {
+            placement: 'top',
+            box: {
+              x1: point.x - labelWidth / 2 - padX,
+              y1: point.y - 38 - labelHeight - padY,
+              x2: point.x + labelWidth / 2 + padX,
+              y2: point.y - 38 + padY,
+              ownerKey: item.key,
+            },
+          },
+          {
+            placement: 'right',
+            box: {
+              x1: point.x + 18 - padX,
+              y1: point.y - 28 - padY,
+              x2: point.x + 18 + labelWidth + padX,
+              y2: point.y - 28 + labelHeight + padY,
+              ownerKey: item.key,
+            },
+          },
+          {
+            placement: 'left',
+            box: {
+              x1: point.x - 18 - labelWidth - padX,
+              y1: point.y - 28 - padY,
+              x2: point.x - 18 + padX,
+              y2: point.y - 28 + labelHeight + padY,
+              ownerKey: item.key,
+            },
+          },
+        ];
+
+        const chosen = candidates.find((cand) => {
+          return !occupiedBoxes.some((occ) => {
+            if (occ.ownerKey === item.key) return false;
+            return !(
+              cand.box.x2 < occ.x1 ||
+              cand.box.x1 > occ.x2 ||
+              cand.box.y2 < occ.y1 ||
+              cand.box.y1 > occ.y2
+            );
+          });
+        });
+
+        if (chosen) {
+          item.labelElem.dataset.placement = chosen.placement;
+          item.labelElem.classList.add('is-visible');
+          occupiedBoxes.push(chosen.box);
+        } else {
+          item.labelElem.classList.remove('is-visible');
+        }
+      });
+    }
+
+    let frameId: number | null = null;
+    function onMove() {
+      if (frameId) cancelAnimationFrame(frameId);
+      frameId = requestAnimationFrame(updateLabels);
+    }
+
+    map.on('move', onMove);
+    updateLabels();
+
+    return () => {
+      if (frameId) cancelAnimationFrame(frameId);
+      map.off('move', onMove);
+    };
+  }, [
+    categories,
+    mapData.places,
+    mapData.waypoints,
+    selected?.properties.entityKey,
+    state.categories,
+    status,
+    trailVisible,
+  ]);
 
   useEffect(() => {
     if (typeof window === 'undefined' || initialState) return;
@@ -386,7 +756,7 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
       ${selected.properties.thumbnail ? `<div class="map-popover-media"><img src="${selected.properties.thumbnail}" alt="${selected.properties.title}" /></div>` : ''}
       <div class="map-popover-body">
         <span class="map-popover-badge" style="background-color: ${category?.color || '#b66c45'}">
-          ${selected.properties.kind === 'place' ? (category?.label[locale] || '') : selected.properties.kind === 'trail' ? (locale === 'el' ? 'Διαδρομή' : 'Trail') : (locale === 'el' ? 'Στάση διαδρομής' : 'Trail stop')}
+          ${selected.properties.kind === 'place' ? category?.label[locale] || '' : selected.properties.kind === 'trail' ? (locale === 'el' ? 'Διαδρομή' : 'Trail') : locale === 'el' ? 'Στάση διαδρομής' : 'Trail stop'}
         </span>
         <h4 class="map-popover-title">${selected.properties.title}</h4>
         <p class="map-popover-summary">${selected.properties.summary}</p>
@@ -413,16 +783,35 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
   }, [categories, locale, selected, status]);
 
   return (
-    <section ref={containerRef} className={`map-explorer ${compact ? 'map-explorer--compact' : ''} ${isFullscreen ? 'is-fullscreen' : ''}`} aria-label={ui.explore}>
+    <section
+      ref={containerRef}
+      className={`map-explorer ${compact ? 'map-explorer--compact' : ''} ${isFullscreen ? 'is-fullscreen' : ''}`}
+      aria-label={ui.explore}
+    >
       <div className="map-toolbar">
         <div className="map-search-wrap">
-          <label className="sr-only" htmlFor="map-search">{ui.search}</label>
-          <input id="map-search" className="map-search" type="search" placeholder={ui.search} value={search} onChange={(event) => setSearch(event.target.value)} />
+          <label className="sr-only" htmlFor="map-search">
+            {ui.search}
+          </label>
+          <input
+            id="map-search"
+            className="map-search"
+            type="search"
+            placeholder={ui.search}
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+          />
           <span aria-hidden="true">⌕</span>
         </div>
         <div className="map-toolbar-actions">
-          <button className="location-button" type="button" onClick={requestLocation} disabled={locationState === 'locating'}>
-            <span aria-hidden="true">⌖</span> {locationState === 'locating' ? ui.locating : ui.locate}
+          <button
+            className="location-button"
+            type="button"
+            onClick={requestLocation}
+            disabled={locationState === 'locating'}
+          >
+            <span aria-hidden="true">⌖</span>{' '}
+            {locationState === 'locating' ? ui.locating : ui.locate}
           </button>
           <button
             className={`fullscreen-button ${isFullscreen ? 'is-active' : ''}`}
@@ -431,14 +820,33 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
             aria-label={isFullscreen ? ui.exitFullscreen : ui.fullscreen}
             title={isFullscreen ? ui.exitFullscreen : ui.fullscreen}
           >
-            <span aria-hidden="true">{isFullscreen ? '✕' : '⛶'}</span> {isFullscreen ? ui.exitFullscreen : ui.fullscreen}
+            <span aria-hidden="true">{isFullscreen ? '✕' : '⛶'}</span>{' '}
+            {isFullscreen ? ui.exitFullscreen : ui.fullscreen}
           </button>
         </div>
       </div>
       <div className="map-filter-row" aria-label={ui.categories}>
-        <button className={`filter-chip ${state.categories.length === 0 ? 'is-active' : ''}`} type="button" onClick={() => writeState({ ...state, categories: [] })}>{ui.all}</button>
+        <button
+          className={`filter-chip ${state.categories.length === 0 ? 'is-active' : ''}`}
+          type="button"
+          onClick={() => writeState({ ...state, categories: [] })}
+        >
+          {ui.all}
+        </button>
         {categories.map((category) => (
-          <button className={`filter-chip ${state.categories.includes(category.id) ? 'is-active' : ''}`} type="button" key={category.id} onClick={() => writeState({ ...state, categories: state.categories.includes(category.id) ? state.categories.filter((id) => id !== category.id) : [...state.categories, category.id] })}>
+          <button
+            className={`filter-chip ${state.categories.includes(category.id) ? 'is-active' : ''}`}
+            type="button"
+            key={category.id}
+            onClick={() =>
+              writeState({
+                ...state,
+                categories: state.categories.includes(category.id)
+                  ? state.categories.filter((id) => id !== category.id)
+                  : [...state.categories, category.id],
+              })
+            }
+          >
             <span aria-hidden="true">{category.icon}</span> {category.label[locale]}
           </button>
         ))}
@@ -446,14 +854,31 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
       <div className="map-grid">
         <div className="map-canvas-wrap">
           <div className="map-canvas" ref={mapElement} aria-label={ui.explore} />
-          {status === 'loading' && <div className="map-status" role="status"><span className="map-loader" /> {locale === 'el' ? 'Φόρτωση χάρτη…' : 'Loading map…'}</div>}
-          {status === 'error' && <div className="map-status map-status--error" role="status">{ui.mapFallback}</div>}
-          {locationState === 'denied' && <div className="map-location-note" role="status">{ui.locateDenied}</div>}
+          {status === 'loading' && (
+            <div className="map-status" role="status">
+              <span className="map-loader" /> {locale === 'el' ? 'Φόρτωση χάρτη…' : 'Loading map…'}
+            </div>
+          )}
+          {status === 'error' && (
+            <div className="map-status map-status--error" role="status">
+              {ui.mapFallback}
+            </div>
+          )}
+          {locationState === 'denied' && (
+            <div className="map-location-note" role="status">
+              {ui.locateDenied}
+            </div>
+          )}
           <div className="map-credit">© OpenStreetMap contributors · MapLibre</div>
         </div>
-        <aside className={`map-results ${isListHidden ? 'is-collapsed' : ''}`} aria-label={locale === 'el' ? 'Αποτελέσματα χάρτη' : 'Map results'}>
+        <aside
+          className={`map-results ${isListHidden ? 'is-collapsed' : ''}`}
+          aria-label={locale === 'el' ? 'Αποτελέσματα χάρτη' : 'Map results'}
+        >
           <div className="map-results-head">
-            <span>{visibleFeatures.length} {locale === 'el' ? 'σημεία' : 'features'}</span>
+            <span>
+              {visibleFeatures.length} {locale === 'el' ? 'σημεία' : 'features'}
+            </span>
             <div className="map-results-actions">
               <span className="map-hint">{ui.mapHint}</span>
               <button
@@ -472,16 +897,39 @@ export default function MapExplorer({ locale, mapData, categories, initialState,
               const active = selected?.properties.entityKey === feature.properties.entityKey;
               const category = categories.find((item) => item.id === feature.properties.category);
               return (
-                <article id={`map-item-${feature.properties.entityKey}`} className={`map-result ${active ? 'is-active' : ''}`} key={feature.properties.entityKey}>
-                  <button type="button" className="map-result-button" onClick={() => selectFeature(feature)}>
-                    <span className="map-result-icon" style={{ backgroundColor: category?.color }}>{feature.properties.kind === 'trail' ? '⌁' : category?.icon}</span>
-                    <span><strong>{feature.properties.title}</strong><small>{feature.properties.summary}</small></span>
+                <article
+                  id={`map-item-${feature.properties.entityKey}`}
+                  className={`map-result ${active ? 'is-active' : ''}`}
+                  key={feature.properties.entityKey}
+                >
+                  <button
+                    type="button"
+                    className="map-result-button"
+                    onClick={() => selectFeature(feature)}
+                  >
+                    <span className="map-result-icon" style={{ backgroundColor: category?.color }}>
+                      {feature.properties.kind === 'trail' ? '⌁' : category?.icon}
+                    </span>
+                    <span>
+                      <strong>{feature.properties.title}</strong>
+                      <small>{feature.properties.summary}</small>
+                    </span>
                   </button>
-                  <a className="map-result-link" href={detailUrl(locale, feature.properties)} aria-label={`${feature.properties.title} — ${locale === 'el' ? 'περισσότερα' : 'more'}`}>↗</a>
+                  <a
+                    className="map-result-link"
+                    href={detailUrl(locale, feature.properties)}
+                    aria-label={`${feature.properties.title} — ${locale === 'el' ? 'περισσότερα' : 'more'}`}
+                  >
+                    ↗
+                  </a>
                 </article>
               );
             })}
-            {visibleFeatures.length === 0 && <p className="map-empty">{locale === 'el' ? 'Δεν βρέθηκαν σημεία.' : 'No features found.'}</p>}
+            {visibleFeatures.length === 0 && (
+              <p className="map-empty">
+                {locale === 'el' ? 'Δεν βρέθηκαν σημεία.' : 'No features found.'}
+              </p>
+            )}
           </div>
         </aside>
       </div>

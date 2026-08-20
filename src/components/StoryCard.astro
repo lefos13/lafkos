@@ -3,10 +3,14 @@ import type { Story } from '../lib/content';
 import type { Locale } from '../lib/locales';
 import { getCopy } from '../lib/ui-copy';
 
-interface Props { story: Story; locale: Locale; }
+interface Props {
+  story: Story;
+  locale: Locale;
+}
 const { story, locale } = Astro.props;
 const ui = getCopy(locale);
 ---
+
 <article class="story-card">
   <img src={story.image.src} alt={story.image.alt} loading="lazy" />
   <div class="story-card-copy">

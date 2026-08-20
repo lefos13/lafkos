@@ -16,7 +16,10 @@ export function getStaticPaths() {
   );
 }
 
-const { locale, story } = Astro.props as { locale: Locale; story: NonNullable<ReturnType<typeof findStory>> };
+const { locale, story } = Astro.props as {
+  locale: Locale;
+  story: NonNullable<ReturnType<typeof findStory>>;
+};
 const ui = getCopy(locale);
 
 const relatedEntries = story.relatedKeys
@@ -53,27 +56,37 @@ const relatedEntries = story.relatedKeys
         {story.body[locale].map((paragraph) => <p>{paragraph}</p>)}
         <h2 class="section-title">{ui.sources}</h2>
         <ul class="source-list">
-          {story.sources.map((item) => (
-            <li><a href={item.url} rel="noreferrer">{item.label} ↗</a></li>
-          ))}
+          {
+            story.sources.map((item) => (
+              <li>
+                <a href={item.url} rel="noreferrer">
+                  {item.label} ↗
+                </a>
+              </li>
+            ))
+          }
         </ul>
       </div>
     </div>
 
-    {relatedEntries.length > 0 && (
-      <section class="section" aria-labelledby="related-title" style="margin-top: 3rem;">
-        <div class="section-header">
-          <div>
-            <p class="eyebrow">{ui.navMap}</p>
-            <h2 id="related-title" class="section-title">{ui.related}</h2>
+    {
+      relatedEntries.length > 0 && (
+        <section class="section" aria-labelledby="related-title" style="margin-top: 3rem;">
+          <div class="section-header">
+            <div>
+              <p class="eyebrow">{ui.navMap}</p>
+              <h2 id="related-title" class="section-title">
+                {ui.related}
+              </h2>
+            </div>
           </div>
-        </div>
-        <div class="card-grid">
-          {relatedEntries.map(({ entry, category }) => (
-            <FeatureCard entry={entry} locale={locale} category={category} />
-          ))}
-        </div>
-      </section>
-    )}
+          <div class="card-grid">
+            {relatedEntries.map(({ entry, category }) => (
+              <FeatureCard entry={entry} locale={locale} category={category} />
+            ))}
+          </div>
+        </section>
+      )
+    }
   </article>
 </BaseLayout>

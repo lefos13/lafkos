@@ -22,19 +22,37 @@ export function findStory(locale: Locale, slug: string): Story | undefined {
 
 export function publicMapData(locale: Locale): MapData {
   const placeFeatures: MapFeature[] = places.map((place) => ({
-    type: 'Feature', geometry: place.geometry, properties: {
-      entityKey: place.entityKey, kind: 'place', category: place.category,
-      slug: place.slug[locale], title: place.title[locale], summary: place.summary[locale],
+    type: 'Feature',
+    geometry: place.geometry,
+    properties: {
+      entityKey: place.entityKey,
+      kind: 'place',
+      category: place.category,
+      slug: place.slug[locale],
+      title: place.title[locale],
+      summary: place.summary[locale],
       thumbnail: place.images[0]?.src,
     },
   }));
   const trailFeatures: MapFeature[] = trails.map((trail) => ({
-    type: 'Feature', geometry: trail.geometry, properties: {
-      entityKey: trail.entityKey, kind: 'trail', category: 'trail',
-      slug: trail.slug[locale], title: trail.title[locale], summary: trail.summary[locale],
+    type: 'Feature',
+    geometry: trail.geometry,
+    properties: {
+      entityKey: trail.entityKey,
+      kind: 'trail',
+      category: 'trail',
+      slug: trail.slug[locale],
+      title: trail.title[locale],
+      summary: trail.summary[locale],
     },
   }));
-  return { schemaVersion: 1, generatedAt: 'seed', places: placeFeatures, trails: trailFeatures, waypoints: waypointFeatures(locale, placeFeatures) };
+  return {
+    schemaVersion: 1,
+    generatedAt: 'seed',
+    places: placeFeatures,
+    trails: trailFeatures,
+    waypoints: waypointFeatures(locale, placeFeatures),
+  };
 }
 
 /* A drawn trail that runs off to an unmarked destination reads as a bug on the
@@ -62,13 +80,23 @@ function waypointFeatures(locale: Locale, placeFeatures: MapFeature[]): MapFeatu
         (vertex) => metresBetween(vertex, waypoint.coordinate) <= waypointOnPathMetres,
       );
       if (!onPath) return;
-      if (taken.some((claimed) => metresBetween(claimed, waypoint.coordinate) <= waypointMergeMetres)) return;
+      if (
+        taken.some((claimed) => metresBetween(claimed, waypoint.coordinate) <= waypointMergeMetres)
+      )
+        return;
       taken.push(waypoint.coordinate);
       features.push({
-        type: 'Feature', geometry: { type: 'Point', coordinates: waypoint.coordinate }, properties: {
-          entityKey: `${trail.entityKey}-waypoint-${index}`, kind: 'waypoint', category: 'trail',
-          slug: trail.slug[locale], title: waypoint.title[locale], summary: trail.title[locale],
-          thumbnail: waypoint.image?.src, parentKey: trail.entityKey,
+        type: 'Feature',
+        geometry: { type: 'Point', coordinates: waypoint.coordinate },
+        properties: {
+          entityKey: `${trail.entityKey}-waypoint-${index}`,
+          kind: 'waypoint',
+          category: 'trail',
+          slug: trail.slug[locale],
+          title: waypoint.title[locale],
+          summary: trail.title[locale],
+          thumbnail: waypoint.image?.src,
+          parentKey: trail.entityKey,
         },
       });
     });

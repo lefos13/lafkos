@@ -27,9 +27,15 @@ test('a selected map result creates a shareable place URL', async ({ page }) => 
   await page.goto('/el/');
   const mapRegion = page.getByRole('region', { name: 'Εξερεύνησε τον Λαύκο' });
   await mapRegion.scrollIntoViewIfNeeded();
-  await mapRegion.getByRole('complementary').getByRole('button', { name: /Η πλατεία του Λαύκου/ }).click();
+  await mapRegion
+    .getByRole('complementary')
+    .getByRole('button', { name: /Η πλατεία του Λαύκου/ })
+    .click();
   await expect(page).toHaveURL(/place=lafkos-square/);
-  await expect(page.getByRole('link', { name: 'Περισσότερα ↗' })).toHaveAttribute('href', '/el/places/plateia-lafkou');
+  await expect(page.getByRole('link', { name: 'Περισσότερα ↗' })).toHaveAttribute(
+    'href',
+    '/el/places/plateia-lafkou',
+  );
 });
 
 test('place pages switch to the translated slug', async ({ page }) => {

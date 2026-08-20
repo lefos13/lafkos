@@ -27,7 +27,9 @@ export function lineDistanceMeters(coordinates: Coordinate[]): number {
 
 export function formatDistance(meters: number, locale: 'el' | 'en'): string {
   const kilometers = meters / 1000;
-  return new Intl.NumberFormat(locale === 'el' ? 'el-GR' : 'en-GB', {
-    maximumFractionDigits: kilometers < 10 ? 1 : 0,
-  }).format(kilometers) + ' km';
+  return (
+    new Intl.NumberFormat(locale === 'el' ? 'el-GR' : 'en-GB', {
+      maximumFractionDigits: kilometers < 10 ? 1 : 0,
+    }).format(kilometers) + ' km'
+  );
 }

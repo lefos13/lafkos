@@ -13,14 +13,23 @@ export function getStaticPaths() {
 const { locale } = Astro.props as { locale: Locale };
 const ui = getCopy(locale);
 ---
+
 <BaseLayout locale={locale} title={ui.explore} description={ui.introLong}>
   <section class="prose-section container">
     <p class="eyebrow">{ui.explore}</p>
-    <h1 class="page-title">{locale === 'el' ? 'Ο Λαύκος, σημείο προς σημείο.' : 'Lafkos, point by point.'}</h1>
+    <h1 class="page-title">
+      {locale === 'el' ? 'Ο Λαύκος, σημείο προς σημείο.' : 'Lafkos, point by point.'}
+    </h1>
     <p class="lede">{ui.introLong}</p>
   </section>
   <section class="map-section container" aria-label={ui.explore}>
-    <MapExplorer client:load locale={locale} mapData={publicMapData(locale)} categories={categories} initialState={parseMapState(Astro.url.search)} />
+    <MapExplorer
+      client:load
+      locale={locale}
+      mapData={publicMapData(locale)}
+      categories={categories}
+      initialState={parseMapState(Astro.url.search)}
+    />
     <SeedNotice locale={locale} />
   </section>
 </BaseLayout>

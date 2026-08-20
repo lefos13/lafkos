@@ -2,15 +2,31 @@
 import type { Category, Place, Trail } from '../lib/content';
 import type { Locale } from '../lib/locales';
 
-interface Props { entry: Place | Trail; locale: Locale; category?: Category; }
+interface Props {
+  entry: Place | Trail;
+  locale: Locale;
+  category?: Category;
+}
 const { entry, locale, category } = Astro.props;
-const href = entry.kind === 'place' ? `/${locale}/places/${entry.slug[locale]}` : `/${locale}/trails/${entry.slug[locale]}`;
-const image = entry.kind === 'place' ? entry.images[0] : entry.waypoints.find((waypoint) => waypoint.image)?.image;
+const href =
+  entry.kind === 'place'
+    ? `/${locale}/places/${entry.slug[locale]}`
+    : `/${locale}/trails/${entry.slug[locale]}`;
+const image =
+  entry.kind === 'place'
+    ? entry.images[0]
+    : entry.waypoints.find((waypoint) => waypoint.image)?.image;
 ---
+
 <a class="feature-card" href={href}>
   {image && <img class="feature-card-media" src={image.src} alt={image.alt} loading="lazy" />}
   <div>
-    <p class="eyebrow">{category?.label[locale] ?? (entry.kind === 'trail' ? (locale === 'el' ? 'Διαδρομή' : 'Trail') : '')}</p>
+    <p class="eyebrow">
+      {
+        category?.label[locale] ??
+          (entry.kind === 'trail' ? (locale === 'el' ? 'Διαδρομή' : 'Trail') : '')
+      }
+    </p>
     <h3>{entry.title[locale]}</h3>
     <p>{entry.summary[locale]}</p>
   </div>

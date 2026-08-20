@@ -19,7 +19,10 @@ export const categoryIds = [
 export type CategoryId = (typeof categoryIds)[number];
 
 export const categorySchema = z.enum(categoryIds);
-export const coordinateSchema = z.tuple([z.number().min(-180).max(180), z.number().min(-90).max(90)]);
+export const coordinateSchema = z.tuple([
+  z.number().min(-180).max(180),
+  z.number().min(-90).max(90),
+]);
 export const pointSchema = z.object({ type: z.literal('Point'), coordinates: coordinateSchema });
 export const lineStringSchema = z.object({
   type: z.literal('LineString'),

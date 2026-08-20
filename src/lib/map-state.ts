@@ -47,7 +47,10 @@ export function serializeMapState(state: MapState): string {
   if (state.trail) params.set('trail', state.trail);
   if (state.view) {
     const [longitude, latitude] = state.view.center;
-    params.set('view', `${longitude.toFixed(5)},${latitude.toFixed(5)},${state.view.zoom.toFixed(2)}`);
+    params.set(
+      'view',
+      `${longitude.toFixed(5)},${latitude.toFixed(5)},${state.view.zoom.toFixed(2)}`,
+    );
   }
   const result = params.toString();
   return result ? `?${result}` : '';
