@@ -375,12 +375,13 @@ export default function MapExplorer({
     requestAnimationFrame(() => map.resize());
     setTimeout(() => map.resize(), 120);
     map.addControl(new NavigationControl({ showCompass: true }), 'top-right');
-    map.once('load', () => {
+    const setupLayers = () => {
+      if (!map.isStyleLoaded()) return;
       setStatus('ready');
       map.resize();
 
       // Remove any legacy native POI, transit, and micro-place layers
-      const styleLayers = map.getStyle().layers || [];
+      const styleLayers = map.getStyle()?.layers || [];
       styleLayers.forEach((layer) => {
         if (isNativePoiOrLegacyPlaceLayer(layer as StyleSpecification['layers'][number])) {
           try {
@@ -391,54 +392,86 @@ export default function MapExplorer({
         }
       });
 
-      map.addSource('lafkos-places', {
-        type: 'geojson',
-        data: featureCollection(mapData.places) as never,
-      });
-      map.addSource('lafkos-trails', {
-        type: 'geojson',
-        data: featureCollection(mapData.trails) as never,
-      });
-      map.addLayer({
-        id: 'lafkos-trails-casing',
-        type: 'line',
-        source: 'lafkos-trails',
-        paint: { 'line-color': '#f7f0df', 'line-width': 6, 'line-opacity': 0.88 },
-      });
-      map.addLayer({
-        id: 'lafkos-trails-line',
-        type: 'line',
-        source: 'lafkos-trails',
-        paint: {
-          'line-color': '#b9654a',
-          'line-width': 3,
-          'line-dasharray': [1, 1.5],
-        },
-      });
-      map.addSource('lafkos-selected-trail', {
-        type: 'geojson',
-        data: featureCollection([]) as never,
-      });
-      map.addLayer({
-        id: 'lafkos-selected-trail-glow',
-        type: 'line',
-        source: 'lafkos-selected-trail',
-        paint: {
-          'line-color': '#ffffff',
-          'line-width': 9,
-          'line-opacity': 0.95,
-        },
-      });
-      map.addLayer({
-        id: 'lafkos-selected-trail-line',
-        type: 'line',
-        source: 'lafkos-selected-trail',
-        paint: {
-          'line-color': '#2e7776',
-          'line-width': 5,
-          'line-opacity': 1,
-        },
-      });
+      if (!map.getSource('lafkos-places')) {
+        map.addSource('lafkos-places', {
+          type: 'geojson',
+          data: featureCollection(mapData.places) as never,
+        });
+      }
+      if (!map.getSource('lafkos-trails')) {
+        map.addSource('lafkos-trails', {
+          type: 'geojson',
+          data: featureCollection(mapData.trails) as never,
+        });
+      }
+      if (!map.getLayer('lafkos-trails-casing')) {
+        map.addLayer({
+          id: 'lafkos-trails-casing',
+          type: 'line',
+          source: 'lafkos-trails',
+          paint: { 'line-color': '#f7f0df', 'line-width': 6, 'line-opacity': 0.88 },
+        });
+      }
+      if (!map.getLayer('lafkos-trails-line')) {
+        map.addLayer({
+          id: 'lafkos-trails-line',
+          type: 'line',
+          source: 'lafkos-trails',
+          paint: {
+            'line-color': '#b9654a',
+            'line-width': 3,
+            'line-dasharray': [1, 1.5],
+          },
+        });
+      }
+      if (!map.getSource('lafkos-selected-trail')) {
+        map.addSource('lafkos-selected-trail', {
+          type: 'geojson',
+          data: featureCollection([]) as never,
+        });
+      }
+      if (!map.getLayer('lafkos-selected-trail-glow')) {
+        map.addLayer({
+          id: 'lafkos-selected-trail-glow',
+          type: 'line',
+          source: 'lafkos-selected-trail',
+          paint: {
+            'line-color': '#ffffff',
+            'line-width': 9,
+            'line-opacity': 0.95,
+          },
+        });
+      }
+      if (!map.getLayer('lafkos-selected-trail-line')) {
+        map.addLayer({
+          id: 'lafkos-selected-trail-line',
+          type: 'line',
+          source: 'lafkos-selected-trail',
+          paint: {
+            'line-color': '#2e7776',
+            'line-width': 5,
+            'line-opacity': 1,
+          },
+        });
+      }
+    };
+
+    let fallbackApplied = false;
+    map.on('error', (e) => {
+      if (pmtilesUrl && !fallbackApplied) {
+        fallbackApplied = true;
+        console.warn('PMTiles archive unavailable, falling back to vector map style:', e);
+        try {
+          map.setStyle(mapStyleUrl);
+        } catch {
+          setStatus('error');
+        }
+      }
+    });
+
+    map.on('style.load', setupLayers);
+    map.once('load', () => {
+      setupLayers();
       map.on('click', 'lafkos-trails-line', (event: MapMouseEvent) => {
         const feature = map.queryRenderedFeatures(event.point, {
           layers: ['lafkos-trails-line'],
