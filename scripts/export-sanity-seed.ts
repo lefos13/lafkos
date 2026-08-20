@@ -127,8 +127,16 @@ function generateNdjson() {
       _updatedAt: now,
       schemaTypes: ['place'],
       translations: [
-        { _key: 'el', value: { _type: 'reference', _ref: elId } },
-        { _key: 'en', value: { _type: 'reference', _ref: enId } },
+        {
+          _key: 'el',
+          _type: 'internationalizedArrayReferenceValue',
+          value: { _type: 'reference', _ref: elId },
+        },
+        {
+          _key: 'en',
+          _type: 'internationalizedArrayReferenceValue',
+          value: { _type: 'reference', _ref: enId },
+        },
       ],
     });
   }
@@ -224,8 +232,16 @@ function generateNdjson() {
       _updatedAt: now,
       schemaTypes: ['trail'],
       translations: [
-        { _key: 'el', value: { _type: 'reference', _ref: elId } },
-        { _key: 'en', value: { _type: 'reference', _ref: enId } },
+        {
+          _key: 'el',
+          _type: 'internationalizedArrayReferenceValue',
+          value: { _type: 'reference', _ref: elId },
+        },
+        {
+          _key: 'en',
+          _type: 'internationalizedArrayReferenceValue',
+          value: { _type: 'reference', _ref: enId },
+        },
       ],
     });
   }
@@ -290,8 +306,16 @@ function generateNdjson() {
       _updatedAt: now,
       schemaTypes: ['story'],
       translations: [
-        { _key: 'el', value: { _type: 'reference', _ref: elId } },
-        { _key: 'en', value: { _type: 'reference', _ref: enId } },
+        {
+          _key: 'el',
+          _type: 'internationalizedArrayReferenceValue',
+          value: { _type: 'reference', _ref: elId },
+        },
+        {
+          _key: 'en',
+          _type: 'internationalizedArrayReferenceValue',
+          value: { _type: 'reference', _ref: enId },
+        },
       ],
     });
   }

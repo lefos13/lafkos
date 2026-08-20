@@ -15,6 +15,20 @@ export const structure = (S: StructureBuilder) =>
                 .title('All Places')
                 .child(S.documentTypeList('place').title('All Places')),
               S.listItem()
+                .title('Greek Places (Ελληνικά)')
+                .child(
+                  S.documentList()
+                    .title('Ελληνικά Μέρη')
+                    .filter('_type == "place" && language == "el"'),
+                ),
+              S.listItem()
+                .title('English Places (EN)')
+                .child(
+                  S.documentList()
+                    .title('English Places')
+                    .filter('_type == "place" && language == "en"'),
+                ),
+              S.listItem()
                 .title('Places by Category')
                 .child(
                   S.list()
@@ -92,6 +106,20 @@ export const structure = (S: StructureBuilder) =>
                 .title('All Trails')
                 .child(S.documentTypeList('trail').title('All Trails')),
               S.listItem()
+                .title('Greek Trails (Ελληνικά)')
+                .child(
+                  S.documentList()
+                    .title('Ελληνικές Διαδρομές')
+                    .filter('_type == "trail" && language == "el"'),
+                ),
+              S.listItem()
+                .title('English Trails (EN)')
+                .child(
+                  S.documentList()
+                    .title('English Trails')
+                    .filter('_type == "trail" && language == "en"'),
+                ),
+              S.listItem()
                 .title('Trails by Difficulty')
                 .child(
                   S.list()
@@ -147,6 +175,20 @@ export const structure = (S: StructureBuilder) =>
               S.listItem()
                 .title('All Stories')
                 .child(S.documentTypeList('story').title('All Stories')),
+              S.listItem()
+                .title('Greek Stories (Ελληνικά)')
+                .child(
+                  S.documentList()
+                    .title('Ελληνικές Ιστορίες')
+                    .filter('_type == "story" && language == "el"'),
+                ),
+              S.listItem()
+                .title('English Stories (EN)')
+                .child(
+                  S.documentList()
+                    .title('English Stories')
+                    .filter('_type == "story" && language == "en"'),
+                ),
               S.listItem()
                 .title('Featured Stories')
                 .child(

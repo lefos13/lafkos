@@ -4,14 +4,43 @@
  * the Studio before a document can be considered ready for publication.
  */
 
-import { defineField, defineType } from 'sanity';
+import { defineField, defineType, type SlugValidationContext } from 'sanity';
+
+async function isUniquePerLanguage(slug: string, context: SlugValidationContext): Promise<boolean> {
+  const { document, getClient } = context;
+  if (!document) return true;
+  const client = getClient({ apiVersion: '2026-08-01' });
+  const id = document._id.replace(/^drafts\./, '');
+  const language = document.language;
+  const type = document._type;
+
+  const params = {
+    draft: `drafts.${id}`,
+    published: id,
+    slug,
+    type,
+    language: language ?? null,
+  };
+
+  const query = `!defined(*[
+    !(_id in [$draft, $published]) &&
+    _type == $type &&
+    slug.current == $slug &&
+    ((language == $language) || (!defined(language) && !defined($language)))
+  ][0])`;
+
+  return client.fetch<boolean>(query, params);
+}
 
 const localizedSlug = (name: string, title: string) =>
   defineField({
     name,
     title,
     type: 'slug',
-    options: { source: 'title' },
+    options: {
+      source: 'title',
+      isUnique: isUniquePerLanguage,
+    },
     validation: (rule) => rule.required(),
   });
 
