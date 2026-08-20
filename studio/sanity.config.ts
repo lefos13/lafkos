@@ -10,11 +10,17 @@ import { structureTool } from 'sanity/structure';
 import { schema } from './schemaTypes';
 import { structure } from './structure';
 
+const projectId =
+  process.env.SANITY_STUDIO_PROJECT_ID || process.env.PUBLIC_SANITY_PROJECT_ID || '';
+
+const dataset =
+  process.env.SANITY_STUDIO_DATASET || process.env.PUBLIC_SANITY_DATASET || 'production';
+
 export default defineConfig({
   name: 'lafkos-guide',
   title: 'Lafkos Guide Studio',
-  projectId: process.env.PUBLIC_SANITY_PROJECT_ID ?? 'replace-with-project-id',
-  dataset: process.env.PUBLIC_SANITY_DATASET ?? 'production',
+  projectId: projectId || 'replace-with-project-id',
+  dataset: dataset || 'production',
   plugins: [
     structureTool({ structure }),
     visionTool(),
