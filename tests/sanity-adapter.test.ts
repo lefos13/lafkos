@@ -20,7 +20,7 @@ import {
   type SanityTrailDoc,
 } from '../src/lib/sanity-transform';
 import { lineStringSchema, pointSchema } from '../src/lib/content';
-
+import { formatEntryDocuments } from '../scripts/import-entry';
 describe('Sanity Client Config', () => {
   it('detects unconfigured or placeholder project IDs', () => {
     expect(
@@ -344,7 +344,7 @@ describe('Content API Adapter', () => {
   });
 });
 
-describe('Seed NDJSON Archive Integrity', () => {
+describe('Seed NDJSON Archive Integrity & Entry Formatter', () => {
   it('verifies that studio/data/seed-dataset.ndjson is valid and contains all bilingual records', () => {
     const ndjsonPath = resolve(process.cwd(), 'studio/data/seed-dataset.ndjson');
     const content = readFileSync(ndjsonPath, 'utf-8');
@@ -366,5 +366,40 @@ describe('Seed NDJSON Archive Integrity', () => {
     expect(types.has('category')).toBe(true);
     expect(types.has('siteSettings')).toBe(true);
     expect(types.has('translation.metadata')).toBe(true);
+  });
+
+  it('formats new entries into compliant Greek, English, and translation metadata documents', () => {
+    const [elDoc, enDoc, metaDoc] = formatEntryDocuments({
+      kind: 'place',
+      entityKey: 'sample-point',
+      slug: { el: 'deigma-simeiou', en: 'sample-point' },
+      title: { el: 'Δείγμα Σημείου', en: 'Sample Point' },
+      eyebrow: { el: 'Σημείο', en: 'Point' },
+      summary: { el: 'Περίληψη', en: 'Summary' },
+      body: { el: ['Κείμενο'], en: ['Text'] },
+      category: 'heritage',
+      geometry: { type: 'Point', coordinates: [23.246, 39.177] },
+      mapAnchor: [23.246, 39.177],
+      images: [
+        {
+          src: 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Platia_in_Lafkos%2C_Pilion.jpg',
+          alt: 'Alt',
+          credit: 'Photo',
+          license: 'CC BY-SA 4.0',
+        },
+      ],
+      practical: { el: [], en: [] },
+      sources: [{ label: 'Source', url: 'https://example.com' }],
+      featured: false,
+      isSeed: false,
+    });
+
+    expect(elDoc._id).toBe('place-sample-point-el');
+    expect(enDoc._id).toBe('place-sample-point-en');
+    expect(metaDoc._id).toBe('translation.place-sample-point');
+    expect(metaDoc._type).toBe('translation.metadata');
+
+    const translations = metaDoc.translations as Array<{ _type: string; _key: string }>;
+    expect(translations[0]._type).toBe('internationalizedArrayReferenceValue');
   });
 });

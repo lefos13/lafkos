@@ -4,6 +4,14 @@ import { defineConfig } from 'astro/config';
 
 export default defineConfig({
   site: 'https://lafkos.guide',
+  i18n: {
+    defaultLocale: 'el',
+    locales: ['el', 'en'],
+    routing: {
+      prefixDefaultLocale: true,
+      redirectToDefaultLocale: true,
+    },
+  },
   integrations: [react(), sitemap()],
   output: 'static',
   prefetch: true,
