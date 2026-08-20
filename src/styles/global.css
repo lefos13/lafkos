@@ -613,6 +613,23 @@ img {
   background: var(--sea);
   transform: rotate(-45deg) scale(1.12);
 }
+.map-marker-btn {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  z-index: 2;
+}
+.map-marker-btn--waypoint {
+  width: 1.15rem;
+  height: 1.15rem;
+}
 .map-marker--waypoint {
   width: 1.15rem;
   height: 1.15rem;
@@ -715,7 +732,7 @@ img {
 }
 .map-marker-btn:hover,
 .map-marker-btn.is-selected {
-  z-index: 10;
+  z-index: 15;
 }
 .map-marker-btn:hover .map-marker-label,
 .map-marker-btn.is-selected .map-marker-label {
@@ -725,7 +742,7 @@ img {
   border-color: var(--sea);
   background: #ffffff;
   box-shadow: 0 3px 10px rgba(46, 119, 118, 0.22);
-  z-index: 20;
+  z-index: 25 !important;
 }
 .map-results {
   display: flex;
@@ -856,6 +873,9 @@ img {
   color: var(--muted);
   font-size: 0.85rem;
 }
+.maplibregl-popup {
+  z-index: 60 !important;
+}
 .maplibregl-popup-content {
   padding: 0 !important;
   border-radius: var(--radius-md) !important;
@@ -867,6 +887,7 @@ img {
   max-height: min(20rem, 55vh) !important;
   display: flex !important;
   flex-direction: column !important;
+  z-index: 61 !important;
 }
 .maplibregl-popup-close-button {
   width: 1.5rem !important;
@@ -882,7 +903,7 @@ img {
   right: 6px !important;
   display: grid !important;
   place-items: center !important;
-  z-index: 20 !important;
+  z-index: 70 !important;
   border: 1.5px solid rgba(255, 255, 255, 0.85) !important;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3) !important;
   cursor: pointer !important;
@@ -890,6 +911,7 @@ img {
     background 160ms ease,
     transform 160ms ease !important;
 }
+
 .maplibregl-popup-close-button:hover,
 .maplibregl-popup-close-button:focus-visible {
   background: var(--terracotta) !important;

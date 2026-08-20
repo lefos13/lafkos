@@ -164,14 +164,6 @@ function buildPmtilesStyle(url: string): StyleSpecification {
         'source-layer': 'buildings',
         paint: { 'fill-color': '#e4d8c8', 'fill-opacity': 0.75 },
       },
-      {
-        id: 'places',
-        type: 'symbol',
-        source: 'protomaps',
-        'source-layer': 'places',
-        layout: { 'text-field': ['get', 'name'], 'text-size': 12 },
-        paint: { 'text-color': '#40534e', 'text-halo-color': '#f4efe4', 'text-halo-width': 1 },
-      },
     ],
   });
 }
@@ -196,6 +188,7 @@ export default function MapExplorer({
   const [state, setState] = useState<MapState>(initialState ?? { categories: [] });
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState<MapFeature | undefined>();
+  const [popupTrigger, setPopupTrigger] = useState(0);
   const [locationState, setLocationState] = useState<'idle' | 'locating' | 'denied'>('idle');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isListHidden, setIsListHidden] = useState(false);
@@ -231,6 +224,7 @@ export default function MapExplorer({
 
   function selectFeature(feature: MapFeature, scrollList = false) {
     setSelected(feature);
+    setPopupTrigger((prev) => prev + 1);
     const next = {
       ...state,
       place: feature.properties.kind === 'place' ? feature.properties.entityKey : undefined,
@@ -243,7 +237,7 @@ export default function MapExplorer({
         geometry.type === 'Point'
           ? geometry.coordinates
           : geometry.type === 'LineString'
-            ? geometry.coordinates[0]
+            ? geometry.coordinates[Math.floor(geometry.coordinates.length / 2)]
             : geometry.coordinates[0][0];
       mapRef.current.flyTo({
         center: coordinates,
@@ -415,7 +409,35 @@ export default function MapExplorer({
         id: 'lafkos-trails-line',
         type: 'line',
         source: 'lafkos-trails',
-        paint: { 'line-color': '#b9654a', 'line-width': 3, 'line-dasharray': [1, 1.5] },
+        paint: {
+          'line-color': '#b9654a',
+          'line-width': 3,
+          'line-dasharray': [1, 1.5],
+        },
+      });
+      map.addSource('lafkos-selected-trail', {
+        type: 'geojson',
+        data: featureCollection([]) as never,
+      });
+      map.addLayer({
+        id: 'lafkos-selected-trail-glow',
+        type: 'line',
+        source: 'lafkos-selected-trail',
+        paint: {
+          'line-color': '#ffffff',
+          'line-width': 9,
+          'line-opacity': 0.95,
+        },
+      });
+      map.addLayer({
+        id: 'lafkos-selected-trail-line',
+        type: 'line',
+        source: 'lafkos-selected-trail',
+        paint: {
+          'line-color': '#2e7776',
+          'line-width': 5,
+          'line-opacity': 1,
+        },
       });
       map.on('click', 'lafkos-trails-line', (event: MapMouseEvent) => {
         const feature = map.queryRenderedFeatures(event.point, {
@@ -463,6 +485,18 @@ export default function MapExplorer({
     const trailsSource = map.getSource('lafkos-trails') as GeoJSONSource | undefined;
     if (trailsSource) trailsSource.setData(featureCollection(mapData.trails) as never);
   }, [mapData, status]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || status !== 'ready') return;
+    const selectedSource = map.getSource('lafkos-selected-trail') as GeoJSONSource | undefined;
+    if (!selectedSource) return;
+    if (selected && selected.properties.kind === 'trail') {
+      selectedSource.setData(featureCollection([selected]) as never);
+    } else {
+      selectedSource.setData(featureCollection([]) as never);
+    }
+  }, [selected, status]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -732,13 +766,12 @@ export default function MapExplorer({
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || status !== 'ready') return;
     if (popupRef.current) {
-      popupRef.current.remove();
+      const oldPopup = popupRef.current;
       popupRef.current = null;
+      oldPopup.remove();
     }
-    if (!selected) return;
-
+    if (!map || status !== 'ready' || !selected) return;
     const geometry = selected.geometry;
     const coordinates =
       geometry.type === 'Point'
@@ -779,8 +812,17 @@ export default function MapExplorer({
       .setDOMContent(popupDiv)
       .addTo(map);
 
+    const onClose = () => {
+      if (popupRef.current === popup) {
+        popupRef.current = null;
+        setSelected(undefined);
+        writeState({ ...stateRef.current, place: undefined, trail: undefined });
+      }
+    };
+    popup.on('close', onClose);
+
     popupRef.current = popup;
-  }, [categories, locale, selected, status]);
+  }, [categories, locale, selected, status, popupTrigger]);
 
   return (
     <section
