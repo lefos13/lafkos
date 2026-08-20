@@ -44,7 +44,16 @@
       ]
     },
     {
-      "source": "/(el|en)/:path*",
+      "source": "/(el|en)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/(el|en)/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
