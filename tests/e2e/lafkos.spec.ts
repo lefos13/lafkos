@@ -6,6 +6,12 @@
 
 import { expect, test } from '@playwright/test';
 
+test('root URL redirects seamlessly to default Greek locale', async ({ page }) => {
+  await page.goto('/');
+  await expect(page).toHaveURL(/\/el\/?$/);
+  await expect(page.getByRole('heading', { name: 'Λαύκος', exact: true })).toBeVisible();
+});
+
 test('Greek home exposes the map, filters, and bilingual navigation', async ({ page }) => {
   await page.goto('/el/');
   await expect(page.getByRole('heading', { name: 'Λαύκος', exact: true })).toBeVisible();
