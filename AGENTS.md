@@ -14,34 +14,74 @@ This document provides architectural rules, content management conventions, and 
 
 ---
 
-## 2. Content Authoring & CMS Import Skill
+## 2. Content Authoring, CMS Authority & Bidirectional Sync Contract
 
 When asked to add, draft, update, or batch import cultural places, hiking routes, local stories, or categories:
 
 👉 **MUST read and follow the skill:** [`skills/sanity-cms-import/SKILL.md`](skills/sanity-cms-import/SKILL.md)
 
-### Key Rules from the Skill:
+### ⚠️ MANDATORY WORKFLOW RULES (Strictly Enforced for all Agents)
+
+To prevent data loss between cloud edits in Sanity Studio and local file changes, all agents **MUST** follow these 3 rules:
+
+#### Rule 1: Sanity Studio / Content Lake is the Authoritative Master
+- Sanity CMS is the primary editorial source of truth for all production content.
+- Any changes made by editors or users directly in the Sanity Studio UI take precedence over static seed files.
+
+#### Rule 2: Prefer Granular Mutations for Local Additions
+- When adding or updating individual places, trails, or stories, **NEVER** overwrite the entire dataset with a blunt bulk replace.
+- Use targeted granular imports that only mutate the specific document IDs:
+  ```bash
+  npx tsx scripts/import-entry.ts --file path/to/entry.json --direct
+  ```
+  *(This mutates only the Greek, English, and translation metadata documents for that specific entity, leaving all other cloud edits untouched.)*
+
+#### Rule 3: ALWAYS Pull Cloud Edits Before Bulk Re-Seeding
+- If you ever need to perform a bulk seed export or dataset re-import, you **MUST ALWAYS** pull the latest live cloud content down to `src/data/content.ts` first:
+  ```bash
+  # 1. ALWAYS pull live cloud edits first:
+  pnpm studio:pull-content
+
+  # 2. Make your local additions/modifications to src/data/content.ts
+
+  # 3. Export to NDJSON seed:
+  pnpm studio:export-seed
+
+  # 4. Import seed into Sanity (safe because cloud edits were preserved in step 1):
+  pnpm studio:import-seed
+  ```
+
+### Core Invariants from the Skill:
 
 1. **Always Bilingual:** Every entry requires full Greek (`el`) and English (`en`) translations.
 2. **Stable Entity Key:** Use unique lowercase kebab-case `entityKey` (e.g. `lafkos-square`, `forlidas-cafe`) matching both language documents.
 3. **Mandatory Image Attribution:** Every image must provide `src` (or `externalUrl`), `alt`, `credit`, and public `license`.
 4. **Mandatory Sources:** Every cultural/trail/story item must provide at least one historical citation or mapping reference in `sources`.
 5. **Bounding Box:** GeoJSON coordinates `[longitude, latitude]` must be within South Pelion `[23.08, 39.04, 23.42, 39.32]`.
+6. **Mandatory CMS Sync & Pull Contract:** Content must sync to Sanity CMS; always pull cloud state (`pnpm studio:pull-content`) before bulk seeding.
 
-### Automated CLI Tooling:
+### Automated CLI Tooling Reference:
 
-- Validate and import single/batch entries:
+- **Pull live CMS content to local files:**
+  ```bash
+  pnpm studio:pull-content
+  ```
+- **Granular single-entry direct import to Sanity:**
+  ```bash
+  npx tsx scripts/import-entry.ts --file path/to/entry.json --direct
+  ```
+- **Validate and append entry to NDJSON:**
   ```bash
   npx tsx scripts/import-entry.ts --file path/to/entry.json
-  pnpm studio:import-seed
   ```
-- Export local seed dataset to NDJSON:
+- **Export local seed dataset to NDJSON:**
   ```bash
   pnpm studio:export-seed
   ```
-
----
-
+- **Import NDJSON seed dataset into Sanity:**
+  ```bash
+  pnpm studio:import-seed
+  ```
 ## 3. Data Structure Evolution & Synchronization Contract
 
 When modifying or adding fields to content models, you **MUST** update all 7 boundary layers in lockstep:

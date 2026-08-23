@@ -22,7 +22,7 @@ Every entry authored for Lafkos Guide must satisfy these core invariants:
    - `license`: Public license (e.g. `CC BY-SA 4.0`, `Public Domain`, `CC BY 3.0`).
 4. **Sources & Provenance:** Every place, trail, and story MUST include at least one verified citation in `sources: [{ label: string, url: string }]` (e.g. Ministry of Culture, OpenStreetMap, Local Heritage Archive, Topoguide).
 5. **Geographical Bounds:** Coordinates must be inside the South Pelion bounding box `[23.08, 39.04, 23.42, 39.32]` in standard GeoJSON `[longitude, latitude]` coordinate order (e.g. `[23.24646, 39.17751]`).
-
+6. **Mandatory Final CMS Synchronization:** **Sanity CMS is the authoritative editorial content lake.** Any content added or updated in `src/data/content.ts` MUST immediately be exported via `pnpm studio:export-seed` and synced to Sanity via `pnpm studio:import-seed` (or imported directly via `scripts/import-entry.ts --direct`). Un-exported local edits are incomplete.
 ---
 
 ## 2. Schema Contracts
@@ -146,42 +146,49 @@ Every entry authored for Lafkos Guide must satisfy these core invariants:
 
 ---
 
-## 3. How to Import Entries
+## 3. How to Import Entries & Safe Sync Workflow
 
-### Method 1: Via Import Helper CLI (Recommended for automated/batch addition)
+### ⚠️ Critical Rule: Preventing Cloud Data Loss
+1. **Live Sanity CMS is the authoritative master:** Manual edits in Sanity Studio take precedence over static files.
+2. **Granular addition (Method 1) is safest:** Mutates only the single entry without risking other cloud documents.
+3. **Pull before bulk seeding (Method 2):** Always pull live cloud content before exporting/replacing the seed dataset.
+
+### Method 1: Granular Direct Import (Recommended for additions without risk of overwriting)
 
 1. Save your entry JSON to a temporary file, e.g. `entry.json`.
-2. Run the import tool:
-   ```bash
-   # Validate and append to studio/data/seed-dataset.ndjson
-   npx tsx scripts/import-entry.ts --file entry.json
-
-   # Re-sync into live Sanity Content Lake
-   pnpm studio:import-seed
-   ```
-3. To directly commit to Sanity over the API (when `SANITY_AUTH_TOKEN` is set):
+2. To directly commit to Sanity without touching other entries:
    ```bash
    npx tsx scripts/import-entry.ts --file entry.json --direct
+   ```
+3. To validate and append to local NDJSON:
+   ```bash
+   npx tsx scripts/import-entry.ts --file entry.json
    ```
 
 ### Method 2: Via Local Dataset Archive (`src/data/content.ts`)
 
-1. Add the TypeScript object directly to `places`, `trails`, or `stories` in `src/data/content.ts`.
-2. Run the seed exporter:
+1. **MANDATORY: Always pull live cloud edits first:**
+   ```bash
+   pnpm studio:pull-content
+   ```
+   *(This pulls all live Sanity places, trails, stories, and categories into `src/data/content.ts`.)*
+2. Add or edit the TypeScript object directly in `places`, `trails`, or `stories` in `src/data/content.ts`.
+3. **Run the seed exporter to generate NDJSON:**
    ```bash
    pnpm studio:export-seed
    ```
-3. Import into Sanity:
+   *(This writes the latest bilingual Sanity documents to `studio/data/seed-dataset.ndjson`.)*
+4. **Import into Sanity Content Lake:**
    ```bash
    pnpm studio:import-seed
    ```
+   *(Safe to run because cloud edits were pulled in step 1.)*
 
 ### Method 3: Via Sanity Studio UI
 
 1. Run `pnpm studio:dev` and open `http://localhost:3333`.
 2. Navigate to **Places**, **Trails**, or **Stories**.
 3. Create a document in Greek (`el`), fill in the fields, and use the **Translations** menu to create its English (`en`) counterpart.
-
 ---
 
 ## 4. Keeping Data Structures in Sync

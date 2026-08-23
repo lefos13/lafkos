@@ -25,6 +25,12 @@ import {
   type Trail,
 } from '../src/lib/content';
 import { getSanityClient, isSanityConfigured } from '../src/lib/sanity-client';
+try {
+  const envPath = resolve(process.cwd(), '.env');
+  if (existsSync(envPath) && typeof process.loadEnvFile === 'function') {
+    process.loadEnvFile(envPath);
+  }
+} catch {}
 
 const localizedStringSchema = z.object({
   el: z.string().min(1),

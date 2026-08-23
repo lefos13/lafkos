@@ -15,10 +15,12 @@ describe('Lafkos seed content', () => {
     expect(readingStory).toBeDefined();
     expect(readingStory?.slug.el).toBe('reading-lafkos');
     expect(readingStory?.slug.en).toBe('reading-lafkos');
-    expect(readingStory?.body.el.length).toBeGreaterThanOrEqual(3);
-    expect(readingStory?.body.en.length).toBeGreaterThanOrEqual(3);
+    expect(readingStory?.body.el.length).toBeGreaterThanOrEqual(7);
+    expect(readingStory?.body.en.length).toBeGreaterThanOrEqual(7);
+    expect(readingStory?.body.el.length).toBe(readingStory?.body.en.length);
     expect(readingStory?.image.src).toBeTruthy();
-    expect(readingStory?.sources.length).toBeGreaterThan(0);
+    expect(readingStory?.sources.length).toBeGreaterThanOrEqual(5);
+    expect(readingStory?.relatedKeys.length).toBeGreaterThanOrEqual(5);
   });
 
   it('keeps every trail geometry valid and at least two coordinates long', () => {

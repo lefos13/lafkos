@@ -31,9 +31,12 @@ export function getSanityConfig(): SanityConfig {
 
   const token =
     (typeof process !== 'undefined'
-      ? process.env?.SANITY_API_TOKEN || process.env?.PUBLIC_SANITY_TOKEN
+      ? process.env?.SANITY_API_TOKEN ||
+        process.env?.SANITY_AUTH_TOKEN ||
+        process.env?.PUBLIC_SANITY_TOKEN
       : undefined) ??
     (import.meta.env?.SANITY_API_TOKEN as string | undefined) ??
+    (import.meta.env?.SANITY_AUTH_TOKEN as string | undefined) ??
     (import.meta.env?.PUBLIC_SANITY_TOKEN as string | undefined) ??
     undefined;
 

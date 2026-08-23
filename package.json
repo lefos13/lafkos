@@ -19,6 +19,7 @@
     "studio:deploy": "pnpm --filter @lafkos/studio deploy",
     "studio:export-seed": "tsx scripts/export-sanity-seed.ts",
     "studio:import-seed": "pnpm --filter @lafkos/studio import-seed",
+    "studio:pull-content": "tsx scripts/pull-sanity-content.ts",
     "vercel-ignore": "bash scripts/ignore-app-build.sh"
   },
   "dependencies": {

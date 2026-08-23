@@ -1,160 +1,19 @@
 /*
  * Lafkos Guide dataset: Curated cultural, historical, architectural,
  * and trail archive for Lafkos and South Pelion.
- * Images sourced from Wikimedia Commons with full attribution and licenses.
+ *
+ * Sourced directly from Sanity Content Lake via `pnpm studio:pull-content`.
  */
 
 import type { Category, Place, Story, Trail } from '../lib/content';
 
-const osmSource = { label: 'OpenStreetMap Contributors', url: 'https://www.openstreetmap.org/' };
-const pelionRoutesSource = {
-  label: 'Pelion Routes & Topoguide South Pelion',
-  url: 'https://pelionroutes.com/',
-};
-const localHeritageSource = {
-  label: 'Πολιτιστικός Σύλλογος Λαυκιωτών «Η Δράση»',
-  url: 'https://lafkos.gr/',
-};
-const ministryCultureSource = {
-  label: 'Υπουργείο Πολιτισμού — Μνημεία Νοτίου Πηλίου',
-  url: 'http://listedmonuments.culture.gr/',
-};
-const wikimediaSource = {
-  label: 'Wikimedia Commons — Lafkos, Pelion Collection',
-  url: 'https://commons.wikimedia.org/wiki/Category:Lafkos',
-};
-const magnesianewsSource = {
-  label: 'Magnesia News — Αντετοκούνμπο σε γκράφιτι στο γήπεδο του Λαύκου',
-  url: 'https://magnesianews.gr/athlitismos/basket/antetokoynmpo-se-gkrafiti-sto-gipedo-toy-laykoy.html',
-};
-
-const squareImage = {
-  src: 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Platia_in_Lafkos%2C_Pilion.jpg',
-  alt: 'Η κεντρική πλατεία του Λαύκου κάτω από τα αιωνόβια πλατάνια',
-  credit: 'Photo by Cosa2244 (Wikimedia Commons)',
-  license: 'CC BY-SA 4.0',
-};
-
-const squarePlaneTreesImage = {
-  src: 'https://upload.wikimedia.org/wikipedia/commons/c/c6/Platia_in_Lafkos%2C_Pilion_%282%29.jpg',
-  alt: 'Τα μεγάλα πλατάνια και τα παραδοσιακά καφενεία στην πλατεία του Λαύκου',
-  credit: 'Photo by Cosa2244 (Wikimedia Commons)',
-  license: 'CC BY-SA 4.0',
-};
-
-const lafkosAerialImage = {
-  src: 'https://upload.wikimedia.org/wikipedia/commons/5/59/%CE%9B%CE%B1%CF%8D%CE%BA%CE%BF%CF%82_DJI_5252.jpg',
-  alt: 'Πανοραμική αεροφωτογραφία του παραδοσιακού οικισμού του Λαύκου',
-  credit: 'Photo by C messier (Wikimedia Commons)',
-  license: 'CC BY-SA 4.0',
-};
-
-const lafkosAerialWideImage = {
-  src: 'https://upload.wikimedia.org/wikipedia/commons/0/0b/%CE%9B%CE%B1%CF%8D%CE%BA%CE%BF%CF%82_DJI_5269.jpg',
-  alt: 'Αεροφωτογραφία του Λαύκου και των γύρω καταπράσινων πλαγιών',
-  credit: 'Photo by C messier (Wikimedia Commons)',
-  license: 'CC BY-SA 4.0',
-};
-
-const architectureImage = {
-  src: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/Pelion%2CLafkos_village%2Cfor_centuries_well_preserved%2C_local_traditional_Architecture.jpg',
-  alt: 'Πέτρινα αρχοντικά και παραδοσιακή πηλιορείτικη αρχιτεκτονική στον Λαύκο',
-  credit: 'Photo by Ioannis Fakis (Wikimedia Commons)',
-  license: 'CC BY-SA 4.0',
-};
-
-const pagaseticViewImage = {
-  src: 'https://upload.wikimedia.org/wikipedia/commons/a/ae/Pelion%2C_Pagassitikos_Gulf_and_coastline._Photo_taken_from_Lafkos_village.jpg',
-  alt: 'Θέα στον Παγασητικό Κόλπο και την ακτογραμμή από τον Λαύκο',
-  credit: 'Photo by Ioannis Fakis (Wikimedia Commons)',
-  license: 'CC BY-SA 4.0',
-};
-
-const historicalPostcardImage = {
-  src: 'https://upload.wikimedia.org/wikipedia/commons/8/88/Stefanos_Stournaras_Lafkos_No202_c1910.jpg',
-  alt: 'Ιστορική επιχρωματισμένη κάρτ ποστάλ του Λαύκου γύρω στο 1910',
-  credit: 'Stephanos Stournaras (c. 1910, Wikimedia Commons)',
-  license: 'Public Domain',
-};
-
-const milinaCoastImage = {
-  src: 'https://upload.wikimedia.org/wikipedia/commons/b/b4/Milina%2C_Pelion.jpg',
-  alt: 'Η παραλιακή ζώνη και τα νερά της Μηλίνας στον Παγασητικό',
-  credit: 'Photo by Pavlos1988 (Wikimedia Commons)',
-  license: 'CC BY-SA 4.0',
-};
-
-const promyriChurchImage = {
-  src: 'https://upload.wikimedia.org/wikipedia/commons/6/6c/%CE%9D%CE%B1%CF%8C%CF%82_%CE%9A%CE%BF%CE%B9%CE%BC%CE%AE%CF%83%CE%B5%CF%89%CF%82_%CE%98%CE%B5%CE%BF%CF%84%CF%8C%CE%BA%CE%BF%CF%85_%CF%83%CF%84%CE%BF_%CE%A0%CF%81%CE%BF%CE%BC%CF%8D%CF%81%CE%B9_9166.jpg',
-  alt: 'Παραδοσιακός πέτρινος ναός και καμπαναριό στο Νότιο Πήλιο',
-  credit: 'Photo by C messier (Wikimedia Commons)',
-  license: 'CC BY-SA 4.0',
-};
-
-const lafkosChurchImage = {
-  src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Lafkos_Platia_Zypressen_01.jpg/1280px-Lafkos_Platia_Zypressen_01.jpg',
-  alt: 'Ο Ιερός Ναός Γεννήσεως της Θεοτόκου με το καμπαναριό του δίπλα στο αιωνόβιο κυπαρίσσι της πλατείας του Λαύκου',
-  credit: 'Photo by Chondriammos (Wikimedia Commons)',
-  license: 'CC BY-SA 4.0',
-};
-
-const lafkosVillageAerialImage = {
-  src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/%CE%9B%CE%B1%CF%8D%CE%BA%CE%BF%CF%82_DJI_5252.jpg/1920px-%CE%9B%CE%B1%CF%8D%CE%BA%CE%BF%CF%82_DJI_5252.jpg',
-  alt: 'Αεροφωτογραφία του Λαύκου με τον Ναό Γεννήσεως της Θεοτόκου και τις κεραμοσκεπές του οικισμού',
-  credit: 'Photo by C messier (Wikimedia Commons)',
-  license: 'CC BY-SA 4.0',
-};
-const chatziSpringImage = {
-  src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Lafkos_Way_01.jpg/1280px-Lafkos_Way_01.jpg',
-  alt: 'Η καταπράσινη διαδρομή και το πέτρινο περιβάλλον προς την Κρήνη Χατζή στον Λαύκο',
-  credit: 'Photo by Chondriammos (Wikimedia Commons)',
-  license: 'CC BY-SA 4.0',
-};
-
-const pelionFountainImage = {
-  src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/%CE%9A%CF%81%CE%AE%CE%BD%CE%B7_%CE%9B%CE%B5%CE%BF%CE%BD%CF%84%CE%AC%CF%81%CE%B9%2C_%CE%86%CE%B3%CE%B9%CE%BF%CF%82_%CE%93%CE%B5%CF%8E%CF%81%CE%B3%CE%B9%CE%BF%CF%82_%CE%9D%CE%B7%CE%BB%CE%B5%CE%AF%CE%B1%CF%82_9517.jpg/1280px-%CE%9A%CF%81%CE%AE%CE%BD%CE%B7_%CE%9B%CE%B5%CE%BF%CE%BD%CF%84%CE%AC%CF%81%CE%B9%2C_%CE%86%CE%B3%CE%B9%CE%BF%CF%82_%CE%93%CE%B5%CF%8E%CF%81%CE%B3%CE%B9%CE%BF%CF%82_%CE%9D%CE%B7%CE%BB%CE%B5%CE%AF%CE%B1%CF%82_9517.jpg',
-  alt: 'Παραδοσιακή λιθόκτιστη κρήνη με τρεχούμενο πηγαίο νερό στο Πήλιο',
-  credit: 'Photo by C messier (Wikimedia Commons)',
-  license: 'CC BY-SA 4.0',
-};
-
-const touloumbaSpringImage = {
-  src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Platia_in_Lafkos%2C_Pilion_%282%29.jpg/1280px-Platia_in_Lafkos%2C_Pilion_%282%29.jpg',
-  alt: 'Ο υπεραιωνόβιος πλάτανος και η πέτρινη γειτονιά της Κρήνης Τουλούμπα στα Λειβαδάκια',
-  credit: 'Photo by Cosa2244 (Wikimedia Commons)',
-  license: 'CC BY-SA 4.0',
-};
-
-const antetokounmpoGraffitiImage = {
-  src: 'https://magnesianews.gr/wp-content/uploads/2021/07/giannis3.jpg',
-  alt: 'Το μεγάλο graffiti του Γιάννη Αντετοκούνμπο στο ανοιχτό γήπεδο μπάσκετ του Λαύκου',
-  credit: 'Magnesia News / Στέργιος & κάτοικοι Λαύκου (2021)',
-  license: 'Editorial / Local Community Art',
-};
-
-const antetokounmpoGraffitiActionImage = {
-  src: 'https://magnesianews.gr/wp-content/uploads/2021/07/giannis1_0.jpg',
-  alt: 'Άποψη του γηπέδου μπάσκετ στον Λαύκο με το graffiti του Γιάννη Αντετοκούνμπο',
-  credit: 'Magnesia News / Στέργιος & κάτοικοι Λαύκου (2021)',
-  license: 'Editorial / Local Community Art',
-};
-
-const squareCoord = [23.24646, 39.17751] as [number, number];
-
 export const categories: Category[] = [
   {
-    id: 'heritage',
-    label: { el: 'Ιστορία', en: 'Heritage' },
-    description: {
-      el: 'Μουσεία, ιστορικά καφενεία και ζωντανές μνήμες αιώνων.',
-      en: 'Museums, historic cafes, and living memories through the centuries.',
-    },
-    color: '#b66c45',
-    icon: '✦',
-  },
-  {
     id: 'architecture',
-    label: { el: 'Αρχιτεκτονική', en: 'Architecture' },
+    label: {
+      el: 'Αρχιτεκτονική',
+      en: 'Architecture',
+    },
     description: {
       el: 'Πηλιορείτικη πέτρα, καλντερίμια, κρήνες και αρχοντικά.',
       en: 'Pelion stone masonry, cobbled lanes, springs, and mansions.',
@@ -163,38 +22,11 @@ export const categories: Category[] = [
     icon: '⌂',
   },
   {
-    id: 'sacred',
-    label: { el: 'Ιεροί τόποι', en: 'Sacred places' },
-    description: {
-      el: 'Ιστορικές βασιλικές, φρουριακά μοναστήρια και ξωκλήσια.',
-      en: 'Historic basilicas, fortified monasteries, and chapels.',
-    },
-    color: '#71845c',
-    icon: '✚',
-  },
-  {
-    id: 'nature',
-    label: { el: 'Φύση', en: 'Nature' },
-    description: {
-      el: 'Ιστορικές πετρόχτιστες πηγές, αιωνόβιοι πλάτανοι και ελαιώνες.',
-      en: 'Historic stone springs, centuries-old plane trees, and olive groves.',
-    },
-    color: '#3e7a73',
-    icon: '↟',
-  },
-  {
-    id: 'viewpoint',
-    label: { el: 'Θέα', en: 'Viewpoints' },
-    description: {
-      el: 'Κορυφές και μπαλκόνια με πανοραμική θέα στον Παγασητικό.',
-      en: 'Peaks and balconies with panoramic views across the Pagasetic Gulf.',
-    },
-    color: '#c2964b',
-    icon: '◌',
-  },
-  {
     id: 'community',
-    label: { el: 'Καθημερινή ζωή', en: 'Community life' },
+    label: {
+      el: 'Καθημερινή ζωή',
+      en: 'Community life',
+    },
     description: {
       el: 'Η μεγάλη πλατεία, παραδοσιακοί ξυλόφουρνοι και τοπική γαστρονομία.',
       en: 'The central square, artisan wood-fired bakeries, and local rhythms.',
@@ -203,8 +35,50 @@ export const categories: Category[] = [
     icon: '◍',
   },
   {
+    id: 'heritage',
+    label: {
+      el: 'Ιστορία',
+      en: 'Heritage',
+    },
+    description: {
+      el: 'Μουσεία, ιστορικά καφενεία και ζωντανές μνήμες αιώνων.',
+      en: 'Museums, historic cafes, and living memories through the centuries.',
+    },
+    color: '#b66c45',
+    icon: '✦',
+  },
+  {
+    id: 'nature',
+    label: {
+      el: 'Φύση',
+      en: 'Nature',
+    },
+    description: {
+      el: 'Ιστορικές πετρόχτιστες πηγές, αιωνόβιοι πλάτανοι και ελαιώνες.',
+      en: 'Historic stone springs, centuries-old plane trees, and olive groves.',
+    },
+    color: '#3e7a73',
+    icon: '↟',
+  },
+  {
+    id: 'sacred',
+    label: {
+      el: 'Ιεροί τόποι',
+      en: 'Sacred places',
+    },
+    description: {
+      el: 'Ιστορικές βασιλικές, φρουριακά μοναστήρια και ξωκλήσια.',
+      en: 'Historic basilicas, fortified monasteries, and chapels.',
+    },
+    color: '#71845c',
+    icon: '✚',
+  },
+  {
     id: 'trail',
-    label: { el: 'Διαδρομές', en: 'Trails' },
+    label: {
+      el: 'Διαδρομές',
+      en: 'Trails',
+    },
     description: {
       el: 'Σηματοδοτημένες πεζοπορίες που συνδέουν το βουνό με τη θάλασσα.',
       en: 'Waymarked footpaths connecting mountain ridges to coastal bays.',
@@ -212,96 +86,259 @@ export const categories: Category[] = [
     color: '#4f7868',
     icon: '⌁',
   },
+  {
+    id: 'viewpoint',
+    label: {
+      el: 'Θέα',
+      en: 'Viewpoints',
+    },
+    description: {
+      el: 'Κορυφές και μπαλκόνια με πανοραμική θέα στον Παγασητικό.',
+      en: 'Peaks and balconies with panoramic views across the Pagasetic Gulf.',
+    },
+    color: '#c2964b',
+    icon: '◌',
+  },
 ];
 
 export const places: Place[] = [
   {
     kind: 'place',
-    entityKey: 'lafkos-square',
-    slug: { el: 'plateia-lafkou', en: 'lafkos-square' },
-    title: { el: 'Η πλατεία του Λαύκου', en: 'Lafkos square' },
-    eyebrow: { el: 'Η καρδιά του οικισμού', en: 'The village heart' },
+    entityKey: 'agia-paraskevi-view',
+    slug: {
+      el: 'thea-agias-paraskevis',
+      en: 'agia-paraskevi-viewpoint',
+    },
+    title: {
+      el: 'Ξωκλήσι & Θέα Αγίας Παρασκευής',
+      en: 'Agia Paraskevi Chapel & Viewpoint',
+    },
+    eyebrow: {
+      el: 'Στάση θέας προς τον κόλπο',
+      en: 'Gulf viewpoint',
+    },
     summary: {
-      el: 'Μία από τις πιο εντυπωσιακές πλατείες του Πηλίου, στρωμένη με πλάκες και σκεπασμένη από γιγάντιους υπεραιωνόβιους πλατάνους.',
-      en: 'One of the grandest squares in Pelion, paved with local stone and sheltered under massive centuries-old plane trees.',
+      el: 'Ήσυχο ξωκλήσι στη δυτική πλαγιά του χωριού με πανοραμική θέα προς τους ελαιώνες και τον Παγασητικό Κόλπο.',
+      en: 'Tranquil hillside chapel on the western slope overlooking terraced olive groves and the Pagasetic Gulf.',
     },
     body: {
       el: [
-        'Η πλατεία του Λαύκου αποτελεί τον κεντρικό πυρήνα της κοινωνικής, εμπορικής και πολιτιστικής ζωής του χωριού εδώ και αιώνες. Η έκτασή της και η σκιά των γιγάντιων πλατάνων δημιουργούν ένα δροσερό μικροκλίμα ακόμα και στις πιο θερμές μέρες του καλοκαιριού.',
-        'Γύρω από την πλατεία συγκεντρώνονται τα ιστορικά καφενεία, οι παραδοσιακές ταβέρνες, ο επιβλητικός ναός της Γεννήσεως της Θεοτόκου, το Φάμπειο Μουσείο και η μαρμάρινη κρήνη. Εδώ ξεκινούν και καταλήγουν τα περισσότερα καλντερίμια του χωριού.',
+        'Το ξωκλήσι της Αγίας Παρασκευής βρίσκεται στη δυτική πλαγιά, λίγο πιο έξω από το κέντρο του οικισμού. Προσφέρει ένα ήρεμο πλάτωμα με εξαιρετική θέα προς τον κόλπο και τα απέναντι βουνά.',
+        'Αποτελεί ιδανική στάση για έναν σύντομο περίπατο μακριά από τον κεντρικό ιστό, απολαμβάνοντας τη σιγαλιά του πηλιορείτικου τοπίου.',
       ],
       en: [
-        'Lafkos central square has stood as the heart of social, commercial, and cultural life in South Pelion for centuries. Its generous scale and the deep canopy of monumental plane trees provide a cool refuge even during the hottest summer afternoons.',
-        'Surrounding the square are historic coffee houses, traditional tavernas, the grand Church of the Nativity of the Theotokos, the Fampas Art Museum, and a carved marble fountain. It serves as the natural crossroads for all the village stone lanes.',
+        'The chapel of Agia Paraskevi sits along the western slope just outside the central village fabric, offering a peaceful terrace with expansive views over the gulf waters and distant mountain ridges.',
+        'It makes a delightful short walking destination for those seeking tranquility amidst ancient olive orchards and Mediterranean flora.',
       ],
     },
-    category: 'community',
-    geometry: { type: 'Point', coordinates: squareCoord },
-    mapAnchor: squareCoord,
-    images: [squareImage, squarePlaneTreesImage],
+    category: 'viewpoint',
+    geometry: {
+      type: 'Point',
+      coordinates: [23.24332, 39.1782],
+    },
+    mapAnchor: [23.24332, 39.1782],
+    images: [
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/a/ae/Pelion%2C_Pagassitikos_Gulf_and_coastline._Photo_taken_from_Lafkos_village.jpg',
+        alt: 'Θέα στον Παγασητικό Κόλπο και την ακτογραμμή από τον Λαύκο',
+        credit: 'Photo by Ioannis Fakis (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/Pelion%2CLafkos_village%2Cfor_centuries_well_preserved%2C_local_traditional_Architecture.jpg',
+        alt: 'Πέτρινα αρχοντικά και παραδοσιακή πηλιορείτικη αρχιτεκτονική στον Λαύκο',
+        credit: 'Photo by Ioannis Fakis (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+    ],
     practical: {
       el: [
-        'Ιδανικό σημείο εκκίνησης για κάθε περιήγηση στον οικισμό.',
-        'Πλήρως πλακοστρωμένη και επίπεδη επιφάνεια με άφθονο ίσκιο και καθίσματα.',
-        'Χώροι στάθμευσης βρίσκονται στην ανατολική και δυτική είσοδο του χωριού (2-3 λεπτά με τα πόδια).',
+        'Προσβάσιμο σε 10 λεπτά με τα πόδια από την κεντρική πλατεία.',
+        'Ιδανικό σημείο για πρωινή ή απογευματινή ανάπαυλα.',
       ],
       en: [
-        'The ideal starting point for exploring the village on foot.',
-        'Completely paved and level surface with abundant natural shade and seating.',
-        'Designated parking lots are located at the eastern and western entries to the village (2-3 minutes walk).',
+        'Accessible via an easy 10-minute walk from the central square.',
+        'Ideal spot for morning or late afternoon quiet contemplation.',
       ],
     },
-    sources: [wikimediaSource, localHeritageSource, osmSource],
+    sources: [
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+      {
+        label: 'Πολιτιστικός Σύλλογος Λαυκιωτών «Η Δράση»',
+        url: 'https://lafkos.gr/',
+      },
+    ],
+    featured: false,
+    isSeed: true,
+  },
+  {
+    kind: 'place',
+    entityKey: 'chatzi-spring',
+    slug: {
+      el: 'krini-chatzi',
+      en: 'chatzi-spring',
+    },
+    title: {
+      el: 'Κρήνη Χατζή (1800)',
+      en: 'Chatzi Spring (1800)',
+    },
+    eyebrow: {
+      el: 'Ιστορική πετρόχτιστη πηγή',
+      en: 'Historic stone spring',
+    },
+    summary: {
+      el: 'Μνημειακή κρήνη του 1800 με λαξευτές πέτρες και δροσερό τρεχούμενο νερό, κάτω από έναν υπεραιωνόβιο πλάτανο.',
+      en: 'A monumental stone spring built around 1800 with carved stone masonry and cool mountain water under a towering plane tree.',
+    },
+    body: {
+      el: [
+        'Η Κρήνη Χατζή (ή Χατζόβρυση) χτίστηκε γύρω στο 1800 σε μια καταπράσινη ρεματιά στη βορειοδυτική είσοδο του οικισμού. Πήρε το όνομά της από ντόπιο ευεργέτη που έφερε τον τιμητικό τίτλο του Χατζή (προσκυνητή στους Αγίους Τόπους).',
+        'Το κτίσμα αποτελείται από θολωτή πέτρινη κατασκευή με λαξευτούς γωνιόλιθους και πέτρινες γούρνες για το πότισμα των ζώων. Σκιάζεται από έναν τεράστιο υπεραιωνόβιο πλάτανο που δημιουργεί ένα δροσερό καταφύγιο στη διαδρομή προς τα παλιά μονοπάτια.',
+      ],
+      en: [
+        'The Chatzi Spring (also known as Chatzovrysi) was constructed around 1800 in a lush verdant ravine at the northwestern edge of Lafkos. It was named after a local benefactor who had completed the pilgrimage to the Holy Land (bearing the title Chatzis).',
+        'The structure features an arched stone facade with finely dressed quoins and carved stone troughs historically used for watering pack mules. It is shaded by a monumental plane tree, offering a serene rest stop along the historic walking paths.',
+      ],
+    },
+    category: 'nature',
+    geometry: {
+      type: 'Point',
+      coordinates: [23.24412, 39.18205],
+    },
+    mapAnchor: [23.24412, 39.18205],
+    images: [
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Lafkos_Way_01.jpg/1280px-Lafkos_Way_01.jpg',
+        alt: 'Η καταπράσινη διαδρομή και το πέτρινο περιβάλλον προς την Κρήνη Χατζή στον Λαύκο',
+        credit: 'Photo by Chondriammos (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/%CE%9A%CF%81%CE%AE%CE%BD%CE%B7_%CE%9B%CE%B5%CE%BF%CE%BD%CF%84%CE%AC%CF%81%CE%B9%2C_%CE%86%CE%B3%CE%B9%CE%BF%CF%82_%CE%93%CE%B5%CF%8E%CF%81%CE%B3%CE%B9%CE%BF%CF%82_%CE%9D%CE%B7%CE%BB%CE%B5%CE%AF%CE%B1%CF%82_9517.jpg/1280px-%CE%9A%CF%81%CE%AE%CE%BD%CE%B7_%CE%9B%CE%B5%CE%BF%CE%BD%CF%84%CE%AC%CF%81%CE%B9%2C_%CE%86%CE%B3%CE%B9%CE%BF%CF%82_%CE%93%CE%B5%CF%8E%CF%81%CE%B3%CE%B9%CE%BF%CF%82_%CE%9D%CE%B7%CE%BB%CE%B5%CE%AF%CE%B1%CF%82_9517.jpg',
+        alt: 'Παραδοσιακή λιθόκτιστη κρήνη με τρεχούμενο πηγαίο νερό στο Πήλιο',
+        credit: 'Photo by C messier (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+    ],
+    practical: {
+      el: [
+        'Πόσιμο, κρυστάλλινο πηγαίο νερό όλο τον χρόνο.',
+        'Σημείο συνάντησης των πεζοπορικών διαδρομών προς Μηλίνα και Προφήτη Ηλία.',
+      ],
+      en: [
+        'Fresh, potable mountain spring water flows year-round.',
+        'A key landmark where trails to Milina and Prophet Elias intersect.',
+      ],
+    },
+    sources: [
+      {
+        label: 'Πολιτιστικός Σύλλογος Λαυκιωτών «Η Δράση»',
+        url: 'https://lafkos.gr/',
+      },
+      {
+        label: 'Wikimedia Commons — Lafkos, Pelion Collection',
+        url: 'https://commons.wikimedia.org/wiki/Category:Lafkos',
+      },
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+    ],
     featured: true,
     isSeed: true,
   },
   {
     kind: 'place',
-    entityKey: 'forlidas-cafe',
-    slug: { el: 'kafeneio-forlida', en: 'forlidas-historic-cafe' },
-    title: { el: 'Ιστορικό Καφενείο Φορλίδα (1785)', en: 'Historic Café Forlidas (1785)' },
-    eyebrow: { el: 'Το παλαιότερο καφενείο της Ελλάδας', en: 'The oldest café in Greece' },
+    entityKey: 'drositis-bakery',
+    slug: {
+      el: 'fournos-drositi',
+      en: 'drositis-stone-bakery',
+    },
+    title: {
+      el: 'Παραδοσιακός Πέτρινος Φούρνος Ιωάννη Δροσίτη',
+      en: 'Drositis Historic Stone Bakery',
+    },
+    eyebrow: {
+      el: 'Ξυλόφουρνος από το 1904',
+      en: 'Wood-fired masonry since 1904',
+    },
     summary: {
-      el: 'Σε αδιάλειπτη λειτουργία από το 1785 από την ίδια οικογένεια εδώ και επτά γενιές — το αγαπημένο στέκι του Παπαδιαμάντη και του Βάρναλη.',
-      en: 'Operating continuously since 1785 across seven generations of the same family — a historic meeting place for Papadiamantis and Varnalis.',
+      el: 'Ιστορικός πετρόκτιστος φούρνος σχεδιασμένος στις αρχές του 20ού αιώνα, όπου ψήνεται αδιάκοπα χειροποίητο προζυμένιο ψωμί με ξύλα.',
+      en: 'Historic stone bakery designed in the early 1900s, continuously baking authentic sourdough bread in a traditional wood-fired oven.',
     },
     body: {
       el: [
-        'Το Καφενείο του Φορλίδα, στην άκρη της κεντρικής πλατείας, αποτελεί το παλαιότερο εν λειτουργία καφενείο στην Ελλάδα, με τεκμηριωμένη ιστορία από το 1785. Για πάνω από 240 χρόνια παραμένει στα χέρια της ίδιας οικογένειας, διατηρώντας αναλλοίωτη την ατμόσφαιρα του 18ου και 19ου αιώνα.',
-        'Στον επάνω όροφο λειτουργούσε άλλοτε χάνι, όπου διανυκτέρευαν ταξιδιώτες και έμποροι που κατευθύνονταν από τις Βόρειες Σποράδες προς τον Βόλο. Μεταξύ των τακτικών θαμώνων υπήρξαν ο Αλέξανδρος Παπαδιαμάντης, ο Κώστας Βάρναλης (όταν δίδασκε στην Αργαλαστή), ο Αλέξανδρος Δελμούζος και ο Γιώργος Σεφέρης.',
-        'Στο εσωτερικό του σώζονται η παραδοσιακή ξυλόσομπα, οι αυθεντικές ξύλινες καρέκλες, τα μαρμάρινα τραπεζάκια και ιστορικές φωτογραφίες που εξιστορούν δύο αιώνες ζωής.',
+        'Στον δρόμο που συνδέει την πλατεία με τη νότια γειτονιά βρίσκεται το παραδοσιακό αρτοποιείο της οικογένειας Δροσίτη. Το εμβληματικό πέτρινο κτίριο χτίστηκε το 1904 (με τοπική παράδοση να το συνδέει με τον Ιταλό μηχανικό Evaristo de Chirico) και λειτουργεί αδιάλειπτα ως αρτοποιείο από το 1955.',
+        'Ο τεράστιος θολωτός πέτρινος φούρνος καίει αποκλειστικά ξύλα οξιάς και πουρναριού, παράγοντας παραδοσιακό καρβέλι με αργή ζύμωση, τραγανή κόρα, αφράτη ψίχα, καθώς και παραδοσιακές πηλιορείτικες τυρόπιτες, ελιόψωμα και παξιμάδια.',
+        'Μια επίσκεψη νωρίς το πρωί, όταν ο καπνός βγαίνει από την καμινάδα και η μυρωδιά του φρεσκοψημένου ψωμιού γεμίζει τα καλντερίμια, αποτελεί αναπόσπαστη εμπειρία του Λαύκου.',
       ],
       en: [
-        'Located on the central square, Café Forlidas is the oldest continuously operating coffee house in Greece, documented since 1785. For over 240 years and seven generations of the Forlidas family, it has preserved an untouched 18th-century atmosphere.',
-        'Its upper floor once served as an inn (hani) where sea travelers and merchants from the Sporades islands (Skiathos, Skopelos, Alonnisos) stayed before boarding caïques to Volos. Notable patrons include the celebrated novelist Alexandros Papadiamantis, poet Kostas Varnalis, progressive educator Alexandros Delmouzos, and Nobel laureate Giorgos Seferis.',
-        'Inside, an antique cast-iron woodstove, classic thonet wooden chairs, marble tables, and sepia photographs preserve a rare window into authentic Greek social history.',
+        'On the stone lane leading south from the central square stands the historic Drositis family bakery. The handsome stone edifice was constructed in 1904 (historically attributed to Italian railway engineer Evaristo de Chirico) and has operated as an artisan wood bakery continuously since 1955.',
+        'The massive domed stone hearth is fired solely with mountain oak and beech timber, baking sourdough country loaves with golden crusts, alongside traditional cheese pies (tyropites), olive breads, and rusks.',
+        'Visiting early in the morning as fragrant woodsmoke rises and warm bread scents the cobblestones is one of the quintessential sensory experiences of Lafkos.',
       ],
     },
-    category: 'heritage',
-    geometry: { type: 'Point', coordinates: [23.24646, 39.17737] },
-    mapAnchor: [23.24646, 39.17737],
-    images: [squarePlaneTreesImage, historicalPostcardImage],
+    category: 'community',
+    geometry: {
+      type: 'Point',
+      coordinates: [23.24666, 39.17654],
+    },
+    mapAnchor: [23.24666, 39.17654],
+    images: [
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/Pelion%2CLafkos_village%2Cfor_centuries_well_preserved%2C_local_traditional_Architecture.jpg',
+        alt: 'Πέτρινα αρχοντικά και παραδοσιακή πηλιορείτικη αρχιτεκτονική στον Λαύκο',
+        credit: 'Photo by Ioannis Fakis (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Platia_in_Lafkos%2C_Pilion.jpg',
+        alt: 'Η κεντρική πλατεία του Λαύκου κάτω από τα αιωνόβια πλατάνια',
+        credit: 'Photo by Cosa2244 (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+    ],
     practical: {
       el: [
-        'Δοκιμάστε ελληνικό καφέ ψημένο στη χόβολη και παραδοσιακά γλυκά του κουταλιού.',
-        'Ανοιχτό καθημερινά καθ’ όλη τη διάρκεια του έτους.',
-        'Ιστορικά κειμήλια και φωτογραφίες εκτίθενται στους εσωτερικούς τοίχους.',
+        'Επισκεφθείτε τον νωρίς το πρωί (07:30–11:00) για ζεστό προζυμένιο ψωμί και πίτες.',
+        'Βρίσκεται σε απόσταση 150 μέτρων νότια της κεντρικής πλατείας.',
       ],
       en: [
-        'Try traditional Greek coffee brewed slowly over charcoal embers and local spoon sweets.',
-        'Open daily year-round.',
-        'Historic artifacts and century-old photographs are displayed throughout the interior.',
+        'Visit early in the morning (07:30–11:00) for freshly baked hot sourdough loaves and savory pies.',
+        'Located 150 meters south of the central square along the main stone artery.',
       ],
     },
-    sources: [localHeritageSource, wikimediaSource, osmSource],
+    sources: [
+      {
+        label: 'Πολιτιστικός Σύλλογος Λαυκιωτών «Η Δράση»',
+        url: 'https://lafkos.gr/',
+      },
+      {
+        label: 'Wikimedia Commons — Lafkos, Pelion Collection',
+        url: 'https://commons.wikimedia.org/wiki/Category:Lafkos',
+      },
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+    ],
     featured: true,
     isSeed: true,
   },
   {
     kind: 'place',
     entityKey: 'fampas-museum',
-    slug: { el: 'mouseio-fampa', en: 'fampas-museum' },
-    title: { el: 'Μουσείο Φάμπα', en: 'Fampas Museum' },
+    slug: {
+      el: 'mouseio-fampa',
+      en: 'fampas-museum',
+    },
+    title: {
+      el: 'Μουσείο Φάμπα',
+      en: 'Fampas Museum',
+    },
     eyebrow: {
       el: 'Γλυπτική σε λευκό πηλιορείτικο μάρμαρο',
       en: 'Sculpture in white Pelion marble',
@@ -323,9 +360,25 @@ export const places: Place[] = [
       ],
     },
     category: 'heritage',
-    geometry: { type: 'Point', coordinates: [23.24604, 39.178] },
+    geometry: {
+      type: 'Point',
+      coordinates: [23.24604, 39.178],
+    },
     mapAnchor: [23.24604, 39.178],
-    images: [architectureImage, squareImage],
+    images: [
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/Pelion%2CLafkos_village%2Cfor_centuries_well_preserved%2C_local_traditional_Architecture.jpg',
+        alt: 'Πέτρινα αρχοντικά και παραδοσιακή πηλιορείτικη αρχιτεκτονική στον Λαύκο',
+        credit: 'Photo by Ioannis Fakis (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Platia_in_Lafkos%2C_Pilion.jpg',
+        alt: 'Η κεντρική πλατεία του Λαύκου κάτω από τα αιωνόβια πλατάνια',
+        credit: 'Photo by Cosa2244 (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+    ],
     practical: {
       el: [
         'Στεγάζεται στον 1ο όροφο του παλαιού πέτρινου σχολείου στην πλατεία.',
@@ -338,15 +391,872 @@ export const places: Place[] = [
         'Check locally for visiting hours and guided viewing arrangements.',
       ],
     },
-    sources: [localHeritageSource, wikimediaSource, osmSource],
+    sources: [
+      {
+        label: 'Πολιτιστικός Σύλλογος Λαυκιωτών «Η Δράση»',
+        url: 'https://lafkos.gr/',
+      },
+      {
+        label: 'Wikimedia Commons — Lafkos, Pelion Collection',
+        url: 'https://commons.wikimedia.org/wiki/Category:Lafkos',
+      },
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+    ],
+    featured: true,
+    isSeed: true,
+  },
+  {
+    kind: 'place',
+    entityKey: 'folklore-museum',
+    slug: {
+      el: 'laografiko-mouseio',
+      en: 'folklore-museum',
+    },
+    title: {
+      el: 'Λαογραφικό Μουσείο Λαύκου',
+      en: 'Lafkos Folklore Museum',
+    },
+    eyebrow: {
+      el: 'Η παραδοσιακή ζωή του Νοτίου Πηλίου',
+      en: 'Traditional South Pelion life',
+    },
+    summary: {
+      el: 'Πλούσια συλλογή εργαλείων, αργαλειών, υφαντών, τοπικών ενδυμασιών και οικιακών σκευών της πηλιορείτικης αγροτικής παράδοσης.',
+      en: 'A rich archive of agrarian tools, looms, hand-woven textiles, folk costumes, and everyday household artifacts.',
+    },
+    body: {
+      el: [
+        'Το Λαογραφικό Μουσείο Λαύκου προσφέρει ένα συναρπαστικό ταξίδι στην καθημερινότητα των προγόνων του χωριού κατά τον 19ο και 20ό αιώνα. Στεγάζεται στο κτιριακό συγκρότημα του παλαιού σχολείου.',
+        'Τα εκθέματα περιλαμβάνουν παραδοσιακούς ξύλινους αργαλειούς, περίτεχνα υφαντά και κεντήματα, αυθεντικές παραδοσιακές φορεσιές, εργαλεία ελαιοκομίας, γεωργίας και κτηνοτροφίας, καθώς και χάλκινα σκεύη και πήλινα πιθάρια αποθήκευσης λαδιού και κρασιού.',
+      ],
+      en: [
+        'The Lafkos Folklore Museum offers an evocative window into rural domestic life and village crafts throughout the 19th and early 20th centuries, housed within the old school cultural complex.',
+        'Exhibits include traditional wooden looms, intricately embroidered textiles, authentic South Pelion festive costumes, olive harvesting gear, cooperage and farming implements, and antique copper cookware and ceramic storage pithoi.',
+      ],
+    },
+    category: 'heritage',
+    geometry: {
+      type: 'Point',
+      coordinates: [23.2461, 39.17805],
+    },
+    mapAnchor: [23.2461, 39.17805],
+    images: [
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/8/88/Stefanos_Stournaras_Lafkos_No202_c1910.jpg',
+        alt: 'Ιστορική επιχρωματισμένη κάρτ ποστάλ του Λαύκου γύρω στο 1910',
+        credit: 'Stephanos Stournaras (c. 1910, Wikimedia Commons)',
+        license: 'Public Domain',
+      },
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Platia_in_Lafkos%2C_Pilion.jpg',
+        alt: 'Η κεντρική πλατεία του Λαύκου κάτω από τα αιωνόβια πλατάνια',
+        credit: 'Photo by Cosa2244 (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+    ],
+    practical: {
+      el: [
+        'Εξαιρετική εκπαιδευτική στάση για οικογένειες και επισκέπτες που θέλουν να κατανοήσουν την τοπική ιστορία.',
+        'Συνδυάζεται άμεσα με την επίσκεψη στο Φάμπειο Μουσείο.',
+      ],
+      en: [
+        'A rewarding educational stop for understanding traditional Pelion culture and craftsmanship.',
+        'Conveniently visited alongside the Fampas Museum in the same cultural building.',
+      ],
+    },
+    sources: [
+      {
+        label: 'Πολιτιστικός Σύλλογος Λαυκιωτών «Η Δράση»',
+        url: 'https://lafkos.gr/',
+      },
+      {
+        label: 'Wikimedia Commons — Lafkos, Pelion Collection',
+        url: 'https://commons.wikimedia.org/wiki/Category:Lafkos',
+      },
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+    ],
+    featured: false,
+    isSeed: true,
+  },
+  {
+    kind: 'place',
+    entityKey: 'forlidas-cafe',
+    slug: {
+      el: 'kafeneio-forlida',
+      en: 'forlidas-historic-cafe',
+    },
+    title: {
+      el: 'Ιστορικό Καφενείο Φορλίδα (1785)',
+      en: 'Historic Café Forlidas (1785)',
+    },
+    eyebrow: {
+      el: 'Το παλαιότερο καφενείο της Ελλάδας',
+      en: 'The oldest café in Greece',
+    },
+    summary: {
+      el: 'Σε αδιάλειπτη λειτουργία από το 1785 από την ίδια οικογένεια εδώ και επτά γενιές — το αγαπημένο στέκι του Παπαδιαμάντη και του Βάρναλη.',
+      en: 'Operating continuously since 1785 across seven generations of the same family — a historic meeting place for Papadiamantis and Varnalis.',
+    },
+    body: {
+      el: [
+        'Το Καφενείο του Φορλίδα, στην άκρη της κεντρικής πλατείας, αποτελεί το παλαιότερο εν λειτουργία καφενείο στην Ελλάδα, με τεκμηριωμένη ιστορία από το 1785. Για πάνω από 240 χρόνια παραμένει στα χέρια της ίδιας οικογένειας, διατηρώντας αναλλοίωτη την ατμόσφαιρα του 18ου και 19ου αιώνα.',
+        'Στον επάνω όροφο λειτουργούσε άλλοτε χάνι, όπου διανυκτέρευαν ταξιδιώτες και έμποροι που κατευθύνονταν από τις Βόρειες Σποράδες προς τον Βόλο. Μεταξύ των τακτικών θαμώνων υπήρξαν ο Αλέξανδρος Παπαδιαμάντης, ο Κώστας Βάρναλης (όταν δίδασκε στην Αργαλαστή), ο Αλέξανδρος Δελμούζος και ο Γιώργος Σεφέρης.',
+        'Στο εσωτερικό του σώζονται η παραδοσιακή ξυλόσομπα, οι αυθεντικές ξύλινες καρέκλες, τα μαρμάρινα τραπεζάκια και ιστορικές φωτογραφίες που εξιστορούν δύο αιώνες ζωής.',
+      ],
+      en: [
+        'Located on the central square, Café Forlidas is the oldest continuously operating coffee house in Greece, documented since 1785. For over 240 years and seven generations of the Forlidas family, it has preserved an untouched 18th-century atmosphere.',
+        'Its upper floor once served as an inn (hani) where sea travelers and merchants from the Sporades islands (Skiathos, Skopelos, Alonnisos) stayed before boarding caïques to Volos. Notable patrons include the celebrated novelist Alexandros Papadiamantis, poet Kostas Varnalis, progressive educator Alexandros Delmouzos, and Nobel laureate Giorgos Seferis.',
+        'Inside, an antique cast-iron woodstove, classic thonet wooden chairs, marble tables, and sepia photographs preserve a rare window into authentic Greek social history.',
+      ],
+    },
+    category: 'heritage',
+    geometry: {
+      type: 'Point',
+      coordinates: [23.24646, 39.17737],
+    },
+    mapAnchor: [23.24646, 39.17737],
+    images: [
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/c/c6/Platia_in_Lafkos%2C_Pilion_%282%29.jpg',
+        alt: 'Τα μεγάλα πλατάνια και τα παραδοσιακά καφενεία στην πλατεία του Λαύκου',
+        credit: 'Photo by Cosa2244 (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/8/88/Stefanos_Stournaras_Lafkos_No202_c1910.jpg',
+        alt: 'Ιστορική επιχρωματισμένη κάρτ ποστάλ του Λαύκου γύρω στο 1910',
+        credit: 'Stephanos Stournaras (c. 1910, Wikimedia Commons)',
+        license: 'Public Domain',
+      },
+    ],
+    practical: {
+      el: [
+        'Δοκιμάστε ελληνικό καφέ ψημένο στη χόβολη και παραδοσιακά γλυκά του κουταλιού.',
+        'Ανοιχτό καθημερινά καθ’ όλη τη διάρκεια του έτους.',
+        'Ιστορικά κειμήλια και φωτογραφίες εκτίθενται στους εσωτερικούς τοίχους.',
+      ],
+      en: [
+        'Try traditional Greek coffee brewed slowly over charcoal embers and local spoon sweets.',
+        'Open daily year-round.',
+        'Historic artifacts and century-old photographs are displayed throughout the interior.',
+      ],
+    },
+    sources: [
+      {
+        label: 'Πολιτιστικός Σύλλογος Λαυκιωτών «Η Δράση»',
+        url: 'https://lafkos.gr/',
+      },
+      {
+        label: 'Wikimedia Commons — Lafkos, Pelion Collection',
+        url: 'https://commons.wikimedia.org/wiki/Category:Lafkos',
+      },
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+    ],
+    featured: true,
+    isSeed: true,
+  },
+  {
+    kind: 'place',
+    entityKey: 'ktel-bus-stop',
+    slug: {
+      el: 'stasi-ktel-lafkou',
+      en: 'lafkos-ktel-bus-stop',
+    },
+    title: {
+      el: 'Στάση Υπεραστικού ΚΤΕΛ Λαύκου',
+      en: 'Lafkos KTEL Bus Stop',
+    },
+    eyebrow: {
+      el: 'Συγκοινωνία',
+      en: 'Public transit',
+    },
+    summary: {
+      el: 'Η κεντρική στάση λεωφορείων του Υπεραστικού ΚΤΕΛ Μαγνησίας που συνδέει τον Λαύκο με τον Βόλο, την Αργαλαστή και τη Μηλίνα.',
+      en: 'The regional bus stop connecting Lafkos with Volos, Argalasti, and Milina via KTEL Magnesias.',
+    },
+    body: {
+      el: [
+        'Η στάση του Υπεραστικού ΚΤΕΛ Μαγνησίας βρίσκεται στην ανατολική είσοδο του χωριού, δίπλα στο πάρκινγκ και κοντά στο Μουσείο Ραδιοφώνου.',
+        'Εξυπηρετεί τακτικά καθημερινά δρομολόγια που συνδέουν τον Λαύκο με τον σταθμό υπεραστικών λεωφορείων του Βόλου, καθώς και με τους γειτονικούς οικισμούς του Νοτίου Πηλίου.',
+      ],
+      en: [
+        'The regional KTEL bus stop is located at the eastern gateway of Lafkos, adjacent to the public parking and within steps of the Radio Museum.',
+        'It provides scheduled daily coach services connecting Lafkos directly to the city of Volos as well as surrounding South Pelion villages.',
+      ],
+    },
+    category: 'community',
+    geometry: {
+      type: 'Point',
+      coordinates: [23.24721, 39.17772],
+    },
+    mapAnchor: [23.24721, 39.17772],
+    images: [
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/0/0b/%CE%9B%CE%B1%CF%8D%CE%BA%CE%BF%CF%82_DJI_5269.jpg',
+        alt: 'Αεροφωτογραφία του Λαύκου και των γύρω καταπράσινων πλαγιών',
+        credit: 'Photo by C messier (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Platia_in_Lafkos%2C_Pilion.jpg',
+        alt: 'Η κεντρική πλατεία του Λαύκου κάτω από τα αιωνόβια πλατάνια',
+        credit: 'Photo by Cosa2244 (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+    ],
+    practical: {
+      el: [
+        'Διαθέτει στέγαστρο αναμονής και πίνακα δρομολογίων.',
+        'Πληροφορίες δρομολογίων: ktelvolou.gr ή τηλεφωνικά στο 24210-25507.',
+      ],
+      en: [
+        'Equipped with a passenger shelter and timetable board.',
+        'Timetable information: ktelvolou.gr or via regional telephone inquiry.',
+      ],
+    },
+    sources: [
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+    ],
+    featured: false,
+    isSeed: true,
+  },
+  {
+    kind: 'place',
+    entityKey: 'lafkos-square',
+    slug: {
+      el: 'plateia-lafkou',
+      en: 'lafkos-square',
+    },
+    title: {
+      el: 'Η πλατεία του Λαύκου',
+      en: 'Lafkos square',
+    },
+    eyebrow: {
+      el: 'Η ιστορική καρδιά του οικισμού',
+      en: 'The historic village heart',
+    },
+    summary: {
+      el: 'Μία από τις πιο εντυπωσιακές πλατείες του Πηλίου, στρωμένη με πλάκες και σκεπασμένη από γιγάντιους υπεραιωνόβιους πλατάνους.',
+      en: 'One of the grandest squares in Pelion, paved with local stone and sheltered under massive centuries-old plane trees.',
+    },
+    body: {
+      el: [
+        'Η πλατεία του Λαύκου αποτελεί τον κεντρικό πυρήνα της κοινωνικής, εμπορικής και πολιτιστικής ζωής του χωριού εδώ και αιώνες. Η έκτασή της και η σκιά των γιγάντιων πλατάνων δημιουργούν ένα δροσερό μικροκλίμα ακόμα και στις πιο θερμές μέρες του καλοκαιριού.',
+        'Γύρω από την πλατεία συγκεντρώνονται τα ιστορικά καφενεία, οι παραδοσιακές ταβέρνες, ο επιβλητικός ναός της Γεννήσεως της Θεοτόκου, το Φάμπειο Μουσείο και η μαρμάρινη κρήνη. Εδώ ξεκινούν και καταλήγουν τα περισσότερα καλντερίμια του χωριού.',
+      ],
+      en: [
+        'Lafkos central square has stood as the heart of social, commercial, and cultural life in South Pelion for centuries. Its generous scale and the deep canopy of monumental plane trees provide a cool refuge even during the hottest summer afternoons.',
+        'Surrounding the square are historic coffee houses, traditional tavernas, the grand Church of the Nativity of the Theotokos, the Fampas Art Museum, and a carved marble fountain. It serves as the natural crossroads for all the village stone lanes.',
+      ],
+    },
+    category: 'community',
+    geometry: {
+      type: 'Point',
+      coordinates: [23.24646, 39.17751],
+    },
+    mapAnchor: [23.24646, 39.17751],
+    images: [
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Platia_in_Lafkos%2C_Pilion.jpg',
+        alt: 'Η κεντρική πλατεία του Λαύκου κάτω από τα αιωνόβια πλατάνια',
+        credit: 'Photo by Cosa2244 (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/c/c6/Platia_in_Lafkos%2C_Pilion_%282%29.jpg',
+        alt: 'Τα μεγάλα πλατάνια και τα παραδοσιακά καφενεία στην πλατεία του Λαύκου',
+        credit: 'Photo by Cosa2244 (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+    ],
+    practical: {
+      el: [
+        'Ιδανικό σημείο εκκίνησης για κάθε περιήγηση στον οικισμό.',
+        'Πλήρως πλακοστρωμένη και επίπεδη επιφάνεια με άφθονο ίσκιο και καθίσματα.',
+        'Χώροι στάθμευσης βρίσκονται στην ανατολική και δυτική είσοδο του χωριού (2-3 λεπτά με τα πόδια).',
+        'Βρύση με δροσερό πόσιμο νερό και παραδοσιακά καφενεία στην πλατεία.',
+      ],
+      en: [
+        'The ideal starting point for exploring the village on foot.',
+        'Completely paved and level surface with abundant natural shade and seating.',
+        'Designated parking lots are located at the eastern and western entries to the village (2-3 minutes walk).',
+        'Fresh drinking water spring and traditional cafés located on the square.',
+      ],
+    },
+    sources: [
+      {
+        label: 'Wikimedia Commons — Lafkos, Pelion Collection',
+        url: 'https://commons.wikimedia.org/wiki/Category:Lafkos',
+      },
+      {
+        label: 'Πολιτιστικός Σύλλογος Λαυκιωτών «Η Δράση»',
+        url: 'https://lafkos.gr/',
+      },
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+    ],
+    featured: true,
+    isSeed: true,
+  },
+  {
+    kind: 'place',
+    entityKey: 'monastery-athanasios',
+    slug: {
+      el: 'moni-agiou-athanasiou-kotiki',
+      en: 'monastery-agios-athanasios',
+    },
+    title: {
+      el: 'Ιστορική Μονή Αγίου Αθανασίου στο Κωτίκι (1795)',
+      en: 'Monastery of Agios Athanasios at Kotiki (1795)',
+    },
+    eyebrow: {
+      el: 'Φρουριακό μεταβυζαντινό μνημείο',
+      en: 'Fortified 18th-century monument',
+    },
+    summary: {
+      el: 'Ιδρύθηκε το 1795 από τον πρωτομάστορα Δήμο Ζηπανιώτη με χορηγία του Στέργιου Μπασδέκη — φημίζεται για τα μοναδικά ανάγλυφα του λιθογλύπτη Μίλιου.',
+      en: 'Founded in 1795 by master builder Dimos Zipaniotis and chieftain Stergios Basdekis, famous for stone sun reliefs by sculptor Milios.',
+    },
+    body: {
+      el: [
+        'Κρυμμένη σε μια γαλήνια κοιλάδα με ελαιώνες στη θέση «Κωτίκι», βορειοανατολικά του Λαύκου στη ρεματιά της Αξυλίθρας, βρίσκεται η ιστορική Μονή του Αγίου Αθανασίου. Ιδρύθηκε το 1795 με δαπάνη του περίφημου Πηλιορείτη οπλαρχηγού Στέργιου Μπασδέκη.',
+        'Το μοναστηριακό συγκρότημα χτίστηκε από τον σπουδαίο Ηπειρώτη πρωτομάστορα Δήμο Ζηπανιώτη (Ζουπανιώτη). Διαθέτει φρουριακή διάταξη με ψηλό περίβολο, τοξωτές στοές και διώροφα κελιά. Ο κεντρικός ναός είναι τρίκλιτη βασιλική με θαυμάσιες αναλογίες.',
+        'Στην εξωτερική τοιχοποιία σώζονται τα φημισμένα λιθόγλυφα του Ηπειρώτη γλύπτη Μίλιου Ζηπανιώτη, ανάμεσα στα οποία ξεχωρίζει ο επιβλητικός ακτινωτός ανάγλυφος ήλιος, που αποτελεί αριστούργημα της λαϊκής νεοελληνικής γλυπτικής.',
+      ],
+      en: [
+        'Nestled in a serene olive valley at "Kotiki", northeast of Lafkos along the Axylithra stream, lies the historic fortified Monastery of Agios Athanasios. It was founded in 1795 under the patronage of celebrated Pelion revolutionary chieftain Stergios Basdekis.',
+        'The complex was constructed by renowned master builder Dimos Zipaniotis from Epirus in defensive monastic fortress architecture, with high perimeter walls, arched porticos, and stone monks’ cells enclosing a fine three-aisled basilica.',
+        'Its exterior walls are adorned with celebrated relief carvings by stone sculptor Milios of Zipani, most notably the majestic radiant sun stone medallion, a masterpiece of 18th-century folk stone sculpture.',
+      ],
+    },
+    category: 'sacred',
+    geometry: {
+      type: 'Point',
+      coordinates: [23.28037, 39.21299],
+    },
+    mapAnchor: [23.28037, 39.21299],
+    images: [
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/6/6c/%CE%9D%CE%B1%CF%8C%CF%82_%CE%9A%CE%BF%CE%B9%CE%BC%CE%AE%CF%83%CE%B5%CF%89%CF%82_%CE%98%CE%B5%CE%BF%CF%84%CF%8C%CE%BA%CE%BF%CF%85_%CF%83%CF%84%CE%BF_%CE%A0%CF%81%CE%BF%CE%BC%CF%8D%CF%81%CE%B9_9166.jpg',
+        alt: 'Παραδοσιακός πέτρινος ναός και καμπαναριό στο Νότιο Πήλιο',
+        credit: 'Photo by C messier (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/0/0b/%CE%9B%CE%B1%CF%8D%CE%BA%CE%BF%CF%82_DJI_5269.jpg',
+        alt: 'Αεροφωτογραφία του Λαύκου και των γύρω καταπράσινων πλαγιών',
+        credit: 'Photo by C messier (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+    ],
+    practical: {
+      el: [
+        'Προσβάσιμη μέσω πεζοπορικής διαδρομής (~1,5 ώρα) μέσα από τους ελαιώνες ή μέσω αγροτικού χωματόδρομου.',
+        'Χώρος απόλυτης ησυχίας και πνευματικής περισυλλογής μέσα στη φύση.',
+        'Σεβαστείτε τον ιερό και προστατευόμενο χαρακτήρα του μνημείου.',
+      ],
+      en: [
+        'Accessible via a scenic hiking route (~1.5 hours) through olive groves or via unpaved rural road.',
+        'A sanctuary of profound serenity and natural beauty.',
+        'Visitors are requested to respect the sacred and protected status of the monument.',
+      ],
+    },
+    sources: [
+      {
+        label: 'Υπουργείο Πολιτισμού — Μνημεία Νοτίου Πηλίου',
+        url: 'http://listedmonuments.culture.gr/',
+      },
+      {
+        label: 'Πολιτιστικός Σύλλογος Λαυκιωτών «Η Δράση»',
+        url: 'https://lafkos.gr/',
+      },
+      {
+        label: 'Wikimedia Commons — Lafkos, Pelion Collection',
+        url: 'https://commons.wikimedia.org/wiki/Category:Lafkos',
+      },
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+    ],
+    featured: true,
+    isSeed: true,
+  },
+  {
+    kind: 'place',
+    entityKey: 'old-lanes',
+    slug: {
+      el: 'palia-kalderimia-archontika',
+      en: 'old-stone-lanes-mansions',
+    },
+    title: {
+      el: 'Τα Παλιά Καλντερίμια & Αρχοντικά του Λαύκου',
+      en: 'Old Stone Lanes & Pelion Mansions',
+    },
+    eyebrow: {
+      el: 'Η αρχιτεκτονική κληρονομιά',
+      en: 'Traditional architectural heritage',
+    },
+    summary: {
+      el: 'Λαβύρινθος από καλοδιατηρημένα λιθόστρωτα καλντερίμια ανάμεσα σε τριώροφα αρχοντικά με πλάκες Πηλίου και ανθοστόλιστες αυλές.',
+      en: 'A preserved labyrinth of cobblestone lanes weaving among three-storey slate-roofed mansions and flower-filled courtyards.',
+    },
+    body: {
+      el: [
+        'Ο Λαύκος έχει χαρακτηριστεί παραδοσιακός διατηρητέος οικισμός χάρη στην εξαιρετική συνοχή του αρχιτεκτονικού του ιστού. Τα λιθόστρωτα καλντερίμια ακολουθούν τη φυσική κλίση της πλαγιάς, συνδέοντας τις γειτονιές (μαχαλάδες) με χαμηλές πέτρινες βαθμίδες.',
+        'Στις διαδρομές αυτές δεσπόζουν τα τριώροφα πέτρινα αρχοντικά του 18ου και 19ου αιώνα, με χαρακτηριστικά ξύλινα σαχνισιά (προεξοχές), στέγες από πλάκες Πηλίου, τοξωτές εισόδους και ψηλούς μαντρότοιχους από ξερολιθιά.',
+        'Το περπάτημα στα στενά αυτά σοκάκια είναι μια εμπειρία αργής περιπλάνησης, όπου ο επισκέπτης ανακαλύπτει κρυφές αυλές, ανθισμένες μπουκαμβίλιες και μυρωδιές από γιασεμί και ξύλο.',
+      ],
+      en: [
+        'Lafkos is designated as a protected traditional settlement due to the remarkable architectural integrity of its historic core. Cobblestoned kalderimia follow the mountain contours, linking distinct village neighborhoods (mahalades) with broad, easy stone risers.',
+        'Lining these routes are handsome three-storey stone mansions dating from the 18th and 19th centuries, characterized by timber overhangs (sachnisia), local slate roofs, arched portals, and dry-stone boundary walls.',
+        'Strolling these tranquil, vehicle-free lanes is an immersive slow-travel experience filled with stone archways, blooming bougainvillea, and scents of jasmine and woodsmoke.',
+      ],
+    },
+    category: 'architecture',
+    geometry: {
+      type: 'Point',
+      coordinates: [23.2454, 39.1768],
+    },
+    mapAnchor: [23.2454, 39.1768],
+    images: [
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/Pelion%2CLafkos_village%2Cfor_centuries_well_preserved%2C_local_traditional_Architecture.jpg',
+        alt: 'Πέτρινα αρχοντικά και παραδοσιακή πηλιορείτικη αρχιτεκτονική στον Λαύκο',
+        credit: 'Photo by Ioannis Fakis (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/5/59/%CE%9B%CE%B1%CF%8D%CE%BA%CE%BF%CF%82_DJI_5252.jpg',
+        alt: 'Πανοραμική αεροφωτογραφία του παραδοσιακού οικισμού του Λαύκου',
+        credit: 'Photo by C messier (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+    ],
+    practical: {
+      el: [
+        'Ο οικισμός είναι κατάλληλος μόνο για περπάτημα — φορέστε αναπαυτικά παπούτσια.',
+        'Σεβαστείτε την ησυχία των κατοίκων και τους ιδιωτικούς χώρους.',
+      ],
+      en: [
+        'The historic center is strictly pedestrianized — wear comfortable walking shoes.',
+        'Please respect resident privacy and quiet hours in residential quarters.',
+      ],
+    },
+    sources: [
+      {
+        label: 'Πολιτιστικός Σύλλογος Λαυκιωτών «Η Δράση»',
+        url: 'https://lafkos.gr/',
+      },
+      {
+        label: 'Wikimedia Commons — Lafkos, Pelion Collection',
+        url: 'https://commons.wikimedia.org/wiki/Category:Lafkos',
+      },
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+    ],
+    featured: false,
+    isSeed: true,
+  },
+  {
+    kind: 'place',
+    entityKey: 'old-school',
+    slug: {
+      el: 'palio-dimotiko-scholeio',
+      en: 'old-primary-school',
+    },
+    title: {
+      el: 'Παλαιό Δημοτικό Σχολείο & Πολιτιστικό Κέντρο',
+      en: 'Old Primary School & Cultural Center',
+    },
+    eyebrow: {
+      el: 'Νεοκλασικό αρχιτεκτονικό μνημείο',
+      en: 'Neoclassical stone landmark',
+    },
+    summary: {
+      el: 'Μνημειώδες πέτρινο σχολικό κτίριο του τέλους του 19ου αιώνα που δεσπόζει στην πλατεία, στέγη των μουσείων του χωριού.',
+      en: 'A monumental late 19th-century stone school building commanding the square, now housing the village museums.',
+    },
+    body: {
+      el: [
+        'Το παλαιό Δημοτικό Σχολείο του Λαύκου ορθώνεται επιβλητικό στη βόρεια πλευρά της πλατείας. Χτισμένο στα τέλη του 19ου αιώνα με συμπαγή πελεκητή πέτρα και νεοκλασικές συμμετρίες, υπήρξε το πνευματικό κέντρο του χωριού για πολλές γενιές μαθητών.',
+        'Σήμερα έχει αναπαλαιωθεί υποδειγματικά και λειτουργεί ως πολυδύναμο πολιτιστικό κέντρο, φιλοξενώντας το Φάμπειο Μουσείο, το Λαογραφικό Μουσείο και αίθουσες εκθέσεων και εκδηλώσεων.',
+      ],
+      en: [
+        'The historic Old Primary School stands imposingly on the elevated northern terrace of the central square. Built in the late 19th century from local dressed ashlar stone with harmonious neoclassical proportions, it educated generations of Lafkos children.',
+        'Lovingly restored, the landmark today functions as a premier cultural hub, housing the Fampas Art Museum, the Folklore Collection, and hosting community cultural exhibitions and lectures.',
+      ],
+    },
+    category: 'architecture',
+    geometry: {
+      type: 'Point',
+      coordinates: [23.2461, 39.178],
+    },
+    mapAnchor: [23.2461, 39.178],
+    images: [
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/Pelion%2CLafkos_village%2Cfor_centuries_well_preserved%2C_local_traditional_Architecture.jpg',
+        alt: 'Πέτρινα αρχοντικά και παραδοσιακή πηλιορείτικη αρχιτεκτονική στον Λαύκο',
+        credit: 'Photo by Ioannis Fakis (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Platia_in_Lafkos%2C_Pilion.jpg',
+        alt: 'Η κεντρική πλατεία του Λαύκου κάτω από τα αιωνόβια πλατάνια',
+        credit: 'Photo by Cosa2244 (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+    ],
+    practical: {
+      el: [
+        'Άμεσα προσβάσιμο από την κεντρική πλατεία.',
+        'Περιλαμβάνει προαύλιο με υπαίθρια γλυπτική και πανοραμική θέα στην πλατεία.',
+      ],
+      en: [
+        'Directly accessible from the central square.',
+        'Features an open terrace with outdoor sculptures and views over the square.',
+      ],
+    },
+    sources: [
+      {
+        label: 'Πολιτιστικός Σύλλογος Λαυκιωτών «Η Δράση»',
+        url: 'https://lafkos.gr/',
+      },
+      {
+        label: 'Wikimedia Commons — Lafkos, Pelion Collection',
+        url: 'https://commons.wikimedia.org/wiki/Category:Lafkos',
+      },
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+    ],
+    featured: false,
+    isSeed: true,
+  },
+  {
+    kind: 'place',
+    entityKey: 'palaiovrysi',
+    slug: {
+      el: 'palaiovrysi',
+      en: 'palaiovrysi-old-spring',
+    },
+    title: {
+      el: 'Παλαιοβρύση — Η Αρχέγονη Πηγή',
+      en: 'Palaiovrysi — The Old Spring',
+    },
+    eyebrow: {
+      el: 'Η πρώτη βρύση του οικισμού',
+      en: 'The ancient founding spring',
+    },
+    summary: {
+      el: 'Η παλαιότερη καταγεγραμμένη βρύση του χωριού με το χαρακτηριστικό κόκκινο πέτρινο περίγραμμα και τον πανύψηλο πλάτανο.',
+      en: 'The oldest documented public spring of Lafkos, distinguished by its red stone trim and monumental plane tree.',
+    },
+    body: {
+      el: [
+        'Η Παλαιοβρύση θεωρείται η πρώτη και ιστορικότερη πηγή του Λαύκου. Γύρω από το άφθονο νερό της συγκεντρώθηκαν οι πρώτοι οικιστές του χωριού κατά τον 15ο και 16ο αιώνα, πολύ πριν δημιουργηθεί το δίκτυο των νεότερων κρηνών.',
+        'Είναι άμεσα αναγνωρίσιμη από την παραδοσιακή τοιχοποιία της και το χαρακτηριστικό κόκκινο πέτρινο περίγραμμα του τόξου της. Ο αιωνόβιος πλάτανος που την πλαισιώνει αποτελεί ζωντανό μάρτυρα της εξέλιξης του χωριού μέσα στους αιώνες.',
+      ],
+      en: [
+        'Palaiovrysi is revered as the original and most ancient water source of Lafkos. Around its generous flow, the earliest settlers established the village during the 15th and 16th centuries, long before modern piped networks existed.',
+        'It is immediately recognizable by its traditional masonry and the distinctive reddish stone arch framing the fountain wall. The ancient plane tree framing the site stands as a living chronicle of village history.',
+      ],
+    },
+    category: 'nature',
+    geometry: {
+      type: 'Point',
+      coordinates: [23.2451, 39.1752],
+    },
+    mapAnchor: [23.2451, 39.1752],
+    images: [
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/%CE%9A%CF%81%CE%AE%CE%BD%CE%B7_%CE%9B%CE%B5%CE%BF%CE%BD%CF%84%CE%AC%CF%81%CE%B9%2C_%CE%86%CE%B3%CE%B9%CE%BF%CF%82_%CE%93%CE%B5%CF%8E%CF%81%CE%B3%CE%B9%CE%BF%CF%82_%CE%9D%CE%B7%CE%BB%CE%B5%CE%AF%CE%B1%CF%82_9517.jpg/1280px-%CE%9A%CF%81%CE%AE%CE%BD%CE%B7_%CE%9B%CE%B5%CE%BF%CE%BD%CF%84%CE%AC%CF%81%CE%B9%2C_%CE%86%CE%B3%CE%B9%CE%BF%CF%82_%CE%93%CE%B5%CF%8E%CF%81%CE%B3%CE%B9%CE%BF%CF%82_%CE%9D%CE%B7%CE%BB%CE%B5%CE%AF%CE%B1%CF%82_9517.jpg',
+        alt: 'Παραδοσιακή λιθόκτιστη κρήνη με τρεχούμενο πηγαίο νερό στο Πήλιο',
+        credit: 'Photo by C messier (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/Pelion%2CLafkos_village%2Cfor_centuries_well_preserved%2C_local_traditional_Architecture.jpg',
+        alt: 'Πέτρινα αρχοντικά και παραδοσιακή πηλιορείτικη αρχιτεκτονική στον Λαύκο',
+        credit: 'Photo by Ioannis Fakis (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+    ],
+    practical: {
+      el: [
+        'Βρίσκεται στη νότια έξοδο του χωριού προς τα παλιά μονοπάτια.',
+        'Προσφέρει δροσερό τρεχούμενο νερό όλο το έτος.',
+      ],
+      en: [
+        'Located in the southern lower quarter toward the historic trails.',
+        'Supplies chilled flowing spring water year-round.',
+      ],
+    },
+    sources: [
+      {
+        label: 'Πολιτιστικός Σύλλογος Λαυκιωτών «Η Δράση»',
+        url: 'https://lafkos.gr/',
+      },
+      {
+        label: 'Wikimedia Commons — Lafkos, Pelion Collection',
+        url: 'https://commons.wikimedia.org/wiki/Category:Lafkos',
+      },
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+    ],
+    featured: false,
+    isSeed: true,
+  },
+  {
+    kind: 'place',
+    entityKey: 'parking-east',
+    slug: {
+      el: 'anatolikos-choros-stathmefsis',
+      en: 'east-village-parking',
+    },
+    title: {
+      el: 'Ανατολικός Χώρος Στάθμευσης (Κεντρικό Πάρκινγκ)',
+      en: 'East Central Village Parking',
+    },
+    eyebrow: {
+      el: 'Στάθμευση οχημάτων',
+      en: 'Visitor parking',
+    },
+    summary: {
+      el: 'Κεντρικός δωρεάν χώρος στάθμευσης στην ανατολική είσοδο του οικισμού, δίπλα στον επαρχιακό δρόμο και τη στάση ΚΤΕΛ.',
+      en: 'Main free public parking area at the eastern village entrance, next to the regional road and bus stop.',
+    },
+    body: {
+      el: [
+        'Ο Ανατολικός Χώρος Στάθμευσης αποτελεί τον βασικό χώρο υποδοχής οχημάτων για τους επισκέπτες που φτάνουν στον Λαύκο. Βρίσκεται ακριβώς στην είσοδο του οικισμού από τον δρόμο του Προμυρίου.',
+        'Από το πάρκινγκ, η πρόσβαση στην κεντρική πλατεία, στα μουσεία και στα καταλύματα γίνεται με τα πόδια σε 2-3 λεπτά μέσα από τα πρώτα πλακόστρωτα καλντερίμια.',
+      ],
+      en: [
+        'The East Village Parking serves as the primary arrival parking area for travelers visiting Lafkos, situated directly at the eastern entrance from the Promyri regional road.',
+        'From this parking area, the central square, museums, and guest accommodations are an easy 2–3 minute stroll along pedestrianized stone lanes.',
+      ],
+    },
+    category: 'community',
+    geometry: {
+      type: 'Point',
+      coordinates: [23.24767, 39.1777],
+    },
+    mapAnchor: [23.24767, 39.1777],
+    images: [
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/0/0b/%CE%9B%CE%B1%CF%8D%CE%BA%CE%BF%CF%82_DJI_5269.jpg',
+        alt: 'Αεροφωτογραφία του Λαύκου και των γύρω καταπράσινων πλαγιών',
+        credit: 'Photo by C messier (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Platia_in_Lafkos%2C_Pilion.jpg',
+        alt: 'Η κεντρική πλατεία του Λαύκου κάτω από τα αιωνόβια πλατάνια',
+        credit: 'Photo by Cosa2244 (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+    ],
+    practical: {
+      el: [
+        'Δωρεάν δημόσια στάθμευση 24 ώρες το 24ωρο.',
+        'Χωρητικότητα περίπου 25-30 οχημάτων.',
+        'Άμεση πρόσβαση στη στάση του ΚΤΕΛ και στο Μουσείο Ραδιοφώνου.',
+      ],
+      en: [
+        'Free public parking available 24/7.',
+        'Capacity for approximately 25–30 vehicles.',
+        'Immediate access to the regional bus stop and the Radio Museum.',
+      ],
+    },
+    sources: [
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+      {
+        label: 'Πολιτιστικός Σύλλογος Λαυκιωτών «Η Δράση»',
+        url: 'https://lafkos.gr/',
+      },
+    ],
+    featured: false,
+    isSeed: true,
+  },
+  {
+    kind: 'place',
+    entityKey: 'parking-west',
+    slug: {
+      el: 'dytikos-choros-stathmefsis',
+      en: 'west-village-parking',
+    },
+    title: {
+      el: 'Δυτικός Χώρος Στάθμευσης (Είσοδος Μηλίνας)',
+      en: 'West Village Entrance Parking',
+    },
+    eyebrow: {
+      el: 'Στάθμευση οχημάτων',
+      en: 'Visitor parking',
+    },
+    summary: {
+      el: 'Δωρεάν χώρος στάθμευσης στη δυτική είσοδο του χωριού, ιδανικό σημείο εκκίνησης για το καλντερίμι προς Μηλίνα.',
+      en: 'Free parking area at the western village gateway, ideal starting point for the historic trail to Milina.',
+    },
+    body: {
+      el: [
+        'Ο Δυτικός Χώρος Στάθμευσης εξυπηρετεί τα οχήματα που προσεγγίζουν τον Λαύκο από την πλευρά της Αργαλαστής και της Μηλίνας. Βρίσκεται πριν την έναρξη του πεζοδρομημένου ιστορικού ιστού.',
+        'Αποτελεί ιδανική αφετηρία για όσους θέλουν να περπατήσουν το ιστορικό καλντερίμι προς τη Μηλίνα ή να επισκεφθούν την Κρήνη Χατζή.',
+      ],
+      en: [
+        'The West Village Parking accommodates vehicles arriving via the Argalasti and Milina approaches, positioned just before the pedestrianized historic lanes begin.',
+        'It offers an optimal trailhead for hikers setting out along the historic stone path to Milina or visiting the nearby Chatzi Spring.',
+      ],
+    },
+    category: 'community',
+    geometry: {
+      type: 'Point',
+      coordinates: [23.2443, 39.17835],
+    },
+    mapAnchor: [23.2443, 39.17835],
+    images: [
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/5/59/%CE%9B%CE%B1%CF%8D%CE%BA%CE%BF%CF%82_DJI_5252.jpg',
+        alt: 'Πανοραμική αεροφωτογραφία του παραδοσιακού οικισμού του Λαύκου',
+        credit: 'Photo by C messier (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/c/c6/Platia_in_Lafkos%2C_Pilion_%282%29.jpg',
+        alt: 'Τα μεγάλα πλατάνια και τα παραδοσιακά καφενεία στην πλατεία του Λαύκου',
+        credit: 'Photo by Cosa2244 (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+    ],
+    practical: {
+      el: ['Δωρεάν υπαίθρια στάθμευση.', 'Σημείο συνάντησης με το μονοπάτι προς Μηλίνα.'],
+      en: ['Free open-air parking.', 'Direct connection to the Milina hiking trail.'],
+    },
+    sources: [
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+      {
+        label: 'Πολιτιστικός Σύλλογος Λαυκιωτών «Η Δράση»',
+        url: 'https://lafkos.gr/',
+      },
+    ],
+    featured: false,
+    isSeed: true,
+  },
+  {
+    kind: 'place',
+    entityKey: 'profitis-ilias-view',
+    slug: {
+      el: 'thea-profiti-ilia',
+      en: 'profitis-ilias-viewpoint',
+    },
+    title: {
+      el: 'Ξωκλήσι Προφήτη Ηλία & Θέα Παγασιτικού',
+      en: 'Prophet Elias Chapel & Panoramic Viewpoint',
+    },
+    eyebrow: {
+      el: 'Το μπαλκόνι του Νοτίου Πηλίου',
+      en: 'The balcony of South Pelion',
+    },
+    summary: {
+      el: 'Κορυφή σε υψόμετρο 409 μ. με το γραφικό ξωκλήσι και ασύγκριτη θέα 360° στον Παγασητικό Κόλπο, τη νήσο Αλατάς και το Αιγαίο.',
+      en: 'Hilltop summit at 409m with a whitewashed chapel offering unrivaled 360-degree views of the Pagasetic Gulf, Alatas island, and the Aegean.',
+    },
+    body: {
+      el: [
+        'Στη βόρεια κορυφογραμμή πάνω από τον Λαύκο, σε υψόμετρο 409 μέτρων, δεσπόζει το γραφικό ξωκλήσι του Προφήτη Ηλία. Η τοποθεσία προσφέρει ένα από τα πιο μαγευτικά πανοράματα σε ολόκληρη τη Θεσσαλία.',
+        'Από το πλάτωμα του ναού το βλέμμα αγκαλιάζει ολόκληρο τον Παγασητικό Κόλπο, τον όρμο της Μηλίνας, το καταπράσινο νησάκι Αλατάς, τα βουνά της Εύβοιας και της Στερεάς Ελλάδας, καθώς και τις ανατολικές κορυφές του Πηλίου που κατηφορίζουν προς το Αιγαίο.',
+        'Η ώρα του ηλιοβασιλέματος εδώ είναι μοναδική, καθώς ο ήλιος βυθίζεται πίσω από τα βουνά της Όθρυος και βάφει τα νερά του κόλπου σε βαθιές χρυσαφένιες και πορφυρές αποχρώσεις.',
+      ],
+      en: [
+        'Perched on the summit ridge north of Lafkos at an altitude of 409 meters stands the whitewashed chapel of Prophet Elias (Profitis Ilias). The site commands one of the most breathtaking panoramic vantage points in all of Thessaly.',
+        'From the chapel grounds, sweeping views take in the entire Pagasetic Gulf, the sheltered harbour of Milina, the verdant island of Alatas, the mountain ridges of Evia, and the eastern slopes cascading toward the Aegean Sea.',
+        'Sunset from this crest is legendary, as the sun dips behind the distant peaks of Mount Othrys, bathing the gulf in deep amber, gold, and violet hues.',
+      ],
+    },
+    category: 'viewpoint',
+    geometry: {
+      type: 'Point',
+      coordinates: [23.24654, 39.19492],
+    },
+    mapAnchor: [23.24654, 39.19492],
+    images: [
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/a/ae/Pelion%2C_Pagassitikos_Gulf_and_coastline._Photo_taken_from_Lafkos_village.jpg',
+        alt: 'Θέα στον Παγασητικό Κόλπο και την ακτογραμμή από τον Λαύκο',
+        credit: 'Photo by Ioannis Fakis (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/5/59/%CE%9B%CE%B1%CF%8D%CE%BA%CE%BF%CF%82_DJI_5252.jpg',
+        alt: 'Πανοραμική αεροφωτογραφία του παραδοσιακού οικισμού του Λαύκου',
+        credit: 'Photo by C messier (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+    ],
+    practical: {
+      el: [
+        'Προσβάσιμο με πεζοπορία 40-45 λεπτών από την πλατεία ή μέσω αγροτικού δρόμου.',
+        'Φέρτε νερό και αντιανεμικό, ειδικά τις απογευματινές ώρες.',
+        'Κορυφαίο σημείο για φωτογραφία τοπίου και ηλιοβασίλεμα.',
+      ],
+      en: [
+        'Accessible via a 40–45 minute hike from the village square or via unpaved country track.',
+        'Carry water and a light windbreaker, especially during late afternoon visits.',
+        'Premier photography location for panoramic landscape and sunset viewing.',
+      ],
+    },
+    sources: [
+      {
+        label: 'Wikimedia Commons — Lafkos, Pelion Collection',
+        url: 'https://commons.wikimedia.org/wiki/Category:Lafkos',
+      },
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+      {
+        label: 'Pelion Routes & Topoguide South Pelion',
+        url: 'https://pelionroutes.com/',
+      },
+    ],
     featured: true,
     isSeed: true,
   },
   {
     kind: 'place',
     entityKey: 'radio-museum',
-    slug: { el: 'mouseio-radiofonou', en: 'radio-museum' },
-    title: { el: 'Μουσείο Ραδιοφώνου «Αντώνης Ταβάνης»', en: 'Antonis Tavanis Radio Museum' },
+    slug: {
+      el: 'mouseio-radiofonou',
+      en: 'radio-museum',
+    },
+    title: {
+      el: 'Μουσείο Ραδιοφώνου «Αντώνης Ταβάνης»',
+      en: 'Antonis Tavanis Radio Museum',
+    },
     eyebrow: {
       el: 'Ένα από τα τρία μουσεία ραδιοφώνου στην Ελλάδα',
       en: 'One of only three radio museums in Greece',
@@ -368,9 +1278,25 @@ export const places: Place[] = [
       ],
     },
     category: 'heritage',
-    geometry: { type: 'Point', coordinates: [23.24814, 39.17402] },
+    geometry: {
+      type: 'Point',
+      coordinates: [23.24814, 39.17402],
+    },
     mapAnchor: [23.24814, 39.17402],
-    images: [historicalPostcardImage, architectureImage],
+    images: [
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/8/88/Stefanos_Stournaras_Lafkos_No202_c1910.jpg',
+        alt: 'Ιστορική επιχρωματισμένη κάρτ ποστάλ του Λαύκου γύρω στο 1910',
+        credit: 'Stephanos Stournaras (c. 1910, Wikimedia Commons)',
+        license: 'Public Domain',
+      },
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/Pelion%2CLafkos_village%2Cfor_centuries_well_preserved%2C_local_traditional_Architecture.jpg',
+        alt: 'Πέτρινα αρχοντικά και παραδοσιακή πηλιορείτικη αρχιτεκτονική στον Λαύκο',
+        credit: 'Photo by Ioannis Fakis (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+    ],
     practical: {
       el: [
         'Στεγάζεται στην παλιά αποθήκη του Αγροτικού Συνεταιρισμού, στη διασταύρωση για Μηλίνα και Προμύρι, περίπου 400 μ. νότια της πλατείας (8 λεπτά με τα πόδια).',
@@ -381,618 +1307,30 @@ export const places: Place[] = [
         'Features explanatory documentation on the history of radio technology and broadcasting.',
       ],
     },
-    sources: [localHeritageSource, wikimediaSource, osmSource],
+    sources: [
+      {
+        label: 'Πολιτιστικός Σύλλογος Λαυκιωτών «Η Δράση»',
+        url: 'https://lafkos.gr/',
+      },
+      {
+        label: 'Wikimedia Commons — Lafkos, Pelion Collection',
+        url: 'https://commons.wikimedia.org/wiki/Category:Lafkos',
+      },
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+    ],
     featured: true,
-    isSeed: true,
-  },
-  {
-    kind: 'place',
-    entityKey: 'folklore-museum',
-    slug: { el: 'laografiko-mouseio', en: 'folklore-museum' },
-    title: { el: 'Λαογραφικό Μουσείο Λαύκου', en: 'Lafkos Folklore Museum' },
-    eyebrow: { el: 'Η παραδοσιακή ζωή του Νοτίου Πηλίου', en: 'Traditional South Pelion life' },
-    summary: {
-      el: 'Πλούσια συλλογή εργαλείων, αργαλειών, υφαντών, τοπικών ενδυμασιών και οικιακών σκευών της πηλιορείτικης αγροτικής παράδοσης.',
-      en: 'A rich archive of agrarian tools, looms, hand-woven textiles, folk costumes, and everyday household artifacts.',
-    },
-    body: {
-      el: [
-        'Το Λαογραφικό Μουσείο Λαύκου προσφέρει ένα συναρπαστικό ταξίδι στην καθημερινότητα των προγόνων του χωριού κατά τον 19ο και 20ό αιώνα. Στεγάζεται στο κτιριακό συγκρότημα του παλαιού σχολείου.',
-        'Τα εκθέματα περιλαμβάνουν παραδοσιακούς ξύλινους αργαλειούς, περίτεχνα υφαντά και κεντήματα, αυθεντικές παραδοσιακές φορεσιές, εργαλεία ελαιοκομίας, γεωργίας και κτηνοτροφίας, καθώς και χάλκινα σκεύη και πήλινα πιθάρια αποθήκευσης λαδιού και κρασιού.',
-      ],
-      en: [
-        'The Lafkos Folklore Museum offers an evocative window into rural domestic life and village crafts throughout the 19th and early 20th centuries, housed within the old school cultural complex.',
-        'Exhibits include traditional wooden looms, intricately embroidered textiles, authentic South Pelion festive costumes, olive harvesting gear, cooperage and farming implements, and antique copper cookware and ceramic storage pithoi.',
-      ],
-    },
-    category: 'heritage',
-    geometry: { type: 'Point', coordinates: [23.2461, 39.17805] },
-    mapAnchor: [23.2461, 39.17805],
-    images: [historicalPostcardImage, squareImage],
-    practical: {
-      el: [
-        'Εξαιρετική εκπαιδευτική στάση για οικογένειες και επισκέπτες που θέλουν να κατανοήσουν την τοπική ιστορία.',
-        'Συνδυάζεται άμεσα με την επίσκεψη στο Φάμπειο Μουσείο.',
-      ],
-      en: [
-        'A rewarding educational stop for understanding traditional Pelion culture and craftsmanship.',
-        'Conveniently visited alongside the Fampas Museum in the same cultural building.',
-      ],
-    },
-    sources: [localHeritageSource, wikimediaSource, osmSource],
-    featured: false,
-    isSeed: true,
-  },
-  {
-    kind: 'place',
-    entityKey: 'theotokos-church',
-    slug: { el: 'ierow-naos-genniseos-theotokou', en: 'church-nativity-theotokos' },
-    title: {
-      el: 'Ιερός Ναός Γεννήσεως της Θεοτόκου (1888)',
-      en: 'Church of the Nativity of the Theotokos',
-    },
-    eyebrow: { el: 'Μνημειακή βασιλική', en: 'Monumental basilica' },
-    summary: {
-      el: 'Επιβλητική τρίκλιτη πηλιορείτικη βασιλική με περίτεχνο πέτρινο καμπαναριό και ξυλόγλυπτο τέμπλο δεσπόζει στην πλατεία.',
-      en: 'An imposing three-aisled Pelion basilica with a stone bell tower and carved iconostasis overlooking the central square.',
-    },
-    body: {
-      el: [
-        'Ο μητροπολιτικός ναός της Γεννήσεως της Θεοτόκου θεμελιώθηκε στη σημερινή του μορφή το 1888 πάνω σε παλαιότερα βυζαντινά ίχνη, δεσπόζοντας με την επιβλητική του πέτρινη παρουσία στη δυτική πλευρά της πλατείας.',
-        'Αποτελεί κλασικό δείγμα της πηλιορείτικης εκκλησιαστικής αρχιτεκτονικής του ύστερου 19ου αιώνα. Στο εσωτερικό του ξεχωρίζουν το εξαιρετικό ξυλόγλυπτο τέμπλο, ο δεσποτικός θρόνος και σπάνιες φορητές εικόνες της μεταβυζαντινής περιόδου.',
-        'Το περίτεχνο πέτρινο καμπαναριό με τα λαξευτά αγκωνάρια αποτελεί ένα από τα πιο αναγνωρίσιμα ορόσημα του ορίζοντα του Λαύκου.',
-      ],
-      en: [
-        'The parish church of the Nativity of the Theotokos was rebuilt in its present form in 1888 over earlier foundations, commanding the western side of the central square with majestic stone masonry.',
-        'It stands as a quintessential exemplar of late 19th-century Pelion ecclesiastical architecture. Inside, it preserves a magnificent hand-carved wooden iconostasis, episcopal throne, and treasured post-Byzantine portable icons.',
-        'Its finely dressed stone belfry with sculpted architraves forms one of the most recognizable landmarks on the village skyline.',
-      ],
-    },
-    category: 'sacred',
-    geometry: { type: 'Point', coordinates: [23.24634, 39.17784] },
-    mapAnchor: [23.24634, 39.17784],
-    images: [lafkosChurchImage, lafkosVillageAerialImage],
-    practical: {
-      el: [
-        'Ανοιχτός κατά τις ιερές ακολουθίες και τα πρωινά του σαββατοκύριακου.',
-        'Η κύρια είσοδος ανοίγει απευθείας προς το πλακόστρωτο της πλατείας.',
-      ],
-      en: [
-        'Open during religious services and weekend mornings.',
-        'The main portal opens directly onto the paved village square.',
-      ],
-    },
-    sources: [ministryCultureSource, wikimediaSource, osmSource],
-    featured: true,
-    isSeed: true,
-  },
-  {
-    kind: 'place',
-    entityKey: 'drositis-bakery',
-    slug: { el: 'fournos-drositi', en: 'drositis-stone-bakery' },
-    title: {
-      el: 'Παραδοσιακός Πέτρινος Φούρνος Ιωάννη Δροσίτη',
-      en: 'Drositis Historic Stone Bakery',
-    },
-    eyebrow: { el: 'Ξυλόφουρνος από το 1904', en: 'Wood-fired masonry since 1904' },
-    summary: {
-      el: 'Ιστορικός πετρόκτιστος φούρνος σχεδιασμένος στις αρχές του 20ού αιώνα, όπου ψήνεται αδιάκοπα χειροποίητο προζυμένιο ψωμί με ξύλα.',
-      en: 'Historic stone bakery designed in the early 1900s, continuously baking authentic sourdough bread in a traditional wood-fired oven.',
-    },
-    body: {
-      el: [
-        'Στον δρόμο που συνδέει την πλατεία με τη νότια γειτονιά βρίσκεται το παραδοσιακό αρτοποιείο της οικογένειας Δροσίτη. Το εμβληματικό πέτρινο κτίριο χτίστηκε το 1904 (με τοπική παράδοση να το συνδέει με τον Ιταλό μηχανικό Evaristo de Chirico) και λειτουργεί αδιάλειπτα ως αρτοποιείο από το 1955.',
-        'Ο τεράστιος θολωτός πέτρινος φούρνος καίει αποκλειστικά ξύλα οξιάς και πουρναριού, παράγοντας παραδοσιακό καρβέλι με αργή ζύμωση, τραγανή κόρα, αφράτη ψίχα, καθώς και παραδοσιακές πηλιορείτικες τυρόπιτες, ελιόψωμα και παξιμάδια.',
-        'Μια επίσκεψη νωρίς το πρωί, όταν ο καπνός βγαίνει από την καμινάδα και η μυρωδιά του φρεσκοψημένου ψωμιού γεμίζει τα καλντερίμια, αποτελεί αναπόσπαστη εμπειρία του Λαύκου.',
-      ],
-      en: [
-        'On the stone lane leading south from the central square stands the historic Drositis family bakery. The handsome stone edifice was constructed in 1904 (historically attributed to Italian railway engineer Evaristo de Chirico) and has operated as an artisan wood bakery continuously since 1955.',
-        'The massive domed stone hearth is fired solely with mountain oak and beech timber, baking sourdough country loaves with golden crusts, alongside traditional cheese pies (tyropites), olive breads, and rusks.',
-        'Visiting early in the morning as fragrant woodsmoke rises and warm bread scents the cobblestones is one of the quintessential sensory experiences of Lafkos.',
-      ],
-    },
-    category: 'community',
-    geometry: { type: 'Point', coordinates: [23.24666, 39.17654] },
-    mapAnchor: [23.24666, 39.17654],
-    images: [architectureImage, squareImage],
-    practical: {
-      el: [
-        'Επισκεφθείτε τον νωρίς το πρωί (07:30–11:00) για ζεστό προζυμένιο ψωμί και πίτες.',
-        'Βρίσκεται σε απόσταση 150 μέτρων νότια της κεντρικής πλατείας.',
-      ],
-      en: [
-        'Visit early in the morning (07:30–11:00) for freshly baked hot sourdough loaves and savory pies.',
-        'Located 150 meters south of the central square along the main stone artery.',
-      ],
-    },
-    sources: [localHeritageSource, wikimediaSource, osmSource],
-    featured: true,
-    isSeed: true,
-  },
-  {
-    kind: 'place',
-    entityKey: 'chatzi-spring',
-    slug: { el: 'krini-chatzi', en: 'chatzi-spring' },
-    title: { el: 'Κρήνη Χατζή (1800)', en: 'Chatzi Spring (1800)' },
-    eyebrow: { el: 'Ιστορική πετρόχτιστη πηγή', en: 'Historic stone spring' },
-    summary: {
-      el: 'Μνημειακή κρήνη του 1800 με λαξευτές πέτρες και δροσερό τρεχούμενο νερό, κάτω από έναν υπεραιωνόβιο πλάτανο.',
-      en: 'A monumental stone spring built around 1800 with carved stone masonry and cool mountain water under a towering plane tree.',
-    },
-    body: {
-      el: [
-        'Η Κρήνη Χατζή (ή Χατζόβρυση) χτίστηκε γύρω στο 1800 σε μια καταπράσινη ρεματιά στη βορειοδυτική είσοδο του οικισμού. Πήρε το όνομά της από ντόπιο ευεργέτη που έφερε τον τιμητικό τίτλο του Χατζή (προσκυνητή στους Αγίους Τόπους).',
-        'Το κτίσμα αποτελείται από θολωτή πέτρινη κατασκευή με λαξευτούς γωνιόλιθους και πέτρινες γούρνες για το πότισμα των ζώων. Σκιάζεται από έναν τεράστιο υπεραιωνόβιο πλάτανο που δημιουργεί ένα δροσερό καταφύγιο στη διαδρομή προς τα παλιά μονοπάτια.',
-      ],
-      en: [
-        'The Chatzi Spring (also known as Chatzovrysi) was constructed around 1800 in a lush verdant ravine at the northwestern edge of Lafkos. It was named after a local benefactor who had completed the pilgrimage to the Holy Land (bearing the title Chatzis).',
-        'The structure features an arched stone facade with finely dressed quoins and carved stone troughs historically used for watering pack mules. It is shaded by a monumental plane tree, offering a serene rest stop along the historic walking paths.',
-      ],
-    },
-    category: 'nature',
-    geometry: { type: 'Point', coordinates: [23.24412, 39.18205] },
-    mapAnchor: [23.24412, 39.18205],
-    images: [chatziSpringImage, pelionFountainImage],
-    practical: {
-      el: [
-        'Πόσιμο, κρυστάλλινο πηγαίο νερό όλο τον χρόνο.',
-        'Σημείο συνάντησης των πεζοπορικών διαδρομών προς Μηλίνα και Προφήτη Ηλία.',
-      ],
-      en: [
-        'Fresh, potable mountain spring water flows year-round.',
-        'A key landmark where trails to Milina and Prophet Elias intersect.',
-      ],
-    },
-    sources: [localHeritageSource, wikimediaSource, osmSource],
-    featured: true,
-    isSeed: true,
-  },
-  {
-    kind: 'place',
-    entityKey: 'touloumba-spring',
-    slug: { el: 'krini-touloumba', en: 'touloumba-spring' },
-    title: { el: 'Κρήνη Τουλούμπα (1910)', en: 'Touloumba Spring (1910)' },
-    eyebrow: { el: 'Η βρύση της γειτονιάς Λειβαδάκια', en: 'The Livadakia neighborhood spring' },
-    summary: {
-      el: 'Πέτρινη κρήνη του 1910 με την ιστορική χειροκίνητη αντλία (τουλούμπα) και τον προστατευμένο πλάτανο του 1913.',
-      en: 'Historic 1910 stone spring featuring its original manual suction pump and a protected plane tree planted in 1913.',
-    },
-    body: {
-      el: [
-        'Η Κρήνη Τουλούμπα κατασκευάστηκε το 1910 στη γραφική γειτονιά «Λειβαδάκια» του Λαύκου. Ονομάστηκε έτσι από την ιστορική τουλούμπα (χειροκίνητη αντλία νερού) που τοποθετήθηκε για να αντλείται το νερό που έφτανε με υπόγειο αγωγό από τις ορεινές πηγές Σκούρα και Στάκη.',
-        'Ακριβώς δίπλα στην κρήνη φυτεύτηκε το 1913 ένας πλάτανος, ο οποίος σήμερα έχει αναπτυχθεί σε ένα εντυπωσιακό φυσικό μνημείο που σκεπάζει ολόκληρη τη μικρή πέτρινη πλατεία της γειτονιάς.',
-      ],
-      en: [
-        'The Touloumba Spring was built in 1910 in the quiet "Livadakia" quarter of Lafkos. It earned its name from the vintage mechanical pump (touloumba) installed to draw spring water piped underground from the mountain sources of Skoura and Staki.',
-        'Adjacent to the fountain, a plane tree planted in 1913 has matured into a majestic natural canopy shading the charming neighborhood stone courtyard.',
-      ],
-    },
-    category: 'nature',
-    geometry: { type: 'Point', coordinates: [23.24835, 39.1758] },
-    mapAnchor: [23.24835, 39.1758],
-    images: [touloumbaSpringImage, pelionFountainImage],
-    practical: {
-      el: [
-        'Ήσυχη τοποθεσία στα ανατολικά του χωριού, ιδανική για ανάπαυλα.',
-        'Συνδέεται με το κυκλικό μονοπάτι των κρηνών του Λαύκου.',
-      ],
-      en: [
-        'A peaceful location in the eastern quarter, ideal for a quiet pause.',
-        'Connected along the circular heritage springs walk of Lafkos.',
-      ],
-    },
-    sources: [localHeritageSource, wikimediaSource, osmSource],
-    featured: false,
-    isSeed: true,
-  },
-  {
-    kind: 'place',
-    entityKey: 'palaiovrysi',
-    slug: { el: 'palaiovrysi', en: 'palaiovrysi-old-spring' },
-    title: { el: 'Παλαιοβρύση — Η Αρχέγονη Πηγή', en: 'Palaiovrysi — The Old Spring' },
-    eyebrow: { el: 'Η πρώτη βρύση του οικισμού', en: 'The ancient founding spring' },
-    summary: {
-      el: 'Η παλαιότερη καταγεγραμμένη βρύση του χωριού με το χαρακτηριστικό κόκκινο πέτρινο περίγραμμα και τον πανύψηλο πλάτανο.',
-      en: 'The oldest documented public spring of Lafkos, distinguished by its red stone trim and monumental plane tree.',
-    },
-    body: {
-      el: [
-        'Η Παλαιοβρύση θεωρείται η πρώτη και ιστορικότερη πηγή του Λαύκου. Γύρω από το άφθονο νερό της συγκεντρώθηκαν οι πρώτοι οικιστές του χωριού κατά τον 15ο και 16ο αιώνα, πολύ πριν δημιουργηθεί το δίκτυο των νεότερων κρηνών.',
-        'Είναι άμεσα αναγνωρίσιμη από την παραδοσιακή τοιχοποιία της και το χαρακτηριστικό κόκκινο πέτρινο περίγραμμα του τόξου της. Ο αιωνόβιος πλάτανος που την πλαισιώνει αποτελεί ζωντανό μάρτυρα της εξέλιξης του χωριού μέσα στους αιώνες.',
-      ],
-      en: [
-        'Palaiovrysi is revered as the original and most ancient water source of Lafkos. Around its generous flow, the earliest settlers established the village during the 15th and 16th centuries, long before modern piped networks existed.',
-        'It is immediately recognizable by its traditional masonry and the distinctive reddish stone arch framing the fountain wall. The ancient plane tree framing the site stands as a living chronicle of village history.',
-      ],
-    },
-    category: 'nature',
-    geometry: { type: 'Point', coordinates: [23.2451, 39.1752] },
-    mapAnchor: [23.2451, 39.1752],
-    images: [pelionFountainImage, architectureImage],
-    practical: {
-      el: [
-        'Βρίσκεται στη νότια έξοδο του χωριού προς τα παλιά μονοπάτια.',
-        'Προσφέρει δροσερό τρεχούμενο νερό όλο το έτος.',
-      ],
-      en: [
-        'Located in the southern lower quarter toward the historic trails.',
-        'Supplies chilled flowing spring water year-round.',
-      ],
-    },
-    sources: [localHeritageSource, wikimediaSource, osmSource],
-    featured: false,
-    isSeed: true,
-  },
-  {
-    kind: 'place',
-    entityKey: 'square-fountain',
-    slug: { el: 'krini-plateias', en: 'square-marble-fountain' },
-    title: { el: 'Μαρμάρινη Κρήνη της Πλατείας', en: 'The Central Square Fountain' },
-    eyebrow: { el: 'Δροσιά στην καρδιά του χωριού', en: 'Fresh water in the village square' },
-    summary: {
-      el: 'Λαξευτή κρήνη από πηλιορείτικη πέτρα και μάρμαρο, προσφέρει αδιάκοπα δροσερό νερό στους θαμώνες της πλατείας.',
-      en: 'Carved from Pelion stone and white marble, continuously providing cool water to visitors beneath the plane trees.',
-    },
-    body: {
-      el: [
-        'Στο κέντρο της πλατείας, ανάμεσα στα τραπέζια των καφενείων και κάτω από τον παχύ ίσκιο των πλατάνων, βρίσκεται η κεντρική μαρμάρινη κρήνη. Σχεδιασμένη με σεβασμό στην πηλιορείτικη παράδοση της λιθογλυπτικής, αποτελεί αναπόσπαστο σημείο της καθημερινής συνήθειας των κατοίκων.',
-        'Εδώ σταματούν οι πεζοπόροι για να γεμίσουν τα παγούρια τους πριν αναχωρήσουν για τα μονοπάτια προς τη Μηλίνα, τον Προφήτη Ηλία ή το Μοναστήρι του Αγίου Αθανασίου.',
-      ],
-      en: [
-        'At the core of the central square, nestled among the café tables beneath the dense plane tree boughs, stands the village square marble fountain. Built following traditional Pelion stonemasonry techniques, it is a focal point of daily life.',
-        'Hikers regularly pause here to refill water bottles before embarking on trail routes toward Milina, Prophet Elias summit, or the Monastery of Agios Athanasios.',
-      ],
-    },
-    category: 'architecture',
-    geometry: { type: 'Point', coordinates: [23.2463, 39.17745] },
-    mapAnchor: [23.2463, 39.17745],
-    images: [squareImage, squarePlaneTreesImage],
-    practical: {
-      el: [
-        'Κεντρικό σημείο ανεφοδιασμού νερού στην πλατεία.',
-        'Πόσιμο, τρεχούμενο νερό άριστης ποιότητας.',
-      ],
-      en: [
-        'Central water refill point on the main square.',
-        'Potable, continuously flowing fresh mountain water.',
-      ],
-    },
-    sources: [localHeritageSource, wikimediaSource, osmSource],
-    featured: false,
-    isSeed: true,
-  },
-  {
-    kind: 'place',
-    entityKey: 'profitis-ilias-view',
-    slug: { el: 'thea-profiti-ilia', en: 'profitis-ilias-viewpoint' },
-    title: {
-      el: 'Ξωκλήσι Προφήτη Ηλία & Θέα Παγασιτικού',
-      en: 'Prophet Elias Chapel & Panoramic Viewpoint',
-    },
-    eyebrow: { el: 'Το μπαλκόνι του Νοτίου Πηλίου', en: 'The balcony of South Pelion' },
-    summary: {
-      el: 'Κορυφή σε υψόμετρο 409 μ. με το γραφικό ξωκλήσι και ασύγκριτη θέα 360° στον Παγασητικό Κόλπο, τη νήσο Αλατάς και το Αιγαίο.',
-      en: 'Hilltop summit at 409m with a whitewashed chapel offering unrivaled 360-degree views of the Pagasetic Gulf, Alatas island, and the Aegean.',
-    },
-    body: {
-      el: [
-        'Στη βόρεια κορυφογραμμή πάνω από τον Λαύκο, σε υψόμετρο 409 μέτρων, δεσπόζει το γραφικό ξωκλήσι του Προφήτη Ηλία. Η τοποθεσία προσφέρει ένα από τα πιο μαγευτικά πανοράματα σε ολόκληρη τη Θεσσαλία.',
-        'Από το πλάτωμα του ναού το βλέμμα αγκαλιάζει ολόκληρο τον Παγασητικό Κόλπο, τον όρμο της Μηλίνας, το καταπράσινο νησάκι Αλατάς, τα βουνά της Εύβοιας και της Στερεάς Ελλάδας, καθώς και τις ανατολικές κορυφές του Πηλίου που κατηφορίζουν προς το Αιγαίο.',
-        'Η ώρα του ηλιοβασιλέματος εδώ είναι μοναδική, καθώς ο ήλιος βυθίζεται πίσω από τα βουνά της Όθρυος και βάφει τα νερά του κόλπου σε βαθιές χρυσαφένιες και πορφυρές αποχρώσεις.',
-      ],
-      en: [
-        'Perched on the summit ridge north of Lafkos at an altitude of 409 meters stands the whitewashed chapel of Prophet Elias (Profitis Ilias). The site commands one of the most breathtaking panoramic vantage points in all of Thessaly.',
-        'From the chapel grounds, sweeping views take in the entire Pagasetic Gulf, the sheltered harbour of Milina, the verdant island of Alatas, the mountain ridges of Evia, and the eastern slopes cascading toward the Aegean Sea.',
-        'Sunset from this crest is legendary, as the sun dips behind the distant peaks of Mount Othrys, bathing the gulf in deep amber, gold, and violet hues.',
-      ],
-    },
-    category: 'viewpoint',
-    geometry: { type: 'Point', coordinates: [23.24654, 39.19492] },
-    mapAnchor: [23.24654, 39.19492],
-    images: [pagaseticViewImage, lafkosAerialImage],
-    practical: {
-      el: [
-        'Προσβάσιμο με πεζοπορία 40-45 λεπτών από την πλατεία ή μέσω αγροτικού δρόμου.',
-        'Φέρτε νερό και αντιανεμικό, ειδικά τις απογευματινές ώρες.',
-        'Κορυφαίο σημείο για φωτογραφία τοπίου και ηλιοβασίλεμα.',
-      ],
-      en: [
-        'Accessible via a 40–45 minute hike from the village square or via unpaved country track.',
-        'Carry water and a light windbreaker, especially during late afternoon visits.',
-        'Premier photography location for panoramic landscape and sunset viewing.',
-      ],
-    },
-    sources: [wikimediaSource, osmSource, pelionRoutesSource],
-    featured: true,
-    isSeed: true,
-  },
-  {
-    kind: 'place',
-    entityKey: 'monastery-athanasios',
-    slug: { el: 'moni-agiou-athanasiou-kotiki', en: 'monastery-agios-athanasios' },
-    title: {
-      el: 'Ιστορική Μονή Αγίου Αθανασίου στο Κωτίκι (1795)',
-      en: 'Monastery of Agios Athanasios at Kotiki (1795)',
-    },
-    eyebrow: { el: 'Φρουριακό μεταβυζαντινό μνημείο', en: 'Fortified 18th-century monument' },
-    summary: {
-      el: 'Ιδρύθηκε το 1795 από τον πρωτομάστορα Δήμο Ζηπανιώτη με χορηγία του Στέργιου Μπασδέκη — φημίζεται για τα μοναδικά ανάγλυφα του λιθογλύπτη Μίλιου.',
-      en: 'Founded in 1795 by master builder Dimos Zipaniotis and chieftain Stergios Basdekis, famous for stone sun reliefs by sculptor Milios.',
-    },
-    body: {
-      el: [
-        'Κρυμμένη σε μια γαλήνια κοιλάδα με ελαιώνες στη θέση «Κωτίκι», βορειοανατολικά του Λαύκου στη ρεματιά της Αξυλίθρας, βρίσκεται η ιστορική Μονή του Αγίου Αθανασίου. Ιδρύθηκε το 1795 με δαπάνη του περίφημου Πηλιορείτη οπλαρχηγού Στέργιου Μπασδέκη.',
-        'Το μοναστηριακό συγκρότημα χτίστηκε από τον σπουδαίο Ηπειρώτη πρωτομάστορα Δήμο Ζηπανιώτη (Ζουπανιώτη). Διαθέτει φρουριακή διάταξη με ψηλό περίβολο, τοξωτές στοές και διώροφα κελιά. Ο κεντρικός ναός είναι τρίκλιτη βασιλική με θαυμάσιες αναλογίες.',
-        'Στην εξωτερική τοιχοποιία σώζονται τα φημισμένα λιθόγλυφα του Ηπειρώτη γλύπτη Μίλιου Ζηπανιώτη, ανάμεσα στα οποία ξεχωρίζει ο επιβλητικός ακτινωτός ανάγλυφος ήλιος, που αποτελεί αριστούργημα της λαϊκής νεοελληνικής γλυπτικής.',
-      ],
-      en: [
-        'Nestled in a serene olive valley at "Kotiki", northeast of Lafkos along the Axylithra stream, lies the historic fortified Monastery of Agios Athanasios. It was founded in 1795 under the patronage of celebrated Pelion revolutionary chieftain Stergios Basdekis.',
-        'The complex was constructed by renowned master builder Dimos Zipaniotis from Epirus in defensive monastic fortress architecture, with high perimeter walls, arched porticos, and stone monks’ cells enclosing a fine three-aisled basilica.',
-        'Its exterior walls are adorned with celebrated relief carvings by stone sculptor Milios of Zipani, most notably the majestic radiant sun stone medallion, a masterpiece of 18th-century folk stone sculpture.',
-      ],
-    },
-    category: 'sacred',
-    geometry: { type: 'Point', coordinates: [23.28037, 39.21299] },
-    mapAnchor: [23.28037, 39.21299],
-    images: [promyriChurchImage, lafkosAerialWideImage],
-    practical: {
-      el: [
-        'Προσβάσιμη μέσω πεζοπορικής διαδρομής (~1,5 ώρα) μέσα από τους ελαιώνες ή μέσω αγροτικού χωματόδρομου.',
-        'Χώρος απόλυτης ησυχίας και πνευματικής περισυλλογής μέσα στη φύση.',
-        'Σεβαστείτε τον ιερό και προστατευόμενο χαρακτήρα του μνημείου.',
-      ],
-      en: [
-        'Accessible via a scenic hiking route (~1.5 hours) through olive groves or via unpaved rural road.',
-        'A sanctuary of profound serenity and natural beauty.',
-        'Visitors are requested to respect the sacred and protected status of the monument.',
-      ],
-    },
-    sources: [ministryCultureSource, localHeritageSource, wikimediaSource, osmSource],
-    featured: true,
-    isSeed: true,
-  },
-  {
-    kind: 'place',
-    entityKey: 'old-school',
-    slug: { el: 'palio-dimotiko-scholeio', en: 'old-primary-school' },
-    title: {
-      el: 'Παλαιό Δημοτικό Σχολείο & Πολιτιστικό Κέντρο',
-      en: 'Old Primary School & Cultural Center',
-    },
-    eyebrow: { el: 'Νεοκλασικό αρχιτεκτονικό μνημείο', en: 'Neoclassical stone landmark' },
-    summary: {
-      el: 'Μνημειώδες πέτρινο σχολικό κτίριο του τέλους του 19ου αιώνα που δεσπόζει στην πλατεία, στέγη των μουσείων του χωριού.',
-      en: 'A monumental late 19th-century stone school building commanding the square, now housing the village museums.',
-    },
-    body: {
-      el: [
-        'Το παλαιό Δημοτικό Σχολείο του Λαύκου ορθώνεται επιβλητικό στη βόρεια πλευρά της πλατείας. Χτισμένο στα τέλη του 19ου αιώνα με συμπαγή πελεκητή πέτρα και νεοκλασικές συμμετρίες, υπήρξε το πνευματικό κέντρο του χωριού για πολλές γενιές μαθητών.',
-        'Σήμερα έχει αναπαλαιωθεί υποδειγματικά και λειτουργεί ως πολυδύναμο πολιτιστικό κέντρο, φιλοξενώντας το Φάμπειο Μουσείο, το Λαογραφικό Μουσείο και αίθουσες εκθέσεων και εκδηλώσεων.',
-      ],
-      en: [
-        'The historic Old Primary School stands imposingly on the elevated northern terrace of the central square. Built in the late 19th century from local dressed ashlar stone with harmonious neoclassical proportions, it educated generations of Lafkos children.',
-        'Lovingly restored, the landmark today functions as a premier cultural hub, housing the Fampas Art Museum, the Folklore Collection, and hosting community cultural exhibitions and lectures.',
-      ],
-    },
-    category: 'architecture',
-    geometry: { type: 'Point', coordinates: [23.2461, 39.178] },
-    mapAnchor: [23.2461, 39.178],
-    images: [architectureImage, squareImage],
-    practical: {
-      el: [
-        'Άμεσα προσβάσιμο από την κεντρική πλατεία.',
-        'Περιλαμβάνει προαύλιο με υπαίθρια γλυπτική και πανοραμική θέα στην πλατεία.',
-      ],
-      en: [
-        'Directly accessible from the central square.',
-        'Features an open terrace with outdoor sculptures and views over the square.',
-      ],
-    },
-    sources: [localHeritageSource, wikimediaSource, osmSource],
-    featured: false,
-    isSeed: true,
-  },
-  {
-    kind: 'place',
-    entityKey: 'old-lanes',
-    slug: { el: 'palia-kalderimia-archontika', en: 'old-stone-lanes-mansions' },
-    title: {
-      el: 'Τα Παλιά Καλντερίμια & Αρχοντικά του Λαύκου',
-      en: 'Old Stone Lanes & Pelion Mansions',
-    },
-    eyebrow: { el: 'Η αρχιτεκτονική κληρονομιά', en: 'Traditional architectural heritage' },
-    summary: {
-      el: 'Λαβύρινθος από καλοδιατηρημένα λιθόστρωτα καλντερίμια ανάμεσα σε τριώροφα αρχοντικά με πλάκες Πηλίου και ανθοστόλιστες αυλές.',
-      en: 'A preserved labyrinth of cobblestone lanes weaving among three-storey slate-roofed mansions and flower-filled courtyards.',
-    },
-    body: {
-      el: [
-        'Ο Λαύκος έχει χαρακτηριστεί παραδοσιακός διατηρητέος οικισμός χάρη στην εξαιρετική συνοχή του αρχιτεκτονικού του ιστού. Τα λιθόστρωτα καλντερίμια ακολουθούν τη φυσική κλίση της πλαγιάς, συνδέοντας τις γειτονιές (μαχαλάδες) με χαμηλές πέτρινες βαθμίδες.',
-        'Στις διαδρομές αυτές δεσπόζουν τα τριώροφα πέτρινα αρχοντικά του 18ου και 19ου αιώνα, με χαρακτηριστικά ξύλινα σαχνισιά (προεξοχές), στέγες από πλάκες Πηλίου, τοξωτές εισόδους και ψηλούς μαντρότοιχους από ξερολιθιά.',
-        'Το περπάτημα στα στενά αυτά σοκάκια είναι μια εμπειρία αργής περιπλάνησης, όπου ο επισκέπτης ανακαλύπτει κρυφές αυλές, ανθισμένες μπουκαμβίλιες και μυρωδιές από γιασεμί και ξύλο.',
-      ],
-      en: [
-        'Lafkos is designated as a protected traditional settlement due to the remarkable architectural integrity of its historic core. Cobblestoned kalderimia follow the mountain contours, linking distinct village neighborhoods (mahalades) with broad, easy stone risers.',
-        'Lining these routes are handsome three-storey stone mansions dating from the 18th and 19th centuries, characterized by timber overhangs (sachnisia), local slate roofs, arched portals, and dry-stone boundary walls.',
-        'Strolling these tranquil, vehicle-free lanes is an immersive slow-travel experience filled with stone archways, blooming bougainvillea, and scents of jasmine and woodsmoke.',
-      ],
-    },
-    category: 'architecture',
-    geometry: { type: 'Point', coordinates: [23.2454, 39.1768] },
-    mapAnchor: [23.2454, 39.1768],
-    images: [architectureImage, lafkosAerialImage],
-    practical: {
-      el: [
-        'Ο οικισμός είναι κατάλληλος μόνο για περπάτημα — φορέστε αναπαυτικά παπούτσια.',
-        'Σεβαστείτε την ησυχία των κατοίκων και τους ιδιωτικούς χώρους.',
-      ],
-      en: [
-        'The historic center is strictly pedestrianized — wear comfortable walking shoes.',
-        'Please respect resident privacy and quiet hours in residential quarters.',
-      ],
-    },
-    sources: [localHeritageSource, wikimediaSource, osmSource],
-    featured: false,
-    isSeed: true,
-  },
-  {
-    kind: 'place',
-    entityKey: 'parking-east',
-    slug: { el: 'anatolikos-choros-stathmefsis', en: 'east-village-parking' },
-    title: {
-      el: 'Ανατολικός Χώρος Στάθμευσης (Κεντρικό Πάρκινγκ)',
-      en: 'East Central Village Parking',
-    },
-    eyebrow: { el: 'Στάθμευση οχημάτων', en: 'Visitor parking' },
-    summary: {
-      el: 'Κεντρικός δωρεάν χώρος στάθμευσης στην ανατολική είσοδο του οικισμού, δίπλα στον επαρχιακό δρόμο και τη στάση ΚΤΕΛ.',
-      en: 'Main free public parking area at the eastern village entrance, next to the regional road and bus stop.',
-    },
-    body: {
-      el: [
-        'Ο Ανατολικός Χώρος Στάθμευσης αποτελεί τον βασικό χώρο υποδοχής οχημάτων για τους επισκέπτες που φτάνουν στον Λαύκο. Βρίσκεται ακριβώς στην είσοδο του οικισμού από τον δρόμο του Προμυρίου.',
-        'Από το πάρκινγκ, η πρόσβαση στην κεντρική πλατεία, στα μουσεία και στα καταλύματα γίνεται με τα πόδια σε 2-3 λεπτά μέσα από τα πρώτα πλακόστρωτα καλντερίμια.',
-      ],
-      en: [
-        'The East Village Parking serves as the primary arrival parking area for travelers visiting Lafkos, situated directly at the eastern entrance from the Promyri regional road.',
-        'From this parking area, the central square, museums, and guest accommodations are an easy 2–3 minute stroll along pedestrianized stone lanes.',
-      ],
-    },
-    category: 'community',
-    geometry: { type: 'Point', coordinates: [23.24767, 39.1777] },
-    mapAnchor: [23.24767, 39.1777],
-    images: [lafkosAerialWideImage, squareImage],
-    practical: {
-      el: [
-        'Δωρεάν δημόσια στάθμευση 24 ώρες το 24ωρο.',
-        'Χωρητικότητα περίπου 25-30 οχημάτων.',
-        'Άμεση πρόσβαση στη στάση του ΚΤΕΛ και στο Μουσείο Ραδιοφώνου.',
-      ],
-      en: [
-        'Free public parking available 24/7.',
-        'Capacity for approximately 25–30 vehicles.',
-        'Immediate access to the regional bus stop and the Radio Museum.',
-      ],
-    },
-    sources: [osmSource, localHeritageSource],
-    featured: false,
-    isSeed: true,
-  },
-  {
-    kind: 'place',
-    entityKey: 'parking-west',
-    slug: { el: 'dytikos-choros-stathmefsis', en: 'west-village-parking' },
-    title: {
-      el: 'Δυτικός Χώρος Στάθμευσης (Είσοδος Μηλίνας)',
-      en: 'West Village Entrance Parking',
-    },
-    eyebrow: { el: 'Στάθμευση οχημάτων', en: 'Visitor parking' },
-    summary: {
-      el: 'Δωρεάν χώρος στάθμευσης στη δυτική είσοδο του χωριού, ιδανικό σημείο εκκίνησης για το καλντερίμι προς Μηλίνα.',
-      en: 'Free parking area at the western village gateway, ideal starting point for the historic trail to Milina.',
-    },
-    body: {
-      el: [
-        'Ο Δυτικός Χώρος Στάθμευσης εξυπηρετεί τα οχήματα που προσεγγίζουν τον Λαύκο από την πλευρά της Αργαλαστής και της Μηλίνας. Βρίσκεται πριν την έναρξη του πεζοδρομημένου ιστορικού ιστού.',
-        'Αποτελεί ιδανική αφετηρία για όσους θέλουν να περπατήσουν το ιστορικό καλντερίμι προς τη Μηλίνα ή να επισκεφθούν την Κρήνη Χατζή.',
-      ],
-      en: [
-        'The West Village Parking accommodates vehicles arriving via the Argalasti and Milina approaches, positioned just before the pedestrianized historic lanes begin.',
-        'It offers an optimal trailhead for hikers setting out along the historic stone path to Milina or visiting the nearby Chatzi Spring.',
-      ],
-    },
-    category: 'community',
-    geometry: { type: 'Point', coordinates: [23.2443, 39.17835] },
-    mapAnchor: [23.2443, 39.17835],
-    images: [lafkosAerialImage, squarePlaneTreesImage],
-    practical: {
-      el: ['Δωρεάν υπαίθρια στάθμευση.', 'Σημείο συνάντησης με το μονοπάτι προς Μηλίνα.'],
-      en: ['Free open-air parking.', 'Direct connection to the Milina hiking trail.'],
-    },
-    sources: [osmSource, localHeritageSource],
-    featured: false,
-    isSeed: true,
-  },
-  {
-    kind: 'place',
-    entityKey: 'ktel-bus-stop',
-    slug: { el: 'stasi-ktel-lafkou', en: 'lafkos-ktel-bus-stop' },
-    title: { el: 'Στάση Υπεραστικού ΚΤΕΛ Λαύκου', en: 'Lafkos KTEL Bus Stop' },
-    eyebrow: { el: 'Συγκοινωνία', en: 'Public transit' },
-    summary: {
-      el: 'Η κεντρική στάση λεωφορείων του Υπεραστικού ΚΤΕΛ Μαγνησίας που συνδέει τον Λαύκο με τον Βόλο, την Αργαλαστή και τη Μηλίνα.',
-      en: 'The regional bus stop connecting Lafkos with Volos, Argalasti, and Milina via KTEL Magnesias.',
-    },
-    body: {
-      el: [
-        'Η στάση του Υπεραστικού ΚΤΕΛ Μαγνησίας βρίσκεται στην ανατολική είσοδο του χωριού, δίπλα στο πάρκινγκ και κοντά στο Μουσείο Ραδιοφώνου.',
-        'Εξυπηρετεί τακτικά καθημερινά δρομολόγια που συνδέουν τον Λαύκο με τον σταθμό υπεραστικών λεωφορείων του Βόλου, καθώς και με τους γειτονικούς οικισμούς του Νοτίου Πηλίου.',
-      ],
-      en: [
-        'The regional KTEL bus stop is located at the eastern gateway of Lafkos, adjacent to the public parking and within steps of the Radio Museum.',
-        'It provides scheduled daily coach services connecting Lafkos directly to the city of Volos as well as surrounding South Pelion villages.',
-      ],
-    },
-    category: 'community',
-    geometry: { type: 'Point', coordinates: [23.24721, 39.17772] },
-    mapAnchor: [23.24721, 39.17772],
-    images: [lafkosAerialWideImage, squareImage],
-    practical: {
-      el: [
-        'Διαθέτει στέγαστρο αναμονής και πίνακα δρομολογίων.',
-        'Πληροφορίες δρομολογίων: ktelvolou.gr ή τηλεφωνικά στο 24210-25507.',
-      ],
-      en: [
-        'Equipped with a passenger shelter and timetable board.',
-        'Timetable information: ktelvolou.gr or via regional telephone inquiry.',
-      ],
-    },
-    sources: [osmSource],
-    featured: false,
-    isSeed: true,
-  },
-  {
-    kind: 'place',
-    entityKey: 'agia-paraskevi-view',
-    slug: { el: 'thea-agias-paraskevis', en: 'agia-paraskevi-viewpoint' },
-    title: { el: 'Ξωκλήσι & Θέα Αγίας Παρασκευής', en: 'Agia Paraskevi Chapel & Viewpoint' },
-    eyebrow: { el: 'Στάση θέας προς τον κόλπο', en: 'Gulf viewpoint' },
-    summary: {
-      el: 'Ήσυχο ξωκλήσι στη δυτική πλαγιά του χωριού με πανοραμική θέα προς τους ελαιώνες και τον Παγασητικό Κόλπο.',
-      en: 'Tranquil hillside chapel on the western slope overlooking terraced olive groves and the Pagasetic Gulf.',
-    },
-    body: {
-      el: [
-        'Το ξωκλήσι της Αγίας Παρασκευής βρίσκεται στη δυτική πλαγιά, λίγο πιο έξω από το κέντρο του οικισμού. Προσφέρει ένα ήρεμο πλάτωμα με εξαιρετική θέα προς τον κόλπο και τα απέναντι βουνά.',
-        'Αποτελεί ιδανική στάση για έναν σύντομο περίπατο μακριά από τον κεντρικό ιστό, απολαμβάνοντας τη σιγαλιά του πηλιορείτικου τοπίου.',
-      ],
-      en: [
-        'The chapel of Agia Paraskevi sits along the western slope just outside the central village fabric, offering a peaceful terrace with expansive views over the gulf waters and distant mountain ridges.',
-        'It makes a delightful short walking destination for those seeking tranquility amidst ancient olive orchards and Mediterranean flora.',
-      ],
-    },
-    category: 'viewpoint',
-    geometry: { type: 'Point', coordinates: [23.24332, 39.1782] },
-    mapAnchor: [23.24332, 39.1782],
-    images: [pagaseticViewImage, architectureImage],
-    practical: {
-      el: [
-        'Προσβάσιμο σε 10 λεπτά με τα πόδια από την κεντρική πλατεία.',
-        'Ιδανικό σημείο για πρωινή ή απογευματινή ανάπαυλα.',
-      ],
-      en: [
-        'Accessible via an easy 10-minute walk from the central square.',
-        'Ideal spot for morning or late afternoon quiet contemplation.',
-      ],
-    },
-    sources: [osmSource, localHeritageSource],
-    featured: false,
     isSeed: true,
   },
   {
     kind: 'place',
     entityKey: 'sports-court-antetokounmpo',
-    slug: { el: 'gipedo-gkrafiti-antetokounmpo', en: 'sports-court-antetokounmpo-graffiti' },
+    slug: {
+      el: 'gipedo-gkrafiti-antetokounmpo',
+      en: 'sports-court-antetokounmpo-graffiti',
+    },
     title: {
       el: 'Δημοτικό Σχολείο & Γήπεδο Λαύκου — Graffiti Αντετοκούνμπο',
       en: 'Lafkos School & Sports Court — Antetokounmpo Mural',
@@ -1018,9 +1356,25 @@ export const places: Place[] = [
       ],
     },
     category: 'community',
-    geometry: { type: 'Point', coordinates: [23.2468, 39.17315] },
+    geometry: {
+      type: 'Point',
+      coordinates: [23.2468, 39.17315],
+    },
     mapAnchor: [23.2468, 39.17315],
-    images: [antetokounmpoGraffitiImage, antetokounmpoGraffitiActionImage],
+    images: [
+      {
+        src: 'https://magnesianews.gr/wp-content/uploads/2021/07/giannis3.jpg',
+        alt: 'Το μεγάλο graffiti του Γιάννη Αντετοκούνμπο στο ανοιχτό γήπεδο μπάσκετ του Λαύκου',
+        credit: 'Magnesia News / Στέργιος & κάτοικοι Λαύκου (2021)',
+        license: 'Editorial / Local Community Art',
+      },
+      {
+        src: 'https://magnesianews.gr/wp-content/uploads/2021/07/giannis1_0.jpg',
+        alt: 'Άποψη του γηπέδου μπάσκετ στον Λαύκο με το graffiti του Γιάννη Αντετοκούνμπο',
+        credit: 'Magnesia News / Στέργιος & κάτοικοι Λαύκου (2021)',
+        license: 'Editorial / Local Community Art',
+      },
+    ],
     practical: {
       el: [
         'Ελεύθερη πρόσβαση στο ανοιχτό γήπεδο μπάσκετ και ποδοσφαίρου.',
@@ -1033,8 +1387,251 @@ export const places: Place[] = [
         'Great spot for recreational sports and taking a photo with the mural.',
       ],
     },
-    sources: [magnesianewsSource, localHeritageSource, osmSource],
+    sources: [
+      {
+        label: 'Magnesia News — Αντετοκούνμπο σε γκράφιτι στο γήπεδο του Λαύκου',
+        url: 'https://magnesianews.gr/athlitismos/basket/antetokoynmpo-se-gkrafiti-sto-gipedo-toy-laykoy.html',
+      },
+      {
+        label: 'Πολιτιστικός Σύλλογος Λαυκιωτών «Η Δράση»',
+        url: 'https://lafkos.gr/',
+      },
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+    ],
     featured: true,
+    isSeed: true,
+  },
+  {
+    kind: 'place',
+    entityKey: 'square-fountain',
+    slug: {
+      el: 'krini-plateias',
+      en: 'square-marble-fountain',
+    },
+    title: {
+      el: 'Μαρμάρινη Κρήνη της Πλατείας',
+      en: 'The Central Square Fountain',
+    },
+    eyebrow: {
+      el: 'Δροσιά στην καρδιά του χωριού',
+      en: 'Fresh water in the village square',
+    },
+    summary: {
+      el: 'Λαξευτή κρήνη από πηλιορείτικη πέτρα και μάρμαρο, προσφέρει αδιάκοπα δροσερό νερό στους θαμώνες της πλατείας.',
+      en: 'Carved from Pelion stone and white marble, continuously providing cool water to visitors beneath the plane trees.',
+    },
+    body: {
+      el: [
+        'Στο κέντρο της πλατείας, ανάμεσα στα τραπέζια των καφενείων και κάτω από τον παχύ ίσκιο των πλατάνων, βρίσκεται η κεντρική μαρμάρινη κρήνη. Σχεδιασμένη με σεβασμό στην πηλιορείτικη παράδοση της λιθογλυπτικής, αποτελεί αναπόσπαστο σημείο της καθημερινής συνήθειας των κατοίκων.',
+        'Εδώ σταματούν οι πεζοπόροι για να γεμίσουν τα παγούρια τους πριν αναχωρήσουν για τα μονοπάτια προς τη Μηλίνα, τον Προφήτη Ηλία ή το Μοναστήρι του Αγίου Αθανασίου.',
+      ],
+      en: [
+        'At the core of the central square, nestled among the café tables beneath the dense plane tree boughs, stands the village square marble fountain. Built following traditional Pelion stonemasonry techniques, it is a focal point of daily life.',
+        'Hikers regularly pause here to refill water bottles before embarking on trail routes toward Milina, Prophet Elias summit, or the Monastery of Agios Athanasios.',
+      ],
+    },
+    category: 'architecture',
+    geometry: {
+      type: 'Point',
+      coordinates: [23.2463, 39.17745],
+    },
+    mapAnchor: [23.2463, 39.17745],
+    images: [
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Platia_in_Lafkos%2C_Pilion.jpg',
+        alt: 'Η κεντρική πλατεία του Λαύκου κάτω από τα αιωνόβια πλατάνια',
+        credit: 'Photo by Cosa2244 (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/c/c6/Platia_in_Lafkos%2C_Pilion_%282%29.jpg',
+        alt: 'Τα μεγάλα πλατάνια και τα παραδοσιακά καφενεία στην πλατεία του Λαύκου',
+        credit: 'Photo by Cosa2244 (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+    ],
+    practical: {
+      el: [
+        'Κεντρικό σημείο ανεφοδιασμού νερού στην πλατεία.',
+        'Πόσιμο, τρεχούμενο νερό άριστης ποιότητας.',
+      ],
+      en: [
+        'Central water refill point on the main square.',
+        'Potable, continuously flowing fresh mountain water.',
+      ],
+    },
+    sources: [
+      {
+        label: 'Πολιτιστικός Σύλλογος Λαυκιωτών «Η Δράση»',
+        url: 'https://lafkos.gr/',
+      },
+      {
+        label: 'Wikimedia Commons — Lafkos, Pelion Collection',
+        url: 'https://commons.wikimedia.org/wiki/Category:Lafkos',
+      },
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+    ],
+    featured: false,
+    isSeed: true,
+  },
+  {
+    kind: 'place',
+    entityKey: 'theotokos-church',
+    slug: {
+      el: 'ierow-naos-genniseos-theotokou',
+      en: 'church-nativity-theotokos',
+    },
+    title: {
+      el: 'Ιερός Ναός Γεννήσεως της Θεοτόκου (1888)',
+      en: 'Church of the Nativity of the Theotokos',
+    },
+    eyebrow: {
+      el: 'Μνημειακή βασιλική',
+      en: 'Monumental basilica',
+    },
+    summary: {
+      el: 'Επιβλητική τρίκλιτη πηλιορείτικη βασιλική με περίτεχνο πέτρινο καμπαναριό και ξυλόγλυπτο τέμπλο δεσπόζει στην πλατεία.',
+      en: 'An imposing three-aisled Pelion basilica with a stone bell tower and carved iconostasis overlooking the central square.',
+    },
+    body: {
+      el: [
+        'Ο μητροπολιτικός ναός της Γεννήσεως της Θεοτόκου θεμελιώθηκε στη σημερινή του μορφή το 1888 πάνω σε παλαιότερα βυζαντινά ίχνη, δεσπόζοντας με την επιβλητική του πέτρινη παρουσία στη δυτική πλευρά της πλατείας.',
+        'Αποτελεί κλασικό δείγμα της πηλιορείτικης εκκλησιαστικής αρχιτεκτονικής του ύστερου 19ου αιώνα. Στο εσωτερικό του ξεχωρίζουν το εξαιρετικό ξυλόγλυπτο τέμπλο, ο δεσποτικός θρόνος και σπάνιες φορητές εικόνες της μεταβυζαντινής περιόδου.',
+        'Το περίτεχνο πέτρινο καμπαναριό με τα λαξευτά αγκωνάρια αποτελεί ένα από τα πιο αναγνωρίσιμα ορόσημα του ορίζοντα του Λαύκου.',
+      ],
+      en: [
+        'The parish church of the Nativity of the Theotokos was rebuilt in its present form in 1888 over earlier foundations, commanding the western side of the central square with majestic stone masonry.',
+        'It stands as a quintessential exemplar of late 19th-century Pelion ecclesiastical architecture. Inside, it preserves a magnificent hand-carved wooden iconostasis, episcopal throne, and treasured post-Byzantine portable icons.',
+        'Its finely dressed stone belfry with sculpted architraves forms one of the most recognizable landmarks on the village skyline.',
+      ],
+    },
+    category: 'sacred',
+    geometry: {
+      type: 'Point',
+      coordinates: [23.24634, 39.17784],
+    },
+    mapAnchor: [23.24634, 39.17784],
+    images: [
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Lafkos_Platia_Zypressen_01.jpg/1280px-Lafkos_Platia_Zypressen_01.jpg',
+        alt: 'Ο Ιερός Ναός Γεννήσεως της Θεοτόκου με το καμπαναριό του δίπλα στο αιωνόβιο κυπαρίσσι της πλατείας του Λαύκου',
+        credit: 'Photo by Chondriammos (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/%CE%9B%CE%B1%CF%8D%CE%BA%CE%BF%CF%82_DJI_5252.jpg/1920px-%CE%9B%CE%B1%CF%8D%CE%BA%CE%BF%CF%82_DJI_5252.jpg',
+        alt: 'Αεροφωτογραφία του Λαύκου με τον Ναό Γεννήσεως της Θεοτόκου και τις κεραμοσκεπές του οικισμού',
+        credit: 'Photo by C messier (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+    ],
+    practical: {
+      el: [
+        'Ανοιχτός κατά τις ιερές ακολουθίες και τα πρωινά του σαββατοκύριακου.',
+        'Η κύρια είσοδος ανοίγει απευθείας προς το πλακόστρωτο της πλατείας.',
+      ],
+      en: [
+        'Open during religious services and weekend mornings.',
+        'The main portal opens directly onto the paved village square.',
+      ],
+    },
+    sources: [
+      {
+        label: 'Υπουργείο Πολιτισμού — Μνημεία Νοτίου Πηλίου',
+        url: 'http://listedmonuments.culture.gr/',
+      },
+      {
+        label: 'Wikimedia Commons — Lafkos, Pelion Collection',
+        url: 'https://commons.wikimedia.org/wiki/Category:Lafkos',
+      },
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+    ],
+    featured: true,
+    isSeed: true,
+  },
+  {
+    kind: 'place',
+    entityKey: 'touloumba-spring',
+    slug: {
+      el: 'krini-touloumba',
+      en: 'touloumba-spring',
+    },
+    title: {
+      el: 'Κρήνη Τουλούμπα (1910)',
+      en: 'Touloumba Spring (1910)',
+    },
+    eyebrow: {
+      el: 'Η βρύση της γειτονιάς Λειβαδάκια',
+      en: 'The Livadakia neighborhood spring',
+    },
+    summary: {
+      el: 'Πέτρινη κρήνη του 1910 με την ιστορική χειροκίνητη αντλία (τουλούμπα) και τον προστατευμένο πλάτανο του 1913.',
+      en: 'Historic 1910 stone spring featuring its original manual suction pump and a protected plane tree planted in 1913.',
+    },
+    body: {
+      el: [
+        'Η Κρήνη Τουλούμπα κατασκευάστηκε το 1910 στη γραφική γειτονιά «Λειβαδάκια» του Λαύκου. Ονομάστηκε έτσι από την ιστορική τουλούμπα (χειροκίνητη αντλία νερού) που τοποθετήθηκε για να αντλείται το νερό που έφτανε με υπόγειο αγωγό από τις ορεινές πηγές Σκούρα και Στάκη.',
+        'Ακριβώς δίπλα στην κρήνη φυτεύτηκε το 1913 ένας πλάτανος, ο οποίος σήμερα έχει αναπτυχθεί σε ένα εντυπωσιακό φυσικό μνημείο που σκεπάζει ολόκληρη τη μικρή πέτρινη πλατεία της γειτονιάς.',
+      ],
+      en: [
+        'The Touloumba Spring was built in 1910 in the quiet "Livadakia" quarter of Lafkos. It earned its name from the vintage mechanical pump (touloumba) installed to draw spring water piped underground from the mountain sources of Skoura and Staki.',
+        'Adjacent to the fountain, a plane tree planted in 1913 has matured into a majestic natural canopy shading the charming neighborhood stone courtyard.',
+      ],
+    },
+    category: 'nature',
+    geometry: {
+      type: 'Point',
+      coordinates: [23.24835, 39.1758],
+    },
+    mapAnchor: [23.24835, 39.1758],
+    images: [
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Platia_in_Lafkos%2C_Pilion_%282%29.jpg/1280px-Platia_in_Lafkos%2C_Pilion_%282%29.jpg',
+        alt: 'Ο υπεραιωνόβιος πλάτανος και η πέτρινη γειτονιά της Κρήνης Τουλούμπα στα Λειβαδάκια',
+        credit: 'Photo by Cosa2244 (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/%CE%9A%CF%81%CE%AE%CE%BD%CE%B7_%CE%9B%CE%B5%CE%BF%CE%BD%CF%84%CE%AC%CF%81%CE%B9%2C_%CE%86%CE%B3%CE%B9%CE%BF%CF%82_%CE%93%CE%B5%CF%8E%CF%81%CE%B3%CE%B9%CE%BF%CF%82_%CE%9D%CE%B7%CE%BB%CE%B5%CE%AF%CE%B1%CF%82_9517.jpg/1280px-%CE%9A%CF%81%CE%AE%CE%BD%CE%B7_%CE%9B%CE%B5%CE%BF%CE%BD%CF%84%CE%AC%CF%81%CE%B9%2C_%CE%86%CE%B3%CE%B9%CE%BF%CF%82_%CE%93%CE%B5%CF%8E%CF%81%CE%B3%CE%B9%CE%BF%CF%82_%CE%9D%CE%B7%CE%BB%CE%B5%CE%AF%CE%B1%CF%82_9517.jpg',
+        alt: 'Παραδοσιακή λιθόκτιστη κρήνη με τρεχούμενο πηγαίο νερό στο Πήλιο',
+        credit: 'Photo by C messier (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+    ],
+    practical: {
+      el: [
+        'Ήσυχη τοποθεσία στα ανατολικά του χωριού, ιδανική για ανάπαυλα.',
+        'Συνδέεται με το κυκλικό μονοπάτι των κρηνών του Λαύκου.',
+      ],
+      en: [
+        'A peaceful location in the eastern quarter, ideal for a quiet pause.',
+        'Connected along the circular heritage springs walk of Lafkos.',
+      ],
+    },
+    sources: [
+      {
+        label: 'Πολιτιστικός Σύλλογος Λαυκιωτών «Η Δράση»',
+        url: 'https://lafkos.gr/',
+      },
+      {
+        label: 'Wikimedia Commons — Lafkos, Pelion Collection',
+        url: 'https://commons.wikimedia.org/wiki/Category:Lafkos',
+      },
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+    ],
+    featured: false,
     isSeed: true,
   },
 ];
@@ -1042,10 +1639,284 @@ export const places: Place[] = [
 export const trails: Trail[] = [
   {
     kind: 'trail',
+    entityKey: 'lafkos-chondri-ammos-trail',
+    slug: {
+      el: 'lafkos-mousges-chondri-ammos',
+      en: 'lafkos-mousges-chondri-ammos-trail',
+    },
+    title: {
+      el: 'Διαδρομή Λαύκος – Μούσγες – Χονδρή Άμμος',
+      en: 'Lafkos to Chondri Ammos Aegean Trail',
+    },
+    eyebrow: {
+      el: 'Προς την άγρια ακτή του Αιγαίου',
+      en: 'Toward the wild Aegean coast',
+    },
+    summary: {
+      el: 'Πεζοπορία που διασχίζει τους ανατολικούς ελαιώνες και κατηφορίζει μέσα από μεσογειακή βλάστηση προς τις απόμερες παραλίες.',
+      en: 'A scenic hike traversing eastern olive slopes and Mediterranean scrub toward secluded coastal coves.',
+    },
+    body: {
+      el: [
+        'Μια συναρπαστική διαδρομή που αναδεικνύει τη διπλή φύση του Λαύκου, ο οποίος αγναντεύει τόσο τον ήρεμο Παγασητικό όσο και το ανοιχτό Αιγαίο Πέλαγος.',
+        'Η πορεία ξεκινά από το ανατολικό άκρο του χωριού, περνά από την περιοχή Μούσγες και ακολουθεί παλιά αγροτικά μονοπάτια μέσα από πυκνούς ελαιώνες, σχίνους και κουμαριές, καταλήγοντας στην παρθένα παραλία Χονδρή Άμμος.',
+      ],
+      en: [
+        'A captivating route illustrating the unique geographic position of Lafkos, poised between the sheltered waters of the Pagasetic Gulf and the open horizon of the Aegean Sea.',
+        'Beginning at the village’s eastern edge, the path moves past Mousges and follows pastoral paths through olive groves, wild arbutus, and fragrant macchia before descending to the pristine shores of Chondri Ammos.',
+      ],
+    },
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [23.24639, 39.17731],
+        [23.24644, 39.17723],
+        [23.24665, 39.17697],
+        [23.24667, 39.17692],
+        [23.24668, 39.17688],
+        [23.24671, 39.17662],
+        [23.24682, 39.17598],
+        [23.24692, 39.17569],
+        [23.24708, 39.17559],
+        [23.24725, 39.17545],
+        [23.24724, 39.17574],
+        [23.24731, 39.17645],
+        [23.24735, 39.17686],
+        [23.24736, 39.17701],
+        [23.24755, 39.177],
+        [23.24766, 39.17702],
+        [23.24775, 39.17709],
+        [23.24788, 39.17723],
+        [23.24814, 39.17778],
+        [23.24817, 39.17783],
+        [23.24873, 39.17776],
+        [23.2491, 39.17768],
+        [23.24931, 39.17757],
+        [23.24934, 39.17745],
+        [23.24948, 39.17732],
+        [23.24978, 39.1772],
+        [23.25015, 39.17692],
+        [23.25049, 39.17643],
+        [23.25067, 39.17629],
+        [23.251, 39.17618],
+        [23.25127, 39.17609],
+        [23.25149, 39.17592],
+        [23.25183, 39.17577],
+        [23.25222, 39.17566],
+        [23.2526, 39.17547],
+        [23.25297, 39.17543],
+        [23.25337, 39.17518],
+        [23.25367, 39.17513],
+        [23.25393, 39.17505],
+        [23.2542, 39.17495],
+        [23.25432, 39.17489],
+        [23.25447, 39.17484],
+        [23.25478, 39.17478],
+        [23.2551, 39.1747],
+        [23.25522, 39.17467],
+        [23.25534, 39.17462],
+        [23.25535, 39.1747],
+        [23.25557, 39.17471],
+        [23.25561, 39.17475],
+        [23.25566, 39.1748],
+        [23.25596, 39.17436],
+        [23.25629, 39.17392],
+        [23.25625, 39.17374],
+        [23.25652, 39.17334],
+        [23.25663, 39.17317],
+        [23.2567, 39.17287],
+        [23.25687, 39.17267],
+        [23.2572, 39.17235],
+        [23.25743, 39.17224],
+        [23.25752, 39.17214],
+        [23.25772, 39.172],
+        [23.25788, 39.17171],
+        [23.258, 39.17174],
+        [23.25803, 39.17188],
+        [23.25799, 39.17225],
+        [23.25806, 39.17235],
+        [23.25817, 39.17229],
+        [23.25824, 39.17211],
+        [23.25856, 39.17192],
+        [23.25874, 39.17182],
+        [23.25886, 39.17157],
+        [23.25896, 39.17158],
+        [23.25902, 39.1717],
+        [23.25898, 39.17188],
+        [23.25886, 39.17201],
+        [23.25892, 39.17207],
+        [23.25904, 39.17203],
+        [23.25938, 39.17182],
+        [23.26002, 39.17125],
+        [23.2601, 39.17102],
+        [23.26033, 39.17101],
+        [23.26054, 39.1711],
+        [23.26057, 39.17124],
+        [23.26057, 39.17133],
+        [23.26068, 39.17133],
+        [23.26088, 39.17124],
+        [23.26093, 39.17113],
+        [23.26132, 39.17108],
+        [23.26209, 39.17118],
+        [23.26267, 39.17137],
+        [23.26287, 39.1714],
+        [23.26313, 39.17135],
+        [23.26337, 39.17144],
+        [23.26356, 39.17167],
+        [23.26372, 39.17174],
+        [23.26392, 39.17182],
+        [23.26413, 39.17176],
+        [23.26449, 39.1717],
+        [23.26478, 39.1715],
+        [23.26525, 39.17138],
+        [23.26582, 39.17126],
+        [23.26596, 39.17117],
+        [23.26602, 39.17106],
+        [23.26609, 39.17083],
+        [23.26628, 39.17066],
+        [23.26647, 39.17051],
+        [23.26692, 39.17039],
+        [23.26715, 39.17011],
+        [23.26753, 39.16994],
+        [23.26802, 39.16987],
+        [23.26822, 39.16977],
+        [23.26843, 39.16975],
+        [23.26867, 39.16957],
+        [23.26882, 39.1692],
+        [23.26893, 39.16879],
+        [23.2689, 39.16875],
+        [23.26889, 39.16869],
+        [23.26889, 39.16852],
+        [23.26888, 39.16839],
+        [23.2689, 39.16827],
+        [23.26897, 39.16807],
+        [23.26901, 39.16785],
+        [23.26901, 39.16775],
+        [23.26902, 39.16757],
+        [23.26907, 39.16744],
+        [23.26912, 39.16724],
+        [23.26922, 39.1671],
+        [23.2693, 39.167],
+        [23.26932, 39.16694],
+        [23.26933, 39.16686],
+        [23.26929, 39.16672],
+        [23.26926, 39.16655],
+        [23.26923, 39.16647],
+        [23.26923, 39.16631],
+        [23.26923, 39.16616],
+        [23.26921, 39.16585],
+        [23.26923, 39.16572],
+        [23.26924, 39.16561],
+        [23.26922, 39.16553],
+        [23.26918, 39.16545],
+        [23.26907, 39.16534],
+        [23.26899, 39.16524],
+        [23.26884, 39.16506],
+        [23.26853, 39.1646],
+        [23.26849, 39.1645],
+        [23.26851, 39.16441],
+        [23.26854, 39.16435],
+        [23.26871, 39.1642],
+        [23.26873, 39.16414],
+        [23.26875, 39.1641],
+        [23.26883, 39.16408],
+        [23.26893, 39.16404],
+        [23.269, 39.16397],
+        [23.26903, 39.16391],
+        [23.26904, 39.16385],
+      ],
+    },
+    distanceMeters: 3720,
+    durationMinutes: 75,
+    elevationGainMeters: 45,
+    difficulty: 'moderate',
+    surface: {
+      el: 'Μονοπάτι, καλντερίμι και αγροτικός χωματόδρομος',
+      en: 'Footpath, stone trail, and unpaved track',
+    },
+    safety: {
+      el: [
+        'Μεγαλύτερη διαδρομή — φροντίστε για επαρκή ποσότητα νερού και σνακ.',
+        'Στην παραλία δεν υπάρχουν καταστήματα ή ομπρέλες.',
+      ],
+      en: [
+        'Longer hike — ensure sufficient water supply and snacks.',
+        'The destination beach is unorganized with no commercial facilities.',
+      ],
+    },
+    waypoints: [
+      {
+        title: {
+          el: 'Πλατεία Λαύκου',
+          en: 'Lafkos Square',
+        },
+        coordinate: [23.24646, 39.17751],
+        image: {
+          src: 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Platia_in_Lafkos%2C_Pilion.jpg',
+          alt: 'Η κεντρική πλατεία του Λαύκου κάτω από τα αιωνόβια πλατάνια',
+          credit: 'Photo by Cosa2244 (Wikimedia Commons)',
+          license: 'CC BY-SA 4.0',
+        },
+      },
+      {
+        title: {
+          el: 'Περιοχή Μούσγες',
+          en: 'Mousges Area',
+        },
+        coordinate: [23.2539, 39.167],
+        image: {
+          src: 'https://upload.wikimedia.org/wikipedia/commons/0/0b/%CE%9B%CE%B1%CF%8D%CE%BA%CE%BF%CF%82_DJI_5269.jpg',
+          alt: 'Αεροφωτογραφία του Λαύκου και των γύρω καταπράσινων πλαγιών',
+          credit: 'Photo by C messier (Wikimedia Commons)',
+          license: 'CC BY-SA 4.0',
+        },
+      },
+      {
+        title: {
+          el: 'Μονή Αγίου Σπυρίδωνα',
+          en: 'Agios Spyridon Monastery',
+        },
+        coordinate: [23.26929, 39.16367],
+        image: {
+          src: 'https://upload.wikimedia.org/wikipedia/commons/6/6c/%CE%9D%CE%B1%CF%8C%CF%82_%CE%9A%CE%BF%CE%B9%CE%BC%CE%AE%CF%83%CE%B5%CF%89%CF%82_%CE%98%CE%B5%CE%BF%CF%84%CF%8C%CE%BA%CE%BF%CF%85_%CF%83%CF%84%CE%BF_%CE%A0%CF%81%CE%BF%CE%BC%CF%8D%CF%81%CE%B9_9166.jpg',
+          alt: 'Παραδοσιακός πέτρινος ναός και καμπαναριό στο Νότιο Πήλιο',
+          credit: 'Photo by C messier (Wikimedia Commons)',
+          license: 'CC BY-SA 4.0',
+        },
+      },
+    ],
+    sources: [
+      {
+        label: 'Pelion Routes & Topoguide South Pelion',
+        url: 'https://pelionroutes.com/',
+      },
+      {
+        label: 'Wikimedia Commons — Lafkos, Pelion Collection',
+        url: 'https://commons.wikimedia.org/wiki/Category:Lafkos',
+      },
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+    ],
+    featured: false,
+    isSeed: true,
+  },
+  {
+    kind: 'trail',
     entityKey: 'lafkos-milina-trail',
-    slug: { el: 'kalderimi-lafkos-milina', en: 'historic-kalderimi-lafkos-milina' },
-    title: { el: 'Ιστορικό Καλντερίμι Λαύκος – Μηλίνα', en: 'Historic Kalderimi Lafkos to Milina' },
-    eyebrow: { el: 'Από το βουνό στον Παγασητικό', en: 'From the mountain to the Pagasetic' },
+    slug: {
+      el: 'kalderimi-lafkos-milina',
+      en: 'historic-kalderimi-lafkos-milina',
+    },
+    title: {
+      el: 'Ιστορικό Καλντερίμι Λαύκος – Μηλίνα',
+      en: 'Historic Kalderimi Lafkos to Milina',
+    },
+    eyebrow: {
+      el: 'Από το βουνό στον Παγασητικό',
+      en: 'From the mountain to the Pagasetic',
+    },
     summary: {
       el: 'Το κλασικό, καλοδιατηρημένο λιθόστρωτο μονοπάτι που κατηφορίζει μέσα από αιωνόβιους ελαιώνες προς το παραθαλάσσιο λιμανάκι της Μηλίνας.',
       en: 'The quintessential stone-paved path descending through ancient olive groves to the seaside fishing harbor of Milina.',
@@ -1202,39 +2073,90 @@ export const trails: Trail[] = [
     },
     waypoints: [
       {
-        title: { el: 'Πλατεία Λαύκου (Αφετηρία)', en: 'Lafkos Square (Start)' },
-        coordinate: squareCoord,
-        image: squareImage,
+        title: {
+          el: 'Πλατεία Λαύκου (Αφετηρία)',
+          en: 'Lafkos Square (Start)',
+        },
+        coordinate: [23.24646, 39.17751],
+        image: {
+          src: 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Platia_in_Lafkos%2C_Pilion.jpg',
+          alt: 'Η κεντρική πλατεία του Λαύκου κάτω από τα αιωνόβια πλατάνια',
+          credit: 'Photo by Cosa2244 (Wikimedia Commons)',
+          license: 'CC BY-SA 4.0',
+        },
       },
       {
-        title: { el: 'Κρήνη Χατζή', en: 'Chatzi Spring' },
+        title: {
+          el: 'Κρήνη Χατζή',
+          en: 'Chatzi Spring',
+        },
         coordinate: [23.24412, 39.18205],
-        image: chatziSpringImage,
+        image: {
+          src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Lafkos_Way_01.jpg/1280px-Lafkos_Way_01.jpg',
+          alt: 'Η καταπράσινη διαδρομή και το πέτρινο περιβάλλον προς την Κρήνη Χατζή στον Λαύκο',
+          credit: 'Photo by Chondriammos (Wikimedia Commons)',
+          license: 'CC BY-SA 4.0',
+        },
       },
       {
-        title: { el: 'Ελαιώνες με θέα Παγασιτικού', en: 'Olive Groves & Gulf Vistas' },
+        title: {
+          el: 'Ελαιώνες με θέα Παγασιτικού',
+          en: 'Olive Groves & Gulf Vistas',
+        },
         coordinate: [23.2352, 39.1701],
-        image: pagaseticViewImage,
+        image: {
+          src: 'https://upload.wikimedia.org/wikipedia/commons/a/ae/Pelion%2C_Pagassitikos_Gulf_and_coastline._Photo_taken_from_Lafkos_village.jpg',
+          alt: 'Θέα στον Παγασητικό Κόλπο και την ακτογραμμή από τον Λαύκο',
+          credit: 'Photo by Ioannis Fakis (Wikimedia Commons)',
+          license: 'CC BY-SA 4.0',
+        },
       },
       {
-        title: { el: 'Παραλία Μηλίνας (Τερματισμός)', en: 'Milina Beachfront (Finish)' },
+        title: {
+          el: 'Παραλία Μηλίνας (Τερματισμός)',
+          en: 'Milina Beachfront (Finish)',
+        },
         coordinate: [23.22064, 39.17136],
-        image: milinaCoastImage,
+        image: {
+          src: 'https://upload.wikimedia.org/wikipedia/commons/b/b4/Milina%2C_Pelion.jpg',
+          alt: 'Η παραλιακή ζώνη και τα νερά της Μηλίνας στον Παγασητικό',
+          credit: 'Photo by Pavlos1988 (Wikimedia Commons)',
+          license: 'CC BY-SA 4.0',
+        },
       },
     ],
-    sources: [pelionRoutesSource, wikimediaSource, osmSource],
+    sources: [
+      {
+        label: 'Pelion Routes & Topoguide South Pelion',
+        url: 'https://pelionroutes.com/',
+      },
+      {
+        label: 'Wikimedia Commons — Lafkos, Pelion Collection',
+        url: 'https://commons.wikimedia.org/wiki/Category:Lafkos',
+      },
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+    ],
     featured: true,
     isSeed: true,
   },
   {
     kind: 'trail',
     entityKey: 'monastery-athanasios-trail',
-    slug: { el: 'diadromi-moni-agiou-athanasiou', en: 'lafkos-monastery-agios-athanasios-trail' },
+    slug: {
+      el: 'diadromi-moni-agiou-athanasiou',
+      en: 'lafkos-monastery-agios-athanasios-trail',
+    },
     title: {
       el: 'Διαδρομή Λαύκος – Μονή Αγίου Αθανασίου',
       en: 'Lafkos to Agios Athanasios Monastery',
     },
-    eyebrow: { el: 'Πνευματικός και φυσιολατρικός περίπατος', en: 'A spiritual and natural walk' },
+    eyebrow: {
+      el: 'Πνευματικός και φυσιολατρικός περίπατος',
+      en: 'A spiritual and natural walk',
+    },
     summary: {
       el: 'Γαλήνια πορεία βορειοανατολικά του χωριού μέσα από αιωνόβιους ελαιώνες και αγροτικά τοπία προς το φρουριακό μοναστήρι του 1795.',
       en: 'A peaceful northeast-bound walk through century-old olive groves and pastoral scenery to the 1795 fortified monastery.',
@@ -1477,31 +2399,77 @@ export const trails: Trail[] = [
     },
     waypoints: [
       {
-        title: { el: 'Πλατεία Λαύκου', en: 'Lafkos Square' },
-        coordinate: squareCoord,
-        image: squareImage,
+        title: {
+          el: 'Πλατεία Λαύκου',
+          en: 'Lafkos Square',
+        },
+        coordinate: [23.24646, 39.17751],
+        image: {
+          src: 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Platia_in_Lafkos%2C_Pilion.jpg',
+          alt: 'Η κεντρική πλατεία του Λαύκου κάτω από τα αιωνόβια πλατάνια',
+          credit: 'Photo by Cosa2244 (Wikimedia Commons)',
+          license: 'CC BY-SA 4.0',
+        },
       },
       {
-        title: { el: 'Κοιλάδα Κωτίκι', en: 'Kotiki Valley' },
+        title: {
+          el: 'Κοιλάδα Κωτίκι',
+          en: 'Kotiki Valley',
+        },
         coordinate: [23.26055, 39.19606],
-        image: lafkosAerialWideImage,
+        image: {
+          src: 'https://upload.wikimedia.org/wikipedia/commons/0/0b/%CE%9B%CE%B1%CF%8D%CE%BA%CE%BF%CF%82_DJI_5269.jpg',
+          alt: 'Αεροφωτογραφία του Λαύκου και των γύρω καταπράσινων πλαγιών',
+          credit: 'Photo by C messier (Wikimedia Commons)',
+          license: 'CC BY-SA 4.0',
+        },
       },
       {
-        title: { el: 'Μονή Αγίου Αθανασίου (1795)', en: 'Monastery of Agios Athanasios' },
+        title: {
+          el: 'Μονή Αγίου Αθανασίου (1795)',
+          en: 'Monastery of Agios Athanasios',
+        },
         coordinate: [23.28037, 39.21299],
-        image: promyriChurchImage,
+        image: {
+          src: 'https://upload.wikimedia.org/wikipedia/commons/6/6c/%CE%9D%CE%B1%CF%8C%CF%82_%CE%9A%CE%BF%CE%B9%CE%BC%CE%AE%CF%83%CE%B5%CF%89%CF%82_%CE%98%CE%B5%CE%BF%CF%84%CF%8C%CE%BA%CE%BF%CF%85_%CF%83%CF%84%CE%BF_%CE%A0%CF%81%CE%BF%CE%BC%CF%8D%CF%81%CE%B9_9166.jpg',
+          alt: 'Παραδοσιακός πέτρινος ναός και καμπαναριό στο Νότιο Πήλιο',
+          credit: 'Photo by C messier (Wikimedia Commons)',
+          license: 'CC BY-SA 4.0',
+        },
       },
     ],
-    sources: [pelionRoutesSource, wikimediaSource, osmSource],
+    sources: [
+      {
+        label: 'Pelion Routes & Topoguide South Pelion',
+        url: 'https://pelionroutes.com/',
+      },
+      {
+        label: 'Wikimedia Commons — Lafkos, Pelion Collection',
+        url: 'https://commons.wikimedia.org/wiki/Category:Lafkos',
+      },
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+    ],
     featured: true,
     isSeed: true,
   },
   {
     kind: 'trail',
     entityKey: 'profitis-ilias-trail',
-    slug: { el: 'anavasi-profiti-ilia', en: 'prophet-elias-summit-trail' },
-    title: { el: 'Ανάβαση στον Προφήτη Ηλία', en: 'Prophet Elias Hilltop Trail' },
-    eyebrow: { el: 'Προς την ψηλότερη θέα', en: 'To the highest panorama' },
+    slug: {
+      el: 'anavasi-profiti-ilia',
+      en: 'prophet-elias-summit-trail',
+    },
+    title: {
+      el: 'Ανάβαση στον Προφήτη Ηλία',
+      en: 'Prophet Elias Hilltop Trail',
+    },
+    eyebrow: {
+      el: 'Προς την ψηλότερη θέα',
+      en: 'To the highest panorama',
+    },
     summary: {
       el: 'Ανηφορική διαδρομή από την πλατεία προς την κορυφή του λόφου στα 409 μ. με πανοραμική θέα 360° στον Παγασητικό.',
       en: 'An uphill ascent from the square to the 409m summit chapel offering 360-degree views across the Pagasetic Gulf.',
@@ -1640,29 +2608,64 @@ export const trails: Trail[] = [
     },
     waypoints: [
       {
-        title: { el: 'Πλατεία Λαύκου', en: 'Lafkos Square' },
-        coordinate: squareCoord,
-        image: squareImage,
+        title: {
+          el: 'Πλατεία Λαύκου',
+          en: 'Lafkos Square',
+        },
+        coordinate: [23.24646, 39.17751],
+        image: {
+          src: 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Platia_in_Lafkos%2C_Pilion.jpg',
+          alt: 'Η κεντρική πλατεία του Λαύκου κάτω από τα αιωνόβια πλατάνια',
+          credit: 'Photo by Cosa2244 (Wikimedia Commons)',
+          license: 'CC BY-SA 4.0',
+        },
       },
       {
-        title: { el: 'Κορυφή Προφήτη Ηλία (409 μ.)', en: 'Prophet Elias Summit (409m)' },
+        title: {
+          el: 'Κορυφή Προφήτη Ηλία (409 μ.)',
+          en: 'Prophet Elias Summit (409m)',
+        },
         coordinate: [23.24654, 39.19492],
-        image: pagaseticViewImage,
+        image: {
+          src: 'https://upload.wikimedia.org/wikipedia/commons/a/ae/Pelion%2C_Pagassitikos_Gulf_and_coastline._Photo_taken_from_Lafkos_village.jpg',
+          alt: 'Θέα στον Παγασητικό Κόλπο και την ακτογραμμή από τον Λαύκο',
+          credit: 'Photo by Ioannis Fakis (Wikimedia Commons)',
+          license: 'CC BY-SA 4.0',
+        },
       },
     ],
-    sources: [pelionRoutesSource, wikimediaSource, osmSource],
+    sources: [
+      {
+        label: 'Pelion Routes & Topoguide South Pelion',
+        url: 'https://pelionroutes.com/',
+      },
+      {
+        label: 'Wikimedia Commons — Lafkos, Pelion Collection',
+        url: 'https://commons.wikimedia.org/wiki/Category:Lafkos',
+      },
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+    ],
     featured: true,
     isSeed: true,
   },
   {
     kind: 'trail',
     entityKey: 'springs-heritage-loop',
-    slug: { el: 'gyros-krinon-kalderimion', en: 'heritage-springs-lanes-loop' },
+    slug: {
+      el: 'gyros-krinon-kalderimion',
+      en: 'heritage-springs-lanes-loop',
+    },
     title: {
       el: 'Περιπατητικός Γύρος Κρηνών & Καλντεριμιών',
       en: 'Heritage Springs & Stone Lanes Loop',
     },
-    eyebrow: { el: 'Ανακάλυψη του οικισμού', en: 'Discover the settlement' },
+    eyebrow: {
+      el: 'Ανακάλυψη του οικισμού',
+      en: 'Discover the settlement',
+    },
     summary: {
       el: 'Κυκλική διαδρομή που συνδέει όλες τις ιστορικές κρήνες, τον πέτρινο φούρνο Δροσίτη, τα μουσεία και τις παραδοσιακές γειτονιές.',
       en: 'A curated loop linking all historic stone fountains, the Drositis stone bakery, museums, and quiet village quarters.',
@@ -1835,255 +2838,86 @@ export const trails: Trail[] = [
     },
     waypoints: [
       {
-        title: { el: 'Πλατεία & Μαρμάρινη Κρήνη', en: 'Square & Marble Fountain' },
-        coordinate: squareCoord,
-        image: squareImage,
+        title: {
+          el: 'Πλατεία & Μαρμάρινη Κρήνη',
+          en: 'Square & Marble Fountain',
+        },
+        coordinate: [23.24646, 39.17751],
+        image: {
+          src: 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Platia_in_Lafkos%2C_Pilion.jpg',
+          alt: 'Η κεντρική πλατεία του Λαύκου κάτω από τα αιωνόβια πλατάνια',
+          credit: 'Photo by Cosa2244 (Wikimedia Commons)',
+          license: 'CC BY-SA 4.0',
+        },
       },
       {
-        title: { el: 'Φούρνος Δροσίτη (1904)', en: 'Drositis Stone Bakery' },
+        title: {
+          el: 'Φούρνος Δροσίτη (1904)',
+          en: 'Drositis Stone Bakery',
+        },
         coordinate: [23.24666, 39.17654],
-        image: architectureImage,
+        image: {
+          src: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/Pelion%2CLafkos_village%2Cfor_centuries_well_preserved%2C_local_traditional_Architecture.jpg',
+          alt: 'Πέτρινα αρχοντικά και παραδοσιακή πηλιορείτικη αρχιτεκτονική στον Λαύκο',
+          credit: 'Photo by Ioannis Fakis (Wikimedia Commons)',
+          license: 'CC BY-SA 4.0',
+        },
       },
       {
-        title: { el: 'Παλαιοβρύση', en: 'Palaiovrysi Spring' },
+        title: {
+          el: 'Παλαιοβρύση',
+          en: 'Palaiovrysi Spring',
+        },
         coordinate: [23.2451, 39.1752],
-        image: pelionFountainImage,
+        image: {
+          src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/%CE%9A%CF%81%CE%AE%CE%BD%CE%B7_%CE%9B%CE%B5%CE%BF%CE%BD%CF%84%CE%AC%CF%81%CE%B9%2C_%CE%86%CE%B3%CE%B9%CE%BF%CF%82_%CE%93%CE%B5%CF%8E%CF%81%CE%B3%CE%B9%CE%BF%CF%82_%CE%9D%CE%B7%CE%BB%CE%B5%CE%AF%CE%B1%CF%82_9517.jpg/1280px-%CE%9A%CF%81%CE%AE%CE%BD%CE%B7_%CE%9B%CE%B5%CE%BF%CE%BD%CF%84%CE%AC%CF%81%CE%B9%2C_%CE%86%CE%B3%CE%B9%CE%BF%CF%82_%CE%93%CE%B5%CF%8E%CF%81%CE%B3%CE%B9%CE%BF%CF%82_%CE%9D%CE%B7%CE%BB%CE%B5%CE%AF%CE%B1%CF%82_9517.jpg',
+          alt: 'Παραδοσιακή λιθόκτιστη κρήνη με τρεχούμενο πηγαίο νερό στο Πήλιο',
+          credit: 'Photo by C messier (Wikimedia Commons)',
+          license: 'CC BY-SA 4.0',
+        },
       },
       {
-        title: { el: 'Κρήνη Τουλούμπα (1910)', en: 'Touloumba Spring' },
+        title: {
+          el: 'Κρήνη Τουλούμπα (1910)',
+          en: 'Touloumba Spring',
+        },
         coordinate: [23.24835, 39.1758],
-        image: touloumbaSpringImage,
+        image: {
+          src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Platia_in_Lafkos%2C_Pilion_%282%29.jpg/1280px-Platia_in_Lafkos%2C_Pilion_%282%29.jpg',
+          alt: 'Ο υπεραιωνόβιος πλάτανος και η πέτρινη γειτονιά της Κρήνης Τουλούμπα στα Λειβαδάκια',
+          credit: 'Photo by Cosa2244 (Wikimedia Commons)',
+          license: 'CC BY-SA 4.0',
+        },
       },
       {
-        title: { el: 'Κρήνη Χατζή (1800)', en: 'Chatzi Spring' },
+        title: {
+          el: 'Κρήνη Χατζή (1800)',
+          en: 'Chatzi Spring',
+        },
         coordinate: [23.24412, 39.18205],
-        image: chatziSpringImage,
+        image: {
+          src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Lafkos_Way_01.jpg/1280px-Lafkos_Way_01.jpg',
+          alt: 'Η καταπράσινη διαδρομή και το πέτρινο περιβάλλον προς την Κρήνη Χατζή στον Λαύκο',
+          credit: 'Photo by Chondriammos (Wikimedia Commons)',
+          license: 'CC BY-SA 4.0',
+        },
       },
     ],
-    sources: [localHeritageSource, wikimediaSource, osmSource],
+    sources: [
+      {
+        label: 'Πολιτιστικός Σύλλογος Λαυκιωτών «Η Δράση»',
+        url: 'https://lafkos.gr/',
+      },
+      {
+        label: 'Wikimedia Commons — Lafkos, Pelion Collection',
+        url: 'https://commons.wikimedia.org/wiki/Category:Lafkos',
+      },
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+    ],
     featured: true,
-    isSeed: true,
-  },
-  {
-    kind: 'trail',
-    entityKey: 'lafkos-chondri-ammos-trail',
-    slug: { el: 'lafkos-mousges-chondri-ammos', en: 'lafkos-mousges-chondri-ammos-trail' },
-    title: {
-      el: 'Διαδρομή Λαύκος – Μούσγες – Χονδρή Άμμος',
-      en: 'Lafkos to Chondri Ammos Aegean Trail',
-    },
-    eyebrow: { el: 'Προς την άγρια ακτή του Αιγαίου', en: 'Toward the wild Aegean coast' },
-    summary: {
-      el: 'Πεζοπορία που διασχίζει τους ανατολικούς ελαιώνες και κατηφορίζει μέσα από μεσογειακή βλάστηση προς τις απόμερες παραλίες.',
-      en: 'A scenic hike traversing eastern olive slopes and Mediterranean scrub toward secluded coastal coves.',
-    },
-    body: {
-      el: [
-        'Μια συναρπαστική διαδρομή που αναδεικνύει τη διπλή φύση του Λαύκου, ο οποίος αγναντεύει τόσο τον ήρεμο Παγασητικό όσο και το ανοιχτό Αιγαίο Πέλαγος.',
-        'Η πορεία ξεκινά από το ανατολικό άκρο του χωριού, περνά από την περιοχή Μούσγες και ακολουθεί παλιά αγροτικά μονοπάτια μέσα από πυκνούς ελαιώνες, σχίνους και κουμαριές, καταλήγοντας στην παρθένα παραλία Χονδρή Άμμος.',
-      ],
-      en: [
-        'A captivating route illustrating the unique geographic position of Lafkos, poised between the sheltered waters of the Pagasetic Gulf and the open horizon of the Aegean Sea.',
-        'Beginning at the village’s eastern edge, the path moves past Mousges and follows pastoral paths through olive groves, wild arbutus, and fragrant macchia before descending to the pristine shores of Chondri Ammos.',
-      ],
-    },
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [23.24639, 39.17731],
-        [23.24644, 39.17723],
-        [23.24665, 39.17697],
-        [23.24667, 39.17692],
-        [23.24668, 39.17688],
-        [23.24671, 39.17662],
-        [23.24682, 39.17598],
-        [23.24692, 39.17569],
-        [23.24708, 39.17559],
-        [23.24725, 39.17545],
-        [23.24724, 39.17574],
-        [23.24731, 39.17645],
-        [23.24735, 39.17686],
-        [23.24736, 39.17701],
-        [23.24755, 39.177],
-        [23.24766, 39.17702],
-        [23.24775, 39.17709],
-        [23.24788, 39.17723],
-        [23.24814, 39.17778],
-        [23.24817, 39.17783],
-        [23.24873, 39.17776],
-        [23.2491, 39.17768],
-        [23.24931, 39.17757],
-        [23.24934, 39.17745],
-        [23.24948, 39.17732],
-        [23.24978, 39.1772],
-        [23.25015, 39.17692],
-        [23.25049, 39.17643],
-        [23.25067, 39.17629],
-        [23.251, 39.17618],
-        [23.25127, 39.17609],
-        [23.25149, 39.17592],
-        [23.25183, 39.17577],
-        [23.25222, 39.17566],
-        [23.2526, 39.17547],
-        [23.25297, 39.17543],
-        [23.25337, 39.17518],
-        [23.25367, 39.17513],
-        [23.25393, 39.17505],
-        [23.2542, 39.17495],
-        [23.25432, 39.17489],
-        [23.25447, 39.17484],
-        [23.25478, 39.17478],
-        [23.2551, 39.1747],
-        [23.25522, 39.17467],
-        [23.25534, 39.17462],
-        [23.25535, 39.1747],
-        [23.25557, 39.17471],
-        [23.25561, 39.17475],
-        [23.25566, 39.1748],
-        [23.25596, 39.17436],
-        [23.25629, 39.17392],
-        [23.25625, 39.17374],
-        [23.25652, 39.17334],
-        [23.25663, 39.17317],
-        [23.2567, 39.17287],
-        [23.25687, 39.17267],
-        [23.2572, 39.17235],
-        [23.25743, 39.17224],
-        [23.25752, 39.17214],
-        [23.25772, 39.172],
-        [23.25788, 39.17171],
-        [23.258, 39.17174],
-        [23.25803, 39.17188],
-        [23.25799, 39.17225],
-        [23.25806, 39.17235],
-        [23.25817, 39.17229],
-        [23.25824, 39.17211],
-        [23.25856, 39.17192],
-        [23.25874, 39.17182],
-        [23.25886, 39.17157],
-        [23.25896, 39.17158],
-        [23.25902, 39.1717],
-        [23.25898, 39.17188],
-        [23.25886, 39.17201],
-        [23.25892, 39.17207],
-        [23.25904, 39.17203],
-        [23.25938, 39.17182],
-        [23.26002, 39.17125],
-        [23.2601, 39.17102],
-        [23.26033, 39.17101],
-        [23.26054, 39.1711],
-        [23.26057, 39.17124],
-        [23.26057, 39.17133],
-        [23.26068, 39.17133],
-        [23.26088, 39.17124],
-        [23.26093, 39.17113],
-        [23.26132, 39.17108],
-        [23.26209, 39.17118],
-        [23.26267, 39.17137],
-        [23.26287, 39.1714],
-        [23.26313, 39.17135],
-        [23.26337, 39.17144],
-        [23.26356, 39.17167],
-        [23.26372, 39.17174],
-        [23.26392, 39.17182],
-        [23.26413, 39.17176],
-        [23.26449, 39.1717],
-        [23.26478, 39.1715],
-        [23.26525, 39.17138],
-        [23.26582, 39.17126],
-        [23.26596, 39.17117],
-        [23.26602, 39.17106],
-        [23.26609, 39.17083],
-        [23.26628, 39.17066],
-        [23.26647, 39.17051],
-        [23.26692, 39.17039],
-        [23.26715, 39.17011],
-        [23.26753, 39.16994],
-        [23.26802, 39.16987],
-        [23.26822, 39.16977],
-        [23.26843, 39.16975],
-        [23.26867, 39.16957],
-        [23.26882, 39.1692],
-        [23.26893, 39.16879],
-        [23.2689, 39.16875],
-        [23.26889, 39.16869],
-        [23.26889, 39.16852],
-        [23.26888, 39.16839],
-        [23.2689, 39.16827],
-        [23.26897, 39.16807],
-        [23.26901, 39.16785],
-        [23.26901, 39.16775],
-        [23.26902, 39.16757],
-        [23.26907, 39.16744],
-        [23.26912, 39.16724],
-        [23.26922, 39.1671],
-        [23.2693, 39.167],
-        [23.26932, 39.16694],
-        [23.26933, 39.16686],
-        [23.26929, 39.16672],
-        [23.26926, 39.16655],
-        [23.26923, 39.16647],
-        [23.26923, 39.16631],
-        [23.26923, 39.16616],
-        [23.26921, 39.16585],
-        [23.26923, 39.16572],
-        [23.26924, 39.16561],
-        [23.26922, 39.16553],
-        [23.26918, 39.16545],
-        [23.26907, 39.16534],
-        [23.26899, 39.16524],
-        [23.26884, 39.16506],
-        [23.26853, 39.1646],
-        [23.26849, 39.1645],
-        [23.26851, 39.16441],
-        [23.26854, 39.16435],
-        [23.26871, 39.1642],
-        [23.26873, 39.16414],
-        [23.26875, 39.1641],
-        [23.26883, 39.16408],
-        [23.26893, 39.16404],
-        [23.269, 39.16397],
-        [23.26903, 39.16391],
-        [23.26904, 39.16385],
-      ],
-    },
-    distanceMeters: 3720,
-    durationMinutes: 75,
-    elevationGainMeters: 45,
-    difficulty: 'moderate',
-    surface: {
-      el: 'Μονοπάτι, καλντερίμι και αγροτικός χωματόδρομος',
-      en: 'Footpath, stone trail, and unpaved track',
-    },
-    safety: {
-      el: [
-        'Μεγαλύτερη διαδρομή — φροντίστε για επαρκή ποσότητα νερού και σνακ.',
-        'Στην παραλία δεν υπάρχουν καταστήματα ή ομπρέλες.',
-      ],
-      en: [
-        'Longer hike — ensure sufficient water supply and snacks.',
-        'The destination beach is unorganized with no commercial facilities.',
-      ],
-    },
-    waypoints: [
-      {
-        title: { el: 'Πλατεία Λαύκου', en: 'Lafkos Square' },
-        coordinate: squareCoord,
-        image: squareImage,
-      },
-      {
-        title: { el: 'Περιοχή Μούσγες', en: 'Mousges Area' },
-        coordinate: [23.2539, 39.167],
-        image: lafkosAerialWideImage,
-      },
-      {
-        title: { el: 'Μονή Αγίου Σπυρίδωνα', en: 'Agios Spyridon Monastery' },
-        coordinate: [23.26929, 39.16367],
-        image: promyriChurchImage,
-      },
-    ],
-    sources: [pelionRoutesSource, wikimediaSource, osmSource],
-    featured: false,
     isSeed: true,
   },
 ];
@@ -2091,43 +2925,72 @@ export const trails: Trail[] = [
 export const stories: Story[] = [
   {
     kind: 'story',
-    entityKey: 'reading-lafkos',
-    slug: { el: 'reading-lafkos', en: 'reading-lafkos' },
-    title: { el: 'Πώς διαβάζεται ένας ορεινός οικισμός', en: 'How to Read a Mountain Village' },
-    eyebrow: { el: 'Μικρός οδηγός παρατήρησης', en: 'A field guide to observation' },
+    entityKey: 'kalderimia-pelion',
+    slug: {
+      el: 'ta-kalderimia-tou-piliou',
+      en: 'the-stone-arteries-of-pelion',
+    },
+    title: {
+      el: 'Από το Βουνό στη Θάλασσα: Τα Καλντερίμια του Πηλίου',
+      en: 'From Mountain to Sea: The Stone Arteries of Pelion',
+    },
+    eyebrow: {
+      el: 'Ιστορικά μονοπάτια',
+      en: 'Historic footpaths',
+    },
     summary: {
-      el: 'Μερικές ιδέες για να κατανοήσεις τη δομή, την πέτρα, τα νερά και τη ζωή του Λαύκου πέρα από έναν κατάλογο αξιοθέατων.',
-      en: 'Ways to understand the structure, stone masonry, springs, and village rhythms beyond a tourist checklist.',
+      el: 'Τα καλντερίμια του Λαύκου δεν είναι απλοί δρόμοι· είναι τα πέτρινα κανάλια που συνέδεαν το εμπόριο, τα λιμάνια και τις ζωές των ανθρώπων.',
+      en: 'The kalderimia of Lafkos are stone channels that once linked trade, harbors, and human destinies.',
     },
     body: {
       el: [
-        'Ένας τόπος όπως ο Λαύκος δεν αποκαλύπτεται με μια βιαστική βόλτα. Για να τον κατανοήσεις, χρειάζεται να παρατηρήσεις πώς η πέτρα, η κλίση του εδάφους και τα φυσικά περάσματα όρισαν τη ζωή των ανθρώπων για αιώνες.',
-        'Ξεκίνα από την πλατεία κάτω από τα αιωνόβια πλατάνια. Παρατήρησε πώς όλες οι γειτονιές συνδέονται με καλντερίμια σχεδιασμένα για τα βήματα των ανθρώπων και τα φορτία των μουλαριών. Δες τις πέτρινες κρήνες — καθεμία χτισμένη εκεί όπου ανάβλυζε φυσική πηγή, αποτελώντας σημείο συνάντησης και καθημερινής επιβίωσης.',
-        'Παρατήρησε την τοπική αρχιτεκτονική: οι πέτρινες πλάκες Πηλίου στις στέγες, τα συμπαγή ισόγεια χτισμένα για προστασία από τον άνεμο και τα πάνω πατώματα με τα ξύλινα σαχνισιά που αγναντεύουν το φως και τον Παγασητικό.',
-        'Ανηφόρισε προς τον Προφήτη Ηλία την ώρα που πέφτει το φως. Από εκεί ψηλά, η σχέση του χωριού με τη θάλασσα και τα απέναντι βουνά γίνεται ξεκάθαρη: ο Λαύκος υπήρξε πάντοτε ένα ασφαλές ορεινό οχυρό με το βλέμμα στραμμένο στον ορίζοντα του εμπορίου και των ταξιδιών.',
+        'Πριν από τη διάνοιξη του σύγχρονου οδικού δικτύου στη δεκαετία του 1960, το Πήλιο κινούνταν αποκλειστικά πάνω σε καλντερίμια. Μαστόροι της πέτρας έχτιζαν με απίστευτη γεωμετρική ακρίβεια μονοπάτια με σταθερή κλίση, πλατιά πατήματα και αυλάκια απορροής των όμβριων υδάτων.',
+        'Το καλντερίμι Λαύκος – Μηλίνα αποτελεί την κορωνίδα αυτής της τέχνης: μια κατηφορική διαδρομή 3,5 χιλιομέτρων που επέτρεπε στα μουλάρια φορτωμένα με λάδι, κρασί και μετάξι να φτάνουν με ασφάλεια στο λιμάνι της Μηλίνας, έτοιμα να φορτωθούν σε καΐκια.',
       ],
       en: [
-        'A place like Lafkos does not reveal its character to rushed sightseeing. Understanding it requires observing how stone, topography, and natural passages shaped centuries of community life.',
-        'Begin at the central square under the ancient plane trees. Notice how every neighborhood is joined by cobbled lanes engineered for human footsteps and pack mules. Look closely at the stone fountains — each built over a natural spring, once serving as vital social hubs and freshwater lifelines.',
-        'Observe the vernacular architecture: local Pelion slate on the rooflines, fortress-like ground floors built for shelter and defense, and timber-framed upper floors (sahnisi) reaching out toward the coastal breeze and Pagasetic light.',
-        'Climb toward Prophet Elias as evening approaches. From that crest, the village’s relationship with both sea and mountain becomes evident: Lafkos was always a secure mountain haven with its eyes cast outward upon maritime trade routes and horizons.',
+        'Before modern paved roads arrived in the 1960s, South Pelion moved exclusively along stone kalderimia. Traditional masons engineered these paths with remarkable precision, featuring steady gradients, broad stone steps, and integrated storm drainage channels.',
+        'The Lafkos – Milina kalderimi represents the crown jewel of this craft: a 3.4 km downhill route that allowed pack mules laden with olive oil, wine, and silk to travel safely to Milina harbour for shipment across the Aegean.',
       ],
     },
-    image: lafkosAerialImage,
-    relatedKeys: ['lafkos-square', 'old-lanes', 'springs-heritage-loop', 'profitis-ilias-view'],
-    sources: [localHeritageSource, wikimediaSource, osmSource],
-    featured: true,
+    image: {
+      src: 'https://upload.wikimedia.org/wikipedia/commons/a/ae/Pelion%2C_Pagassitikos_Gulf_and_coastline._Photo_taken_from_Lafkos_village.jpg',
+      alt: 'Θέα στον Παγασητικό Κόλπο και την ακτογραμμή από τον Λαύκο',
+      credit: 'Photo by Ioannis Fakis (Wikimedia Commons)',
+      license: 'CC BY-SA 4.0',
+    },
+    relatedKeys: ['lafkos-milina-trail', 'old-lanes', 'monastery-athanasios-trail'],
+    sources: [
+      {
+        label: 'Pelion Routes & Topoguide South Pelion',
+        url: 'https://pelionroutes.com/',
+      },
+      {
+        label: 'Wikimedia Commons — Lafkos, Pelion Collection',
+        url: 'https://commons.wikimedia.org/wiki/Category:Lafkos',
+      },
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+    ],
+    featured: false,
     isSeed: true,
   },
   {
     kind: 'story',
     entityKey: 'oldest-cafe-forlidas',
-    slug: { el: 'to-palaiotero-kafeneio-forlida', en: 'the-oldest-cafe-in-greece' },
+    slug: {
+      el: 'to-palaiotero-kafeneio-forlida',
+      en: 'the-oldest-cafe-in-greece',
+    },
     title: {
       el: '1785: Το Παλαιότερο Καφενείο της Ελλάδας',
       en: '1785: The Oldest Café in Greece',
     },
-    eyebrow: { el: 'Επτά γενιές ιστορίας', en: 'Seven generations of living memory' },
+    eyebrow: {
+      el: 'Επτά γενιές ιστορίας',
+      en: 'Seven generations of living memory',
+    },
     summary: {
       el: 'Η συναρπαστική ιστορία του Καφενείου Φορλίδα, από χάνι των ταξιδιωτών των Σποράδων σε στέκι του Παπαδιαμάντη και του Βάρναλη.',
       en: 'The story of Café Forlidas, from an 18th-century islanders’ inn to a cherished haunt of literary greats.',
@@ -2144,21 +3007,185 @@ export const stories: Story[] = [
         'Today, Manolis Forlidas still brews traditional Greek coffee over embers, keeping alive an unbroken 240-year heritage of hospitality.',
       ],
     },
-    image: squarePlaneTreesImage,
+    image: {
+      src: 'https://upload.wikimedia.org/wikipedia/commons/c/c6/Platia_in_Lafkos%2C_Pilion_%282%29.jpg',
+      alt: 'Τα μεγάλα πλατάνια και τα παραδοσιακά καφενεία στην πλατεία του Λαύκου',
+      credit: 'Photo by Cosa2244 (Wikimedia Commons)',
+      license: 'CC BY-SA 4.0',
+    },
     relatedKeys: ['forlidas-cafe', 'lafkos-square'],
-    sources: [localHeritageSource, wikimediaSource, osmSource],
+    sources: [
+      {
+        label: 'Πολιτιστικός Σύλλογος Λαυκιωτών «Η Δράση»',
+        url: 'https://lafkos.gr/',
+      },
+      {
+        label: 'Wikimedia Commons — Lafkos, Pelion Collection',
+        url: 'https://commons.wikimedia.org/wiki/Category:Lafkos',
+      },
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+    ],
     featured: true,
     isSeed: true,
   },
   {
     kind: 'story',
+    entityKey: 'reading-lafkos',
+    slug: {
+      el: 'reading-lafkos',
+      en: 'reading-lafkos',
+    },
+    title: {
+      el: 'Πώς διαβάζεται ένας ορεινός οικισμός',
+      en: 'How to Read a Mountain Village',
+    },
+    eyebrow: {
+      el: 'Μικρός οδηγός παρατήρησης',
+      en: 'A field guide to observation',
+    },
+    summary: {
+      el: 'Ένας εμπεριστατωμένος οδηγός πεδίου για να κατανοήσεις την τοπογραφία, την πολεοδομία του νερού, την αρχιτεκτονική της πέτρας και τις ζωντανές μνήμες του Λαύκου.',
+      en: 'An in-depth field guide to understanding the topography, hydrology of stone springs, vernacular masonry, and living memories of Lafkos.',
+    },
+    body: {
+      el: [
+        'Ένας τόπος όπως ο Λαύκος δεν αποκαλύπτεται με μια βιαστική τουριστική ματιά. Χτισμένος αμφιθεατρικά στην κορυφογραμμή του Νοτίου Πηλίου, σε υψόμετρο 310–330 μέτρων, ο οικισμός ιδρύθηκε αρχικά μεταξύ 15ου και 16ου αιώνα σε σημείο αθέατο από τα πειρατικά περάσματα του Αιγαίου και του Παγασητικού. Καθώς η πειρατεία υποχώρησε, το χωριό απλώθηκε στο διάσελο, κερδίζοντας επάξια τον τίτλο «το μπαλκόνι του Παγασητικού» χάρη στη μοναδική διπλή θέα του: από τη μια η γαλήνη του κόλπου με τα νησάκια Άλατας και Πρασούδα, κι από την άλλη ο ανοιχτός ορίζοντας προς τη Σκιάθο και τις Βόρειες Σποράδες.',
+        'Ξεκίνα την ανάγνωση από την καρδιά του οικισμού: την κεντρική πλατεία, μια από τις πιο επιβλητικές και ευρύχωρες σε όλο το Πήλιο, έκτασης άνω των τριών στρεμμάτων. Εδώ κυριαρχούν τα τέσσερα πελώρια πλατάνια που φυτεύτηκαν το 1887, προσφέροντας βαθιά σκιά και δροσιά. Το νερό υπήρξε ο αόρατος πολεοδόμος του Λαύκου. Οι υπόγειες πηγές όρισαν πού θα χτιστούν οι γειτονιές και πού θα διακλαδωθούν τα μονοπάτια. Ιστορικές πετρόχτιστες κρήνες όπως η θολωτή Χατζόβρυση (του 1800), η Τουλούμπα (1910) και η αρχέγονη Παλαιοβρύση δεν ήταν απλώς σημεία υδροδότησης, αλλά κοινωνικά κέντρα όπου οι γυναίκες έπλεναν στα πέτρινα πλυντήρια και οι ταξιδιώτες ξαπόσταιναν.',
+        'Στρέψε το βλέμμα στην πηλιορείτικη αρχιτεκτονική γραμματική. Τα κτίρια θεμελιώθηκαν πάνω σε συμπαγείς πέτρινους τοίχους από ντόπιο σχιστόλιθο και ασβεστόλιθο, ενισχυμένους με οριζόντιες ξυλοδεσιές («χατίλια») για ελαστικότητα στους σεισμούς. Στους επάνω ορόφους, η αυστηρή πέτρα υποχωρεί: προβάλλουν τα ξύλινα «σαχνισιά» (έρκερ) που στηρίζονται σε περίτεχνα ξύλινα φουρούσια, σχεδιασμένα για να αιχμαλωτίζουν το φως, τη θαλασσινή αύρα και τη θέα. Οι στέγες είναι καλυμμένες με τις φημισμένες γκρίζες και πρασινωπές πλάκες Πηλίου, τοποθετημένες με δεξιοτεχνία χωρίς λάσπη, ενώ τα μαρμάρινα υπέρθυρα φέρουν χαραγμένους σταυρούς, ημερομηνίες και λαϊκά φυλαχτά.',
+        'Η τέχνη της πέτρας έφτασε στην κορύφωσή της χάρη στους Ηπειρώτες και Δυτικομακεδόνες πρωτομάστορες («Ζουπανιώτες»). Εξέχον παράδειγμα αποτελεί η ιστορική Μονή Αγίου Αθανασίου (1795) στο Κωτίκι, έργο του φημισμένου πρωτομάστορα Δήμου Ζηπανιώτη, με το καθολικό της διακοσμημένο με περίτεχνα λιθανάγλυφα του γλύπτη Μίλιου που μοιάζουν με λεπτεπίλεπτο «κέντημα στο μάρμαρο». Στο κέντρο του χωριού, ο μεγαλοπρεπής Ναός της Γεννήσεως της Θεοτόκου (1888–1901), με το περίτεχνο μαρμάρινο τέμπλο και το ψηλό καμπαναριό, μαρτυρά την πνευματική ακτινοβολία και την ευημερία της κοινότητας.',
+        'Κοίταξε κάτω στα πόδια σου: τα λιθόστρωτα καλντερίμια δεν ήταν διακοσμητικά, αλλά εξαιρετικά μελετημένες συγκοινωνιακές αρτηρίες. Κατασκευασμένα με ειδική κλίση, αυλάκια απορροής όμβριων υδάτων και πέτρινες βαθμίδες («πλατύσκαλα»), σχεδιάστηκαν για να διευκολύνουν τον βηματισμό των ανθρώπων και των φορτωμένων υποζυγίων. Το ιστορικό καλντερίμι που κατηφορίζει προς τη Μηλίνα συνέδεε την ορεινή αγροτική παραγωγή —λάδι, κρασί, μετάξι και ξυλεία— με τα παραθαλάσσια καΐκια που ταξίδευαν στον Βόλο, το Τρίκερι και τις Σποράδες.',
+        'Στα τέλη του 19ου και στις αρχές του 20ού αιώνα, η επιστροφή των Λαυκιωτών μεταναστών από την Αίγυπτο («Αιγυπτιώτες») έφερε νέο πλούτο και νεοκλασικές επιρροές. Έχτισαν αρχοντικά με συμμετρικές προσόψεις, χρηματοδότησαν το επιβλητικό Δημοτικό Σχολείο και καλλιέργησαν μια έντονη πνευματική ζωή. Αυτή η παράδοση συνεχίζεται σήμερα στο Φάμπειο Μουσείο, όπου εκτίθενται τα έργα του διεθνούς φήμης Λαυκιώτη γλύπτη Θανάση Φάμπα, και στο Μουσείο Ραδιοφώνου «Αντώνης Ταβάνης», ένα από τα ελάχιστα του είδους του στην Ευρώπη.',
+        'Καμία περιήγηση στον Λαύκο δεν ολοκληρώνεται χωρίς μια στάση στο ιστορικό Καφενείο Φορλίδα. Σε λειτουργία αδιάλειπτα από το 1785, αποτελεί το παλαιότερο καφενείο της Ελλάδας. Εδώ, όπου άλλοτε λειτουργούσε χάνι και ξαπόστασαν ο Αλέξανδρος Παπαδιαμάντης, ο Κώστας Βάρναλης και ο Γιώργος Σεφέρης, ο χρόνος κυλά με άλλους ρυθμούς. Ο καφές ψήνεται ακόμα στη χόβολη και οι ιστορίες των ντόπιων γίνονται το ζωντανό επιστέγασμα μιας ολόκληρης πολιτιστικής διαδρομής.',
+      ],
+      en: [
+        'A mountain village like Lafkos does not reveal its character to rushed sightseeing. Built amphitheatrically along the crest of South Pelion at an altitude of 310–330 meters, the settlement was founded in the 15th to 16th centuries in a sheltered fold of the hills, purposefully hidden from maritime pirate raids in the Aegean and Pagasetic. As piracy waned, the settlement expanded along the ridge, earning its reputation as the "Balcony of the Pagasetic" thanks to its dual horizon: to the west lie the tranquil waters of the Gulf with the islets of Alatas and Prasouda, while to the east stretches the Aegean Sea toward the distant silhouette of Skiathos.',
+        'Begin your exploration at the civic heart of the village: the central square, one of the grandest in all of Pelion, spanning over 3,000 square meters. Four monumental plane trees, planted in 1887, cast deep, cooling canopy shade over the flagstones. Water was the invisible urban planner of Lafkos: subterranean springs dictated where distinct neighborhoods formed and where mule paths branched out. Historic stone fountains like the vaulted Chatzovrysi (dating to ~1800), Touloumba (1910), and the ancient Palaiovrysi served as vital communal hubs where village women washed household linens in carved stone basins and travelers refreshed their mounts.',
+        'Look closely at the vernacular architectural language. Buildings were erected upon thick, defensive ground floors of local metamorphic slate and limestone, tied together with horizontal timber lacing beams (xilodesies or chatilia) to absorb seismic shocks. On upper floors, the heavy stone gives way to lighter timber-framed oriel rooms (sahnisi) cantilevered on carved wooden corbels (fourousia), angled to capture southern sunlight, coastal sea drafts, and panoramic views. Roofs are tiled with layered Pelion slate laid without mortar, while carved marble lintels above heavy wooden doorways display protective folk rosettes, crosses, and builder inscriptions.',
+        'Masonry reached artistic heights through traveling guilds of Epirote and West Macedonian craftsmen known as Zoupaniotes. The pinnacle of their craft stands just outside the village at the historic Monastery of Agios Athanasios (1795) at Kotiki, designed by master builder Dimos Zipaniotis and decorated with exquisite stone reliefs by sculptor Milios that resemble delicate "embroidery in marble." In the village center, the monumental Church of the Nativity of the Theotokos (1888–1901), with its neoclassical bell tower and carved marble iconostasis, stands as a testament to communal spiritual devotion and civic prosperity.',
+        'Beneath your feet lies an engineered transport network. Cobbled kalderimia were designed with deliberate slopes, drainage gutters, and stone step intervals calculated for the steady gait of laden pack mules and olive harvesters. The primary trunk trail descending from Lafkos to the coastal bay of Milina connected the mountain’s agricultural riches—olive oil, silk, wine, and timber—directly to sea caiques trading across the Pagasetic to Volos, Trikeri, and the Aegean archipelago.',
+        'In the late 19th and early 20th centuries, returning emigrants from the Greek diaspora in Alexandria and Cairo ("Egyptiotes") infused Lafkos with capital and neoclassical civic pride. They constructed stately neoclassical mansions, endowed the neoclassical Primary School, and nurtured a vibrant intellectual culture. This legacy endures today in the Fampas Sculpture Museum, housing works by internationally celebrated local sculptor Thanasis Fampas, and the Antonis Tavanis Radio Museum, preserving one of Europe’s rarest collections of vintage wireless receivers.',
+        'No understanding of Lafkos is complete without crossing the threshold of Café Forlidas on the main square. Operating continuously since 1785, it is recognized as the oldest café in Greece. Within walls that once served as a weary traveler’s inn—hosting literary figures like Alexandros Papadiamantis, Kostas Varnalis, and Nobel laureate Giorgos Seferis—time follows an older, gentler pulse. Over coffee slowly brewed in hot embers (chovoli), conversations with local olive growers and elders weave past centuries into a living, unbroken narrative.',
+      ],
+    },
+    image: {
+      src: 'https://upload.wikimedia.org/wikipedia/commons/5/59/%CE%9B%CE%B1%CF%8D%CE%BA%CE%BF%CF%82_DJI_5252.jpg',
+      alt: 'Πανοραμική αεροφωτογραφία του παραδοσιακού οικισμού του Λαύκου',
+      credit: 'Photo by C messier (Wikimedia Commons)',
+      license: 'CC BY-SA 4.0',
+    },
+    relatedKeys: [
+      'lafkos-square',
+      'old-lanes',
+      'chatzi-spring',
+      'theotokos-church',
+      'monastery-thanasios',
+      'forlidas-cafe',
+      'fampas-museum',
+      'radio-museum',
+      'lafkos-milina-trail',
+      'springs-heritage-loop',
+      'profitis-ilias-view',
+    ],
+    sources: [
+      {
+        label: 'Πολιτιστικός Σύλλογος Λαυκιωτών «Η Δράση»',
+        url: 'https://lafkos.gr/',
+      },
+      {
+        label: 'ΕΜΠ — Σπουδαστική Καταγραφή Παραδοσιακού Οικισμού Λαύκου',
+        url: 'http://5a.arch.ntua.gr/project/5290/5983',
+      },
+      {
+        label: 'Υπουργείο Πολιτισμού — Μνημεία Νοτίου Πηλίου',
+        url: 'http://listedmonuments.culture.gr/',
+      },
+      {
+        label: 'Pelion Routes & Topoguide South Pelion',
+        url: 'https://pelionroutes.com/',
+      },
+      {
+        label: 'Wikimedia Commons — Lafkos, Pelion Collection',
+        url: 'https://commons.wikimedia.org/wiki/Category:Lafkos',
+      },
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+    ],
+    featured: true,
+    isSeed: true,
+  },
+  {
+    kind: 'story',
+    entityKey: 'village-of-museums',
+    slug: {
+      el: 'to-chorio-ton-mouseion',
+      en: 'the-village-of-museums',
+    },
+    title: {
+      el: 'Το Χωριό των Μουσείων: Τέχνη και Ήχος στο Νότιο Πήλιο',
+      en: 'The Village of Museums: Art and Sound in South Pelion',
+    },
+    eyebrow: {
+      el: 'Πολιτιστικός θησαυρός',
+      en: 'A cultural treasure',
+    },
+    summary: {
+      el: 'Πώς ένα ορεινό χωριό συγκέντρωσε διεθνή γλυπτική, ένα από τα τρία μουσεία ραδιοφώνου της χώρας και πλούσια λαογραφία.',
+      en: 'How a mountain village became home to internationally acclaimed marble sculpture, vintage radios, and rich folklore.',
+    },
+    body: {
+      el: [
+        'Αν και μικρός σε πληθυσμό, ο Λαύκος διαθέτει μια πολιτιστική πυκνότητα που εκπλήσσει κάθε επισκέπτη. Μέσα σε λίγα μέτρα γύρω από την πλατεία συγκεντρώνονται τρία ξεχωριστά μουσεία.',
+        'Το Φάμπειο Μουσείο τιμά τον κορυφαίο γλύπτη Θανάση Φάμπα, του οποίου τα έργα σε λευκό πηλιορείτικο μάρμαρο έχουν εκτεθεί σε ευρωπαϊκές μητροπόλεις. Δίπλα του, το Μουσείο Ραδιοφώνου «Αντώνης Ταβάνης» ταξιδεύει τους επισκέπτες στον χρυσό αιώνα των ερτζιανών κυμάτων με δεκάδες ιστορικούς δέκτες, ενώ το Λαογραφικό Μουσείο διασώζει την αυθεντική αγροτική παράδοση του τόπου.',
+      ],
+      en: [
+        'Despite its modest size, Lafkos boasts an extraordinary cultural density that surprises every traveler. Within a short stroll around the main square stand three distinct museums.',
+        'The Fampas Museum honors master sculptor Thanasis Fampas, whose white Pelion marble creations have been exhibited across European capitals. Steps away, the Antonis Tavanis Radio Museum celebrates the golden age of wireless broadcasting with over 130 rare vintage receivers, while the Folklore Museum safeguards the authentic rural heritage of the region.',
+      ],
+    },
+    image: {
+      src: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/Pelion%2CLafkos_village%2Cfor_centuries_well_preserved%2C_local_traditional_Architecture.jpg',
+      alt: 'Πέτρινα αρχοντικά και παραδοσιακή πηλιορείτικη αρχιτεκτονική στον Λαύκο',
+      credit: 'Photo by Ioannis Fakis (Wikimedia Commons)',
+      license: 'CC BY-SA 4.0',
+    },
+    relatedKeys: ['fampas-museum', 'radio-museum', 'folklore-museum', 'old-school'],
+    sources: [
+      {
+        label: 'Πολιτιστικός Σύλλογος Λαυκιωτών «Η Δράση»',
+        url: 'https://lafkos.gr/',
+      },
+      {
+        label: 'Wikimedia Commons — Lafkos, Pelion Collection',
+        url: 'https://commons.wikimedia.org/wiki/Category:Lafkos',
+      },
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+    ],
+    featured: false,
+    isSeed: true,
+  },
+  {
+    kind: 'story',
     entityKey: 'water-and-stone',
-    slug: { el: 'petra-nero-platanioi', en: 'stone-water-and-plane-trees' },
+    slug: {
+      el: 'petra-nero-platanioi',
+      en: 'stone-water-and-plane-trees',
+    },
     title: {
       el: 'Πέτρα, Νερό και Πλάτανοι: Οι Κρήνες του Λαύκου',
       en: 'Stone, Water, and Plane Trees: The Springs of Lafkos',
     },
-    eyebrow: { el: 'Ο υδάτινος πολιτισμός', en: 'The culture of mountain water' },
+    eyebrow: {
+      el: 'Ο υδάτινος πολιτισμός',
+      en: 'The culture of mountain water',
+    },
     summary: {
       el: 'Πώς οι παραδοσιακές κρήνες και οι πλάτανοι καθόρισαν την πολεοδομία, τις γειτονιές και την καθημερινή ζωή του χωριού.',
       en: 'How historic stone fountains and plane trees shaped the settlement layout, quarters, and daily village life.',
@@ -2175,7 +3202,12 @@ export const stories: Story[] = [
         'The traveling Epirote stonemasons who built these fountains crafted not merely civic utilities, but enduring works of folk art that provide pure mountain refreshment to this day.',
       ],
     },
-    image: pelionFountainImage,
+    image: {
+      src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/%CE%9A%CF%81%CE%AE%CE%BD%CE%B7_%CE%9B%CE%B5%CE%BF%CE%BD%CF%84%CE%AC%CF%81%CE%B9%2C_%CE%86%CE%B3%CE%B9%CE%BF%CF%82_%CE%93%CE%B5%CF%8E%CF%81%CE%B3%CE%B9%CE%BF%CF%82_%CE%9D%CE%B7%CE%BB%CE%B5%CE%AF%CE%B1%CF%82_9517.jpg/1280px-%CE%9A%CF%81%CE%AE%CE%BD%CE%B7_%CE%9B%CE%B5%CE%BF%CE%BD%CF%84%CE%AC%CF%81%CE%B9%2C_%CE%86%CE%B3%CE%B9%CE%BF%CF%82_%CE%93%CE%B5%CF%8E%CF%81%CE%B3%CE%B9%CE%BF%CF%82_%CE%9D%CE%B7%CE%BB%CE%B5%CE%AF%CE%B1%CF%82_9517.jpg',
+      alt: 'Παραδοσιακή λιθόκτιστη κρήνη με τρεχούμενο πηγαίο νερό στο Πήλιο',
+      credit: 'Photo by C messier (Wikimedia Commons)',
+      license: 'CC BY-SA 4.0',
+    },
     relatedKeys: [
       'chatzi-spring',
       'touloumba-spring',
@@ -2183,70 +3215,21 @@ export const stories: Story[] = [
       'square-fountain',
       'springs-heritage-loop',
     ],
-    sources: [localHeritageSource, wikimediaSource, osmSource],
+    sources: [
+      {
+        label: 'Πολιτιστικός Σύλλογος Λαυκιωτών «Η Δράση»',
+        url: 'https://lafkos.gr/',
+      },
+      {
+        label: 'Wikimedia Commons — Lafkos, Pelion Collection',
+        url: 'https://commons.wikimedia.org/wiki/Category:Lafkos',
+      },
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+    ],
     featured: true,
     isSeed: true,
   },
-  {
-    kind: 'story',
-    entityKey: 'village-of-museums',
-    slug: { el: 'to-chorio-ton-mouseion', en: 'the-village-of-museums' },
-    title: {
-      el: 'Το Χωριό των Μουσείων: Τέχνη και Ήχος στο Νότιο Πήλιο',
-      en: 'The Village of Museums: Art and Sound in South Pelion',
-    },
-    eyebrow: { el: 'Πολιτιστικός θησαυρός', en: 'A cultural treasure' },
-    summary: {
-      el: 'Πώς ένα ορεινό χωριό συγκέντρωσε διεθνή γλυπτική, ένα από τα τρία μουσεία ραδιοφώνου της χώρας και πλούσια λαογραφία.',
-      en: 'How a mountain village became home to internationally acclaimed marble sculpture, vintage radios, and rich folklore.',
-    },
-    body: {
-      el: [
-        'Αν και μικρός σε πληθυσμό, ο Λαύκος διαθέτει μια πολιτιστική πυκνότητα που εκπλήσσει κάθε επισκέπτη. Μέσα σε λίγα μέτρα γύρω από την πλατεία συγκεντρώνονται τρία ξεχωριστά μουσεία.',
-        'Το Φάμπειο Μουσείο τιμά τον κορυφαίο γλύπτη Θανάση Φάμπα, του οποίου τα έργα σε λευκό πηλιορείτικο μάρμαρο έχουν εκτεθεί σε ευρωπαϊκές μητροπόλεις. Δίπλα του, το Μουσείο Ραδιοφώνου «Αντώνης Ταβάνης» ταξιδεύει τους επισκέπτες στον χρυσό αιώνα των ερτζιανών κυμάτων με δεκάδες ιστορικούς δέκτες, ενώ το Λαογραφικό Μουσείο διασώζει την αυθεντική αγροτική παράδοση του τόπου.',
-      ],
-      en: [
-        'Despite its modest size, Lafkos boasts an extraordinary cultural density that surprises every traveler. Within a short stroll around the main square stand three distinct museums.',
-        'The Fampas Museum honors master sculptor Thanasis Fampas, whose white Pelion marble creations have been exhibited across European capitals. Steps away, the Antonis Tavanis Radio Museum celebrates the golden age of wireless broadcasting with over 130 rare vintage receivers, while the Folklore Museum safeguards the authentic rural heritage of the region.',
-      ],
-    },
-    image: architectureImage,
-    relatedKeys: ['fampas-museum', 'radio-museum', 'folklore-museum', 'old-school'],
-    sources: [localHeritageSource, wikimediaSource, osmSource],
-    featured: false,
-    isSeed: true,
-  },
-  {
-    kind: 'story',
-    entityKey: 'kalderimia-pelion',
-    slug: { el: 'ta-kalderimia-tou-piliou', en: 'the-stone-arteries-of-pelion' },
-    title: {
-      el: 'Από το Βουνό στη Θάλασσα: Τα Καλντερίμια του Πηλίου',
-      en: 'From Mountain to Sea: The Stone Arteries of Pelion',
-    },
-    eyebrow: { el: 'Ιστορικά μονοπάτια', en: 'Historic footpaths' },
-    summary: {
-      el: 'Τα καλντερίμια του Λαύκου δεν είναι απλοί δρόμοι· είναι τα πέτρινα κανάλια που συνέδεαν το εμπόριο, τα λιμάνια και τις ζωές των ανθρώπων.',
-      en: 'The kalderimia of Lafkos are stone channels that once linked trade, harbors, and human destinies.',
-    },
-    body: {
-      el: [
-        'Πριν από τη διάνοιξη του σύγχρονου οδικού δικτύου στη δεκαετία του 1960, το Πήλιο κινούνταν αποκλειστικά πάνω σε καλντερίμια. Μαστόροι της πέτρας έχτιζαν με απίστευτη γεωμετρική ακρίβεια μονοπάτια με σταθερή κλίση, πλατιά πατήματα και αυλάκια απορροής των όμβριων υδάτων.',
-        'Το καλντερίμι Λαύκος – Μηλίνα αποτελεί την κορωνίδα αυτής της τέχνης: μια κατηφορική διαδρομή 3,5 χιλιομέτρων που επέτρεπε στα μουλάρια φορτωμένα με λάδι, κρασί και μετάξι να φτάνουν με ασφάλεια στο λιμάνι της Μηλίνας, έτοιμα να φορτωθούν σε καΐκια.',
-      ],
-      en: [
-        'Before modern paved roads arrived in the 1960s, South Pelion moved exclusively along stone kalderimia. Traditional masons engineered these paths with remarkable precision, featuring steady gradients, broad stone steps, and integrated storm drainage channels.',
-        'The Lafkos – Milina kalderimi represents the crown jewel of this craft: a 3.4 km downhill route that allowed pack mules laden with olive oil, wine, and silk to travel safely to Milina harbour for shipment across the Aegean.',
-      ],
-    },
-    image: pagaseticViewImage,
-    relatedKeys: ['lafkos-milina-trail', 'old-lanes', 'monastery-athanasios-trail'],
-    sources: [pelionRoutesSource, wikimediaSource, osmSource],
-    featured: false,
-    isSeed: true,
-  },
 ];
-
-export function getCategory(id: string): Category | undefined {
-  return categories.find((category) => category.id === id);
-}

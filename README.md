@@ -21,9 +21,9 @@ pnpm test:e2e                 # Run Playwright end-to-end tests
 pnpm build                    # Build static site for production
 pnpm studio:dev               # Start local Sanity Studio on localhost:3333
 pnpm studio:build             # Build Sanity Studio bundle
-pnpm studio:export-seed       # Export latest curated archive to Sanity NDJSON
-pnpm studio:import-seed       # Import seed NDJSON into Sanity Content Lake
-```
+pnpm studio:pull-content        # Pull latest live Sanity Content Lake into local dataset
+pnpm studio:export-seed         # Export latest curated archive to Sanity NDJSON
+pnpm studio:import-seed         # Import seed NDJSON into Sanity Content Lake
 
 ## Content & Editorial Workflow
 

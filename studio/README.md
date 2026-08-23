@@ -29,18 +29,26 @@ The editorial content studio for **Lafkos Guide**, built with Sanity Studio v3 a
 
 3. Open `http://localhost:3333` in your browser.
 
-## Seeding & Exporting Dataset
+## Seeding, Exporting & Pulling Dataset
 
-The studio includes a pre-generated dataset containing all 98 curated bilingual documents:
+The studio maintains bidirectional synchronization with the local dataset:
 
 ```bash
-# Export the latest local content archive to NDJSON
+# 1. ALWAYS pull live cloud edits first before re-seeding:
+pnpm pull-content
+# or from workspace root:
+pnpm studio:pull-content
+
+# 2. Export local content archive to NDJSON:
 pnpm export-seed
+# or from workspace root:
+pnpm studio:export-seed
 
-# Import the dataset into your Sanity project
+# 3. Import dataset into your Sanity project:
 pnpm import-seed
+# or from workspace root:
+pnpm studio:import-seed
 ```
-
 ## Build and Deploy
 
 ```bash

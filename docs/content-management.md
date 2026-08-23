@@ -31,8 +31,8 @@ The content pipeline separates editorial workflows from public static delivery:
 
 - **Editorial Workspace (`studio/`):** A standalone Sanity Studio (`@lafkos/studio`) with a tailored desk structure, bilingual document internationalization, image attribution fields, and editorial audit views.
 - **Content Boundary (`src/lib/content-api.ts`):** Astro pages query unified domain models (`Place`, `Trail`, `Story`, `Category`) without coupling to CMS or database specifics.
-- **Graceful Fallback:** If `PUBLIC_SANITY_PROJECT_ID` is unset or unavailable during development, the site runs against the vetted local seed dataset in `src/data/content.ts`.
-
+- **CMS Authority:** Sanity CMS is the authoritative production content lake. `src/data/content.ts` serves as the initial offline seed and development fallback.
+- **Mandatory CMS Synchronization:** Any additions, updates, or enrichments made to local content archives (`src/data/content.ts`) MUST be exported via `pnpm studio:export-seed` and synced to Sanity via `pnpm studio:import-seed`. Local changes without CMS export/sync are considered incomplete.
 ---
 
 ## 2. Content Schemas & Field Contracts
@@ -115,18 +115,20 @@ pnpm studio:dev
 
 The studio runs at `http://localhost:3333`.
 
-### Seeding Sanity from the Local Archive
+### Pulling Live Cloud Content & Safe Bidirectional Sync
 
-To populate a fresh Sanity dataset with the full curated Lafkos archive (98 bilingual documents):
+To prevent overwriting manual edits made in Sanity Studio:
 
 ```bash
-# Export the latest seed data to NDJSON
+# 1. ALWAYS pull live cloud edits first before local bulk work:
+pnpm studio:pull-content
+
+# 2. Export local seed data to NDJSON:
 pnpm studio:export-seed
 
-# Import the dataset into your Sanity project
+# 3. Import the updated seed dataset into Sanity:
 pnpm studio:import-seed
 ```
-
 ### Building & Deploying the Studio
 
 ```bash

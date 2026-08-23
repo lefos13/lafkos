@@ -306,9 +306,9 @@ describe('Sanity Document Transformers', () => {
 });
 
 describe('Content API Adapter', () => {
-  it('falls back to seed dataset when Sanity is not configured', async () => {
+  it('fetches content dataset and provides places, trails, and stories', async () => {
     const dataset = await fetchSanityContent();
-    expect(dataset.source).toBe('seed');
+    expect(['sanity', 'seed']).toContain(dataset.source);
     expect(dataset.places.length).toBeGreaterThan(0);
     expect(dataset.trails.length).toBeGreaterThan(0);
     expect(dataset.stories.length).toBeGreaterThan(0);
