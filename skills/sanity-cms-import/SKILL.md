@@ -158,16 +158,17 @@ Every entry authored for Lafkos Guide must satisfy these core invariants:
 
 ## 3. How to Import Entries & Safe Sync Workflow
 
-### ⚠️ Critical Rule: Preventing Cloud Data Loss
+### ⚠️ Critical Rules: Cloud Master, Webhook Safety & Deployment Limits
 
 1. **Live Sanity CMS is the authoritative master:** Manual edits in Sanity Studio take precedence over static files.
-2. **Granular addition (Method 1) is safest:** Mutates only the single entry without risking other cloud documents.
-3. **Pull before bulk seeding (Method 2):** Always pull live cloud content before exporting/replacing the seed dataset.
+2. **STRICT BAN on Unverified Bulk Imports:** **NEVER** run bulk dataset imports (`pnpm studio:import-seed` or `sanity dataset import`) without explicit prior user confirmation. Bulk imports stream across multiple chunks and trigger bursts of Vercel production deployment webhooks.
+3. **Granular Single-Document Imports Only:** Use targeted granular imports (`scripts/import-entry.ts --direct`) for single place/trail/story additions.
+4. **Multi-Import Threshold Notification:** If a task requires more than 1 or 2 direct document imports, the agent **MUST notify the user and obtain explicit acceptance before proceeding**, explaining that each direct mutation fires a deployment webhook.
 
-### Method 1: Granular Direct Import (Recommended for additions without risk of overwriting)
+### Method 1: Granular Direct Import (Default & Safest)
 
 1. Save your entry JSON to a temporary file, e.g. `entry.json`.
-2. To directly commit to Sanity without touching other entries:
+2. To directly commit to Sanity (only for 1 or 2 entities, or after user confirmation):
    ```bash
    npx tsx scripts/import-entry.ts --file entry.json --direct
    ```
@@ -176,25 +177,22 @@ Every entry authored for Lafkos Guide must satisfy these core invariants:
    npx tsx scripts/import-entry.ts --file entry.json
    ```
 
-### Method 2: Via Local Dataset Archive (`src/data/content.ts`)
+### Method 2: Via Local Dataset Archive (Bulk Re-seed REQUIRES User Approval)
 
 1. **MANDATORY: Always pull live cloud edits first:**
    ```bash
    pnpm studio:pull-content
    ```
    _(This pulls all live Sanity places, trails, stories, and categories into `src/data/content.ts`.)_
-2. Add or edit the TypeScript object directly in `places`, `trails`, or `stories` in `src/data/content.ts`.
+2. Add or edit the TypeScript object in `src/data/content.ts`.
 3. **Run the seed exporter to generate NDJSON:**
    ```bash
    pnpm studio:export-seed
    ```
-   _(This writes the latest bilingual Sanity documents to `studio/data/seed-dataset.ndjson`.)_
-4. **Import into Sanity Content Lake:**
+4. **Import into Sanity Content Lake (ONLY with explicit user authorization):**
    ```bash
    pnpm studio:import-seed
    ```
-   _(Safe to run because cloud edits were pulled in step 1.)_
-
 ### Method 3: Via Sanity Studio UI
 
 1. Run `pnpm studio:dev` and open `http://localhost:3333`.

@@ -22,35 +22,35 @@ When asked to add, draft, update, or batch import cultural places, hiking routes
 
 ### ⚠️ MANDATORY WORKFLOW RULES (Strictly Enforced for all Agents)
 
-To prevent data loss between cloud edits in Sanity Studio and local file changes, all agents **MUST** follow these 3 rules:
+To prevent data loss and prevent spawning excessive production deployments via Sanity Webhooks, all agents **MUST** strictly adhere to these rules:
 
 #### Rule 1: Sanity Studio / Content Lake is the Authoritative Master
 - Sanity CMS is the primary editorial source of truth for all production content.
 - Any changes made by editors or users directly in the Sanity Studio UI take precedence over static seed files.
 
-#### Rule 2: Prefer Granular Mutations for Local Additions
-- When adding or updating individual places, trails, or stories, **NEVER** overwrite the entire dataset with a blunt bulk replace.
-- Use targeted granular imports that only mutate the specific document IDs:
-  ```bash
-  npx tsx scripts/import-entry.ts --file path/to/entry.json --direct
-  ```
-  *(This mutates only the Greek, English, and translation metadata documents for that specific entity, leaving all other cloud edits untouched.)*
+#### Rule 2: STRICT BAN on Unverified Bulk Imports (Webhook & Deployment Protection)
+- **NEVER by any means trigger bulk dataset imports (`pnpm studio:import-seed` or `sanity dataset import`) without explicit prior user confirmation.**
+- Bulk imports stream documents across multiple transaction chunks, causing Sanity to fire multiple webhook requests in rapid succession that spawn dozens of redundant Vercel production deployments.
 
-#### Rule 3: ALWAYS Pull Cloud Edits Before Bulk Re-Seeding
-- If you ever need to perform a bulk seed export or dataset re-import, you **MUST ALWAYS** pull the latest live cloud content down to `src/data/content.ts` first:
+#### Rule 3: Single Document Imports Only & Multi-Import Verification Threshold
+- **Only single-document granular imports (`scripts/import-entry.ts --direct`) are allowed by default.**
+- Even with granular direct imports, agents must consider that each direct import triggers a production deployment via the CMS webhook.
+- **If more than 1 or 2 direct imports are needed, the agent MUST first notify the user and obtain explicit acceptance before triggering them.**
+
+#### Rule 4: ALWAYS Pull Cloud Edits Before Modifying Content
+- When updating local seed files or synchronizing with the CMS, you **MUST ALWAYS** pull live cloud content first:
   ```bash
-  # 1. ALWAYS pull live cloud edits first:
   pnpm studio:pull-content
-
-  # 2. Make your local additions/modifications to src/data/content.ts
-
-  # 3. Export to NDJSON seed:
+  ```
+- If the user explicitly authorizes a bulk re-seed after verification:
+  ```bash
+  # 1. Pull live cloud edits:
+  pnpm studio:pull-content
+  # 2. Export local seed:
   pnpm studio:export-seed
-
-  # 4. Import seed into Sanity (safe because cloud edits were preserved in step 1):
+  # 3. Import seed into Sanity (ONLY with explicit user approval):
   pnpm studio:import-seed
   ```
-
 ### Core Invariants from the Skill:
 
 1. **Always Bilingual:** Every entry requires full Greek (`el`) and English (`en`) translations.

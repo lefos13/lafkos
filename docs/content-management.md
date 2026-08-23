@@ -32,8 +32,7 @@ The content pipeline separates editorial workflows from public static delivery:
 - **Editorial Workspace (`studio/`):** A standalone Sanity Studio (`@lafkos/studio`) with a tailored desk structure, bilingual document internationalization, image attribution fields, and editorial audit views.
 - **Content Boundary (`src/lib/content-api.ts`):** Astro pages query unified domain models (`Place`, `Trail`, `Story`, `Category`) without coupling to CMS or database specifics.
 - **CMS Authority:** Sanity CMS is the authoritative production content lake. `src/data/content.ts` serves as the initial offline seed and development fallback.
-- **Mandatory CMS Synchronization:** Any additions, updates, or enrichments made to local content archives (`src/data/content.ts`) MUST be exported via `pnpm studio:export-seed` and synced to Sanity via `pnpm studio:import-seed`. Local changes without CMS export/sync are considered incomplete.
-
+- **Granular Synchronization & Webhook Protection:** Local additions/updates should use granular single-document mutations (`scripts/import-entry.ts --direct`). Bulk dataset re-imports (`pnpm studio:import-seed`) trigger multiple transaction batches that fire rapid bursts of Vercel production deployment webhooks and must NEVER be performed without explicit user verification.
 ---
 
 ## 2. Content Schemas & Field Contracts
@@ -147,6 +146,7 @@ pnpm studio:deploy
 ## 5. Public Website Build & Publishing Automation
 
 1. **Local & CI Builds:** Astro automatically checks for `PUBLIC_SANITY_PROJECT_ID`. If present, it pulls live published content from Sanity; otherwise, it builds with the embedded seed archive.
-2. **Production Deployment:**
-   - Configure a webhook in Sanity (under _Project Settings -> API -> Webhooks_) to trigger a Cloudflare Pages deployment upon document publication.
-   - Set environment variables `PUBLIC_SANITY_PROJECT_ID` and `PUBLIC_SANITY_DATASET` in Cloudflare Pages.
+2. **Production Deployment & Webhook Lifecycle:**
+   - A Sanity Webhook (under _Project Settings -> API -> Webhooks_) triggers a Vercel Deploy Hook when documents are published or updated.
+   - **Single Document Edits:** Publishing or updating a document in Sanity Studio or running `scripts/import-entry.ts --direct` triggers exactly 1 webhook and 1 Vercel deployment.
+   - **Bulk Imports:** Running full dataset imports (`pnpm studio:import-seed`) streams documents across multiple transaction batches, triggering multiple deployments. Full dataset imports must never be triggered automatically by AI agents without prior user verification.
