@@ -49,7 +49,7 @@ let cachedDataset: ContentDataset | null = null;
 export async function fetchSanityContent(): Promise<ContentDataset> {
   const isDev = Boolean(
     (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') ||
-      (typeof import.meta !== 'undefined' && import.meta.env?.DEV),
+    (typeof import.meta !== 'undefined' && import.meta.env?.DEV),
   );
 
   if (cachedDataset && !isDev) {
@@ -142,6 +142,7 @@ export function publicMapData(
       entityKey: trail.entityKey,
       kind: 'trail',
       category: 'trail',
+      routeType: trail.routeType ?? 'hiking',
       slug: trail.slug[locale],
       title: trail.title[locale],
       summary: trail.summary[locale],
@@ -174,8 +175,12 @@ function waypointFeatures(
     feature.geometry.type === 'Point' ? [feature.geometry.coordinates] : [],
   );
   const features: MapFeature[] = [];
+  const placeKeys = new Set(placeFeatures.map((feature) => feature.properties.entityKey));
   trailsList.forEach((trail) => {
     trail.waypoints.forEach((waypoint, index) => {
+      /* An explicit link suppresses a synthetic marker only when its place is
+       * present in this dataset; unresolved keys continue through heuristics. */
+      if (waypoint.placeKey && placeKeys.has(waypoint.placeKey)) return;
       const onPath = trail.geometry.coordinates.some(
         (vertex) => metresBetween(vertex, waypoint.coordinate) <= waypointOnPathMetres,
       );
@@ -192,6 +197,7 @@ function waypointFeatures(
           entityKey: `${trail.entityKey}-waypoint-${index}`,
           kind: 'waypoint',
           category: 'trail',
+          routeType: trail.routeType ?? 'hiking',
           slug: trail.slug[locale],
           title: waypoint.title[locale],
           summary: trail.title[locale],

@@ -7,6 +7,7 @@ import type {
   Source,
   Story,
   Trail,
+  RouteType,
 } from './content';
 import { urlForImage } from './sanity-client';
 
@@ -48,9 +49,11 @@ export const TRAILS_QUERY = `*[_type == "trail" && !(_id in path("drafts.**"))] 
   summary,
   body,
   geometry,
+  routeType,
   waypoints[] {
     title,
     coordinate,
+    "placeKey": placeKey->entityKey,
     image {
       ...,
       asset-> { _id, url }
@@ -280,8 +283,10 @@ export interface SanityTrailDoc {
   waypoints?: Array<{
     title?: string;
     coordinate: { lng: number; lat: number };
+    placeKey?: string | { entityKey?: string; _ref?: string };
     image?: SanityImageRaw;
   }>;
+  routeType?: RouteType;
   distanceMeters?: number;
   durationMinutes?: number;
   elevationGainMeters?: number;
@@ -291,6 +296,15 @@ export interface SanityTrailDoc {
   sources?: Array<{ label: string; url: string }>;
   featured?: boolean;
   isSeed?: boolean;
+}
+
+function resolveSanityPlaceKey(
+  value?: string | { entityKey?: string; _ref?: string },
+): string | undefined {
+  if (typeof value === 'string') return value;
+  if (value?.entityKey) return value.entityKey;
+  const match = value?._ref?.match(/^place-(.+)-(?:el|en)$/);
+  return match?.[1];
 }
 
 export function transformSanityTrails(docs: SanityTrailDoc[]): Trail[] {
@@ -341,6 +355,7 @@ export function transformSanityTrails(docs: SanityTrailDoc[]): Trail[] {
           en: wpEn.title || `Waypoint ${i + 1}`,
         },
         coordinate: coord,
+        placeKey: resolveSanityPlaceKey(wpEl.placeKey) || resolveSanityPlaceKey(wpEn.placeKey),
         image: transformSanityImage(wpEl.image) || transformSanityImage(wpEn.image),
       });
     }
@@ -378,6 +393,7 @@ export function transformSanityTrails(docs: SanityTrailDoc[]): Trail[] {
         type: 'LineString',
         coordinates,
       },
+      routeType: el.routeType ?? en.routeType ?? 'hiking',
       distanceMeters: el.distanceMeters ?? en.distanceMeters ?? 1000,
       durationMinutes: el.durationMinutes ?? en.durationMinutes ?? 30,
       elevationGainMeters: el.elevationGainMeters ?? en.elevationGainMeters ?? 50,

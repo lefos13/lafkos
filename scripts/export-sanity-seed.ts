@@ -14,6 +14,22 @@ function toSanityImage(image?: ImageAsset) {
     license: image.license,
   };
 }
+
+const placeEntityKeys = new Set(places.map((place) => place.entityKey));
+
+/* Waypoint links are stored as language-specific Sanity references while the
+ * domain model keeps a stable place entityKey shared by both translations. */
+function toSanityPlaceReference(placeKey: string | undefined, language: 'el' | 'en') {
+  if (!placeKey) return undefined;
+  if (!placeEntityKeys.has(placeKey)) {
+    console.warn(
+      `Skipping dangling waypoint placeKey "${placeKey}" for ${language} seed document.`,
+    );
+    return undefined;
+  }
+  return { _type: 'reference', _ref: `place-${placeKey}-${language}` };
+}
+
 function generateNdjson() {
   const documents: Record<string, unknown>[] = [];
   const now = new Date().toISOString();
@@ -156,6 +172,7 @@ function generateNdjson() {
       _key: `wp-${idx}`,
       title: wp.title.el,
       coordinate: { _type: 'geopoint', lng: wp.coordinate[0], lat: wp.coordinate[1] },
+      placeKey: toSanityPlaceReference(wp.placeKey, 'el'),
       image: toSanityImage(wp.image),
     }));
 
@@ -163,6 +180,7 @@ function generateNdjson() {
       _key: `wp-${idx}`,
       title: wp.title.en,
       coordinate: { _type: 'geopoint', lng: wp.coordinate[0], lat: wp.coordinate[1] },
+      placeKey: toSanityPlaceReference(wp.placeKey, 'en'),
       image: toSanityImage(wp.image),
     }));
 
@@ -187,6 +205,7 @@ function generateNdjson() {
       body: trail.body.el,
       geometry,
       waypoints: waypointsEl,
+      routeType: trail.routeType ?? 'hiking',
       distanceMeters: trail.distanceMeters,
       durationMinutes: trail.durationMinutes,
       elevationGainMeters: trail.elevationGainMeters,
@@ -213,6 +232,7 @@ function generateNdjson() {
       body: trail.body.en,
       geometry,
       waypoints: waypointsEn,
+      routeType: trail.routeType ?? 'hiking',
       distanceMeters: trail.distanceMeters,
       durationMinutes: trail.durationMinutes,
       elevationGainMeters: trail.elevationGainMeters,

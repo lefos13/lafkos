@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
   fetchSanityContent,
   findPlace,
@@ -8,6 +8,7 @@ import {
   findTrail,
   publicMapData,
 } from '../src/lib/content-api';
+import { getCopy } from '../src/lib/ui-copy';
 import { isSanityConfigured } from '../src/lib/sanity-client';
 import {
   transformSanityCategories,
@@ -306,12 +307,36 @@ describe('Sanity Document Transformers', () => {
 });
 
 describe('Content API Adapter', () => {
-  it('fetches content dataset and provides places, trails, and stories', async () => {
-    const dataset = await fetchSanityContent();
-    expect(['sanity', 'seed']).toContain(dataset.source);
-    expect(dataset.places.length).toBeGreaterThan(0);
-    expect(dataset.trails.length).toBeGreaterThan(0);
-    expect(dataset.stories.length).toBeGreaterThan(0);
+  /* The adapter unit test exercises its local fallback without depending on
+   * live Sanity latency or credentials loaded from a developer `.env` file. */
+  it('uses the seed dataset when Sanity is unavailable', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    vi.stubEnv('PUBLIC_SANITY_PROJECT_ID', 'replace-with-project-id');
+
+    try {
+      const dataset = await fetchSanityContent();
+      expect(dataset.source).toBe('seed');
+      expect(dataset.places.length).toBeGreaterThan(0);
+      expect(dataset.trails.length).toBeGreaterThan(0);
+      expect(dataset.stories.length).toBeGreaterThan(0);
+    } finally {
+      vi.unstubAllEnvs();
+    }
+  });
+
+  it('provides bilingual copy for data source indicators and seed warnings', () => {
+    const elCopy = getCopy('el');
+    const enCopy = getCopy('en');
+
+    expect(elCopy.dataSource).toBe('Πηγή δεδομένων:');
+    expect(elCopy.cmsLiveTitle).toBeTruthy();
+    expect(elCopy.seedFallbackTitle).toBeTruthy();
+    expect(elCopy.seedFallbackWarning).toContain('Sanity CMS');
+
+    expect(enCopy.dataSource).toBe('Data source:');
+    expect(enCopy.cmsLiveTitle).toBeTruthy();
+    expect(enCopy.seedFallbackTitle).toBeTruthy();
+    expect(enCopy.seedFallbackWarning).toContain('Sanity CMS');
   });
 
   it('resolves place, trail, and story by localized slug', () => {
@@ -350,7 +375,9 @@ describe('Seed NDJSON Archive Integrity & Entry Formatter', () => {
     const content = readFileSync(ndjsonPath, 'utf-8');
     const lines = content.trim().split('\n');
 
-    expect(lines.length).toBe(98);
+    /* Each bilingual entity contributes three documents; these additions
+     * expand the original 107-document archive by 17 places and 10 trails. */
+    expect(lines.length).toBe(107 + 3 * 17 + 3 * 10);
 
     const types = new Set<string>();
     for (const line of lines) {

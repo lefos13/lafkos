@@ -60,6 +60,13 @@ export const copy = {
     privacyTitle: 'Ιδιωτικότητα',
     accessibilityTitle: 'Προσβασιμότητα',
     footer: 'Ένας ανεξάρτητος κοινοτικός οδηγός για τον Λαύκο και το Νότιο Πήλιο.',
+    dataSource: 'Πηγή δεδομένων:',
+    cmsLiveTitle: 'Sanity CMS (Live Content Lake)',
+    cmsLiveBadge: 'Sanity CMS',
+    seedFallbackTitle: 'Λειτουργία με Τοπικά Δεδομένα (Seed Fallback)',
+    seedFallbackBadge: 'Local Seed Fallback',
+    seedFallbackWarning:
+      'Προσοχή: Αυτή η εγκατάσταση εκτελείται με τοπικά προσωρινά δεδομένα (Local Seed Fallback) και όχι με το ζωντανό Sanity CMS. Οι αλλαγές που συγχρονίστηκαν στο CMS δεν θα εμφανίζονται εδώ μέχρι να ρυθμιστούν οι μεταβλητές περιβάλλοντος και να γίνει redeploy.',
     language: 'English',
   },
   en: {
@@ -118,10 +125,16 @@ export const copy = {
     privacyTitle: 'Privacy',
     accessibilityTitle: 'Accessibility',
     footer: 'An independent community guide to Lafkos and South Pelion.',
+    dataSource: 'Data source:',
+    cmsLiveTitle: 'Sanity CMS (Live Content Lake)',
+    cmsLiveBadge: 'Sanity CMS',
+    seedFallbackTitle: 'Running with Local Seed Fallback',
+    seedFallbackBadge: 'Local Seed Fallback',
+    seedFallbackWarning:
+      'Warning: This deployment is running on local fallback data (Local Seed Fallback) rather than the live Sanity CMS. Changes synced in the CMS will not appear here until environment variables are set and a redeploy is triggered.',
     language: 'Ελληνικά',
   },
 } as const;
-
 export function getCopy(locale: Locale) {
   return copy[locale];
 }

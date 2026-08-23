@@ -33,6 +33,7 @@ The content pipeline separates editorial workflows from public static delivery:
 - **Content Boundary (`src/lib/content-api.ts`):** Astro pages query unified domain models (`Place`, `Trail`, `Story`, `Category`) without coupling to CMS or database specifics.
 - **CMS Authority:** Sanity CMS is the authoritative production content lake. `src/data/content.ts` serves as the initial offline seed and development fallback.
 - **Mandatory CMS Synchronization:** Any additions, updates, or enrichments made to local content archives (`src/data/content.ts`) MUST be exported via `pnpm studio:export-seed` and synced to Sanity via `pnpm studio:import-seed`. Local changes without CMS export/sync are considered incomplete.
+
 ---
 
 ## 2. Content Schemas & Field Contracts
@@ -57,13 +58,14 @@ Represents cultural landmarks, historic buildings, squares, cafes, museums, chur
 
 ### 2. Trail (`trail`)
 
-Represents hiking routes, cobbled kalderimi paths, and mountain trails.
+Represents hiking routes, road routes, mixed access routes, cobbled kalderimi paths, and mountain trails.
 
 - **Entity Key & Language:** Shared key across translations.
-- **Geometry (`geometry`):** Array of coordinates (`lng`, `lat`) describing the line path.
-- **Waypoints (`waypoints`):** Intermediate photographed points along the path with titles, geopoints, and images.
-- **Metrics:** `distanceMeters`, `durationMinutes`, `elevationGainMeters`, `difficulty` (`easy`, `moderate`, `demanding`).
-- **Surface & Safety:** Localized descriptions of path condition (e.g. kalderimi, dirt road) and equipment/safety advice.
+- **Route Type (`routeType`):** Optional discriminator with values `hiking`, `drive`, or `mixed`; an absent value is treated as `hiking` for backwards compatibility. `drive` describes a route followed by car, while `mixed` combines driving with a walk-in.
+- **Geometry (`geometry`):** A single `LineString` represented by an array of coordinates (`lng`, `lat`) describing the complete route. Mixed routes concatenate the drive and walk-in segments into that one line; they do not use `MultiLineString` or separate per-segment geometry.
+- **Waypoints (`waypoints`):** Intermediate photographed points along the path with titles, geopoints, and images. For a mixed route, include a waypoint at the handover (for example, “Τέλος ασφάλτου — στάθμευση”) and describe the walk-in distance in the body and safety notes. A waypoint may set `placeKey` to an existing Place `entityKey`; that reference suppresses a duplicate synthetic map pin while retaining the stop on the route page.
+- **Metrics:** `distanceMeters`, `durationMinutes`, `elevationGainMeters`, `difficulty` (`easy`, `moderate`, `demanding`). For `drive` and `mixed` routes, `difficulty` describes road/access character rather than physical hiking fitness, and `elevationGainMeters` records the route elevation change even when it is primarily a drive.
+- **Surface & Safety:** Localized descriptions of path or road condition (e.g. kalderimi, dirt road, asphalt) and equipment/safety advice. For drives, explain road character, surfaces, clearance or caution points, and any access uncertainty; for mixed routes, state the handover and walk-in conditions explicitly.
 - **GPX File (`gpx`):** Optional downloadable track file.
 - **Verification & Status:** `lastVerifiedAt` date, `featured`, and `isSeed`.
 
@@ -129,6 +131,7 @@ pnpm studio:export-seed
 # 3. Import the updated seed dataset into Sanity:
 pnpm studio:import-seed
 ```
+
 ### Building & Deploying the Studio
 
 ```bash

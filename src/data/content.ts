@@ -5,7 +5,168 @@
  * Sourced directly from Sanity Content Lake via `pnpm studio:pull-content`.
  */
 
-import type { Category, Place, Story, Trail } from '../lib/content';
+import type { Category, Place, RouteType, Story, Trail } from '../lib/content';
+import { coastalEditorialContent } from './coastal-content';
+import { routeGeometry } from './route-geometry';
+
+/*
+ * The coastal handoff is merged at the content boundary so route geometry,
+ * bilingual editorial fields, and shared place references stay synchronized.
+ */
+const coastalRouteKeyAliases: Record<string, string> = {
+  'lafkos-mikro-drive-route': 'lafkos-mikro-drive',
+  'chondri-ammos-drive': 'lafkos-chondri-ammos-drive',
+  'vathia-spilia-drive': 'lafkos-vathia-spilia-drive',
+  'olive-bay-chorto-drive': 'lafkos-olive-bay-drive',
+  'marathias-drive': 'lafkos-marathias-drive',
+  'lyri-drive': 'lafkos-lyri-drive',
+  'mourtiass-drive': 'lafkos-mourtias-drive',
+  'paltsi-drive': 'lafkos-paltsi-drive',
+  'potistika-drive': 'lafkos-potistika-drive',
+};
+
+function correctMikroPlace(place: Place): Place {
+  if (place.entityKey === 'mikro-beach') {
+    return {
+      ...place,
+      sources: [
+        {
+          label: 'ilovepelion — Μικρό',
+          url: 'https://ilovepelion.gr/el/destinations/aegeanbeach/mikro',
+        },
+        {
+          label: 'OSM way 1424388029 — coastal path to Μικρό',
+          url: 'https://www.openstreetmap.org/way/1424388029',
+        },
+      ],
+    };
+  }
+  if (place.entityKey === 'mikro-settlement') {
+    return {
+      ...place,
+      sources: [
+        {
+          label: 'ilovepelion — Μικρό',
+          url: 'https://ilovepelion.gr/el/destinations/aegeanbeach/mikro',
+        },
+        {
+          label: 'OpenStreetMap — Μικρό settlement',
+          url: 'https://www.openstreetmap.org/?mlat=39.13639&mlon=23.26238#map=17/39.13639/23.26238',
+        },
+      ],
+    };
+  }
+  return place;
+}
+
+function correctMikroTrail(trail: Trail): Trail {
+  if (trail.entityKey !== 'lafkos-mikro-trail') return trail;
+
+  return {
+    ...trail,
+    title: {
+      el: 'Διαδρομή Λαύκος – Μικρό',
+      en: 'Lafkos – Mikro Trail',
+    },
+    summary: {
+      el: 'Μονής κατεύθυνσης, κυρίως κατηφορική σύνθεση από τον Λαύκο προς το Μικρό, με άτυπα μονοπάτια, αγροτικούς δρόμους και σύντομα τμήματα ασφάλτου.',
+      en: 'A mostly downhill, one-way composite from Lafkos to Mikro using unmarked paths, farm tracks, and short asphalt sections.',
+    },
+    body: {
+      el: [
+        'Η διαδρομή από τον Λαύκο προς το Μικρό συνδυάζει ορεινό ανάγλυφο, ελαιώνες και την αιγαιοπελαγίτικη ακτή. Η δηλωμένη διάρκεια των περίπου 110 λεπτών αφορά την κατηφορική πορεία από το χωριό προς τη θάλασσα.',
+        'Μετά την έξοδο από τον Λαύκο, η πορεία περνά από εσωτερικά μονοπάτια και αγροτικούς δρόμους. Δεν μπαίνει στον Πλατανιά· συναντά τον παράκτιο πεζόδρομο από το εσωτερικό, δυτικά από την αφετηρία του Πλατανιά.',
+        'Το τελευταίο τμήμα ακολουθεί τον παράκτιο δρόμο προς το Μικρό, με ξύλινα προστατευτικά κιγκλιδώματα και θέα στο Αιγαίο. Για τον τεκμηριωμένο σύντομο περίπατο από τον Πλατανιά υπάρχει ξεχωριστή διαδρομή στον οδηγό.',
+        'Η οδική πρόσβαση προς το Μικρό είναι διαφορετική διαδρομή και περιγράφεται χωριστά ως οδική διαδρομή Λαύκος – Μικρό.',
+      ],
+      en: [
+        'The route from Lafkos to Mikro combines mountain terrain, olive groves, and the Aegean coast. The stated duration of about 110 minutes refers to the downhill journey from the village to the sea.',
+        'After leaving Lafkos, the line follows inland paths and farm tracks. It does not enter Platanias; it meets the coastal boardwalk from inland, west of the Platanias trailhead.',
+        'The final section follows the coast toward Mikro, with wooden safety railings and Aegean views. The documented short walk from Platanias is provided as a separate route.',
+        'Road access to Mikro is a different route and is described separately as the Lafkos – Mikro drive route.',
+      ],
+    },
+    elevationGainMeters: 190,
+    surface: {
+      el: 'Μη σηματοδοτημένη σύνθεση: 51% μονοπάτι, 30% χωματόδρομος και 19% σύντομα τμήματα ασφάλτου',
+      en: 'Unwaymarked composite: 51% footpath, 30% dirt track, and 19% short asphalt sections',
+    },
+    safety: {
+      el: [
+        'Δεν είναι σηματοδοτημένο μονοπάτι· χρειάζεται προσανατολισμός και κατάλληλα παπούτσια για μονοπάτια, αγροτικούς δρόμους και βραχώδη τμήματα.',
+        'Η πορεία έχει περίπου 190 μ. συνολική ανάβαση και 490 μ. κατάβαση. Η επιστροφή προς τον Λαύκο είναι σημαντικά ανηφορική και απαιτεί περισσότερο χρόνο.',
+        'Το πρώτο τμήμα περιλαμβάνει δρόμο και η διαδρομή δεν έχει σταθερή υποδομή ή σήμανση. Πάρτε νερό, προστασία από τον ήλιο και μην ξεκινάτε με ισχυρούς ανέμους ή μεγάλο κυματισμό στην ακτή.',
+      ],
+      en: [
+        'This is not a waymarked trail; navigation and footwear suitable for paths, farm tracks, and rocky sections are required.',
+        'The route includes about 190 m of cumulative ascent and 490 m of descent. The return to Lafkos is a substantial uphill climb and takes longer.',
+        'The opening section includes road and the route has no consistent infrastructure or marking. Carry water and sun protection, and avoid the coast in strong winds or heavy swell.',
+      ],
+    },
+    waypoints: trail.waypoints
+      .filter((_, index) => index !== 1 && index !== 2)
+      .map((waypoint, index, remainingWaypoints) =>
+        index === remainingWaypoints.length - 1
+          ? { ...waypoint, placeKey: 'mikro-beach' }
+          : waypoint,
+      ),
+    sources: [
+      { label: 'OSM way 440285198', url: 'https://www.openstreetmap.org/way/440285198' },
+      { label: 'OSM way 1424388029', url: 'https://www.openstreetmap.org/way/1424388029' },
+      { label: 'OSM way 1551015008', url: 'https://www.openstreetmap.org/way/1551015008' },
+      { label: 'OSM way 1424391081', url: 'https://www.openstreetmap.org/way/1424391081' },
+      {
+        label: 'Topoguide — Λαύκος–Πλατανιάς waymarked alternative',
+        url: 'https://www.topoguide.gr/mountains/thessaly/advs_pelion/pelion_southern/Pelion_Lafkos_Mousges.php',
+      },
+      {
+        label: 'ilovepelion — Μικρό',
+        url: 'https://ilovepelion.gr/el/destinations/aegeanbeach/mikro',
+      },
+    ],
+  };
+}
+
+function mergeCoastalTrail(rawTrail: Record<string, unknown>): Trail {
+  const rawEntityKey = String(rawTrail.entityKey);
+  const geometryKey = coastalRouteKeyAliases[rawEntityKey] ?? rawEntityKey;
+  const route = routeGeometry.routes.find((candidate) => candidate.entityKey === geometryKey);
+  if (!route) throw new Error(`Missing route geometry for ${rawEntityKey} (${geometryKey})`);
+
+  const rawWaypoints = (rawTrail.waypoints ?? []) as Trail['waypoints'];
+  const handoverWaypoints = (route.handoverStops ?? []).map((stop) => ({
+    title: {
+      el: 'Τέλος ασφάλτου — στάθμευση',
+      en: 'End of paved road — parking',
+    },
+    coordinate: [...stop.coordinate] as [number, number],
+  }));
+  const lastWaypoint = rawWaypoints.at(-1);
+  const waypoints = lastWaypoint
+    ? [...rawWaypoints.slice(0, -1), ...handoverWaypoints, lastWaypoint]
+    : [...rawWaypoints, ...handoverWaypoints];
+
+  return {
+    ...rawTrail,
+    entityKey: geometryKey,
+    kind: 'trail',
+    routeType: (route.routeType ?? rawTrail.routeType ?? 'hiking') as RouteType,
+    geometry: {
+      type: 'LineString',
+      coordinates: route.geometry.coordinates.map(
+        (coordinate) => [...coordinate] as [number, number],
+      ),
+    },
+    distanceMeters: route.distanceMeters,
+    durationMinutes: route.durationMinutes,
+    /*
+     * The drive profile has no fitness ascent measurement; zero is the required
+     * conservative default while road elevation is intentionally not claimed.
+     */
+    elevationGainMeters: route.elevationGainMeters ?? 0,
+    waypoints,
+  } as Trail;
+}
 
 export const categories: Category[] = [
   {
@@ -101,7 +262,7 @@ export const categories: Category[] = [
   },
 ];
 
-export const places: Place[] = [
+const basePlaces: Place[] = [
   {
     kind: 'place',
     entityKey: 'agia-paraskevi-view',
@@ -707,6 +868,168 @@ export const places: Place[] = [
       {
         label: 'OpenStreetMap Contributors',
         url: 'https://www.openstreetmap.org/',
+      },
+    ],
+    featured: true,
+    isSeed: true,
+  },
+  {
+    kind: 'place',
+    entityKey: 'mikro-beach',
+    slug: {
+      el: 'paralia-mikro',
+      en: 'mikro-beach',
+    },
+    title: {
+      el: 'Παραλία Μικρό',
+      en: 'Mikro Beach',
+    },
+    eyebrow: {
+      el: 'Ειδυλλιακή αμμουδιά του Αιγαίου',
+      en: 'Idyllic Aegean sandy beach',
+    },
+    summary: {
+      el: 'Μία από τις ομορφότερες παραλίες του Νοτίου Πηλίου, με ψιλή χρυσαφένια άμμο, διάφανα γαλαζοπράσινα νερά και εντυπωσιακό φυσικό τοπίο.',
+      en: 'One of the most celebrated beaches of South Pelion, renowned for fine golden sand, crystalline turquoise waters, and lush Mediterranean scenery.',
+    },
+    body: {
+      el: [
+        'Η παραλία Μικρό είναι ένας επίγειος παράδεισος στις αιγαιοπελαγίτικες ακτές του Πηλίου. Εκτείνεται σε έναν απάνεμο κόλπο με ψιλή κοκκινωπή και χρυσαφένια άμμο, απαλά βότσαλα και διάφανα, πεντακάθαρα νερά που βαθαίνουν ομαλά.',
+        'Περιβάλλεται από κατάφυτους λόφους με πεύκα και ελιές που κατηφορίζουν ως τη θάλασσα. Στη βόρεια πλευρά της, τα βράχια σχηματίζουν εντυπωσιακά περάσματα όπου ξεκινά το διάσημο παραλιακό μονοπάτι που οδηγεί στον Πλατανιά.',
+        'Στην παραλία λειτουργούν παραδοσιακά ταβερνάκια ακριβώς πάνω στο κύμα, προσφέροντας θαλασσινούς μεζέδες και δροσιά κάτω από τα αρμυρίκια.',
+      ],
+      en: [
+        'Mikro Beach is considered one of the crown jewels of the Pelion coastline. It stretches across a sheltered bay featuring fine golden sand, gentle pebbles, and brilliantly clear turquoise waters with a gradual depth.',
+        'Framed by hills covered in pines and olive trees descending to the sea, the beach offers natural beauty and tranquility. On its northern flank, sculpted rock formations host the famous cliff path leading to nearby Platanias.',
+        'Seaside family tavernas sit just steps from the shoreline, offering fresh seafood, local specialties, and shaded seating beneath the tamarisks.',
+      ],
+    },
+    category: 'nature',
+    geometry: {
+      type: 'Point',
+      coordinates: [23.26363, 39.13644],
+    },
+    mapAnchor: [23.26363, 39.13644],
+    images: [
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/9/9a/Sun_always_breaks_through%2C_Mikro_Beach%2C_South_Pelion.jpg',
+        alt: 'Η χρυσαφένια αμμουδιά και τα γαλαζοπράσινα νερά στην παραλία Μικρό στο Νότιο Πήλιο',
+        credit: 'Photo by Jnkar (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/c/c4/Mikro_Pelion.jpg',
+        alt: 'Άποψη της παραλίας και του όρμου στο Μικρό',
+        credit: 'Photo by Eleni Alexiou (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+    ],
+    practical: {
+      el: [
+        'Ιδανική παραλία για κολύμπι και οικογένειες, με ομαλή είσοδο στη θάλασσα.',
+        'Διαθέτει οργανωμένα σημεία με ομπρέλες/ξαπλώστρες καθώς και άπλετο ελεύθερο χώρο.',
+        'Πρόσβαση με τα πόδια από τον Πλατανιά μέσω του παραλιακού μονοπατιού (800μ, ~15 λεπτά).',
+        'Οδική πρόσβαση με ασφαλτοστρωμένο δρόμο από Λαύκο/Προμύρι.',
+      ],
+      en: [
+        'Ideal beach for swimming and families, with gentle sea entry and fine sand.',
+        'Offers both organized sections with sunbeds/umbrellas and ample free space.',
+        'Foot access from Platanias along the coastal rock path (800m, ~15 mins walk).',
+        'Road access via paved route from Lafkos/Promyri.',
+      ],
+    },
+    sources: [
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+      {
+        label: 'Πολιτιστικός Σύλλογος Λαυκιωτών «Η Δράση»',
+        url: 'https://lafkos.gr/',
+      },
+      {
+        label: 'Wikimedia Commons — Pelion Collection',
+        url: 'https://commons.wikimedia.org/wiki/Category:Pelion',
+      },
+    ],
+    featured: true,
+    isSeed: true,
+  },
+  {
+    kind: 'place',
+    entityKey: 'mikro-settlement',
+    slug: {
+      el: 'oikismos-mikro',
+      en: 'mikro-settlement',
+    },
+    title: {
+      el: 'Οικισμός Μικρό',
+      en: 'Mikro Settlement',
+    },
+    eyebrow: {
+      el: 'Παραθαλάσσιος οικισμός του Αιγαίου',
+      en: 'Aegean coastal settlement',
+    },
+    summary: {
+      el: 'Γαλήνιος παραθαλάσσιος οικισμός στη νοτιοανατολική πλευρά του Πηλίου, φωλιασμένος σε έναν προστατευμένο όρμο του Αιγαίου με παραδοσιακή πηλιορείτικη ατμόσφαιρα.',
+      en: 'A serene coastal hamlet nestled in a sheltered Aegean cove of South Pelion, surrounded by olive groves and traditional seaside charm.',
+    },
+    body: {
+      el: [
+        'Το Μικρό είναι ένας πανέμορφος, ήσυχος παραθαλάσσιος οικισμός στις ακτές του Αιγαίου, λίγα χιλιόμετρα νοτιοανατολικά του Λαύκου και νότια του Πλατανιά. Χτισμένος σε έναν απάνεμο ορμίσκο, αποτελούσε παραδοσιακά επίνειο και καταφύγιο ψαράδων και αγροτών της περιοχής.',
+        'Ο οικισμός διατηρεί τον αυθεντικό του χαρακτήρα με λιθόχτιστες κατοικίες, ελαιόδεντρα που φτάνουν σχεδόν μέχρι το κύμα και παραδοσιακές ταβέρνες που σερβίρουν φρέσκο ψάρι και τοπικούς μεζέδες. Η σύνδεση με τον γειτονικό Πλατανιά γίνεται τόσο μέσω γραφικού παραλιακού μονοπατιού πάνω στα βράχια όσο και οδικώς από τον Λαύκο και το Προμύρι.',
+      ],
+      en: [
+        'Mikro is a picturesque, peaceful coastal settlement on the Aegean shore of South Pelion, located southeast of Lafkos and just south of Platanias. Set within a sheltered bay, it historically served as a fishing haven and coastal outlet for the surrounding villages.',
+        'The settlement preserves an authentic, unhurried atmosphere with stone cottages, olive trees reaching down to the water, and seaside tavernas serving fresh local seafood. It is accessible on foot from neighboring Platanias via a scenic cliffside footpath, or by road from Lafkos and Promyri.',
+      ],
+    },
+    category: 'community',
+    geometry: {
+      type: 'Point',
+      coordinates: [23.26238, 39.13639],
+    },
+    mapAnchor: [23.26238, 39.13639],
+    images: [
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/c/c4/Mikro_Pelion.jpg',
+        alt: 'Ο γραφικός παραθαλάσσιος οικισμός Μικρό στο Νότιο Πήλιο',
+        credit: 'Photo by Eleni Alexiou (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/7/77/%CE%A0%CE%BB%CE%B1%CF%84%CE%B1%CE%BD%CE%B9%CE%B1%CF%82_%CF%80%CE%B7%CE%BB%CE%AF%CE%BF%CF%85.jpg',
+        alt: 'Η γύρω ακτογραμμή και οι όρμοι του Νοτίου Πηλίου κοντά στον Πλατανιά και το Μικρό',
+        credit: 'Photo by Nips (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+    ],
+    practical: {
+      el: [
+        'Προσβάσιμο οδικώς από τον Λαύκο/Προμύρι (περίπου 15-20 λεπτά με αυτοκίνητο) και πεζοπορικά μέσω μονοπατιού.',
+        'Σύνδεση με τον Πλατανιά σε 15 λεπτά μέσω του παραλιακού μονοπατιού πάνω στα βράχια.',
+        'Διαθέτει παραθαλάσσιες ταβέρνες και καφέ κατά τους καλοκαιρινούς μήνες.',
+        'Χώρος στάθμευσης στην είσοδο του οικισμού πριν την παραλία.',
+      ],
+      en: [
+        'Accessible by car from Lafkos/Promyri (approx. 15-20 minutes) or via the hiking trails.',
+        'Connected to Platanias via a scenic 15-minute coastal cliffside footpath.',
+        'Features seaside tavernas and cafes operating during the holiday season.',
+        'Designated parking area available at the entrance of the settlement before the beach.',
+      ],
+    },
+    sources: [
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+      {
+        label: 'Πολιτιστικός Σύλλογος Λαυκιωτών «Η Δράση»',
+        url: 'https://lafkos.gr/',
+      },
+      {
+        label: 'Wikimedia Commons — Pelion Collection',
+        url: 'https://commons.wikimedia.org/wiki/Category:Pelion',
       },
     ],
     featured: true,
@@ -1636,7 +1959,16 @@ export const places: Place[] = [
   },
 ];
 
-export const trails: Trail[] = [
+/*
+ * Keep Sanity-derived places ahead of route records so waypoint references can
+ * resolve during seed export/import, while preserving the original seed order.
+ */
+export const places: Place[] = [
+  ...basePlaces.map(correctMikroPlace),
+  ...(coastalEditorialContent.places as unknown as Place[]),
+];
+
+const baseTrails: Trail[] = [
   {
     kind: 'trail',
     entityKey: 'lafkos-chondri-ammos-trail',
@@ -1904,6 +2236,382 @@ export const trails: Trail[] = [
   },
   {
     kind: 'trail',
+    entityKey: 'lafkos-mikro-trail',
+    slug: {
+      el: 'diadromi-lafkos-mikro',
+      en: 'lafkos-mikro-trail',
+    },
+    title: {
+      el: 'Διαδρομή Λαύκος – Πλατανιάς – Παραλία Μικρό',
+      en: 'Lafkos to Platanias & Mikro Beach Trail',
+    },
+    eyebrow: {
+      el: 'Πεζοπορία από το βουνό στο Αιγαίο',
+      en: 'Mountain to Aegean coastal hike',
+    },
+    summary: {
+      el: 'Μία από τις πιο ολοκληρωμένες και συναρπαστικές διαδρομές του Νοτίου Πηλίου, που συνδέει τον ορεινό Λαύκο με το παραθαλάσσιο λιμανάκι του Πλατανιά και τη μαγευτική παραλία Μικρό.',
+      en: 'A classic and captivating South Pelion hike connecting highland Lafkos with the fishing harbor of Platanias and the golden sands of Mikro Beach.',
+    },
+    body: {
+      el: [
+        'Η διαδρομή από τον Λαύκο προς το Μικρό αποτελεί μια κλασική πηλιορείτικη πεζοπορία που συνδυάζει ορεινό ανάγλυφο, παραδοσιακούς ελαιώνες και την άγρια ομορφιά της αιγαιοπελαγίτικης ακτογραμμής.',
+        'Η πορεία ξεκινά από την κεντρική πλατεία του Λαύκου, κατευθύνεται νότια διασχίζοντας παλιά καλντερίμια και αγροτικούς δρόμους ανάμεσα σε αρχαίους ελαιώνες και ρεματιές με κουμαριές και σχίνους, κατηφορίζοντας σταδιακά προς τον Πλατανιά.',
+        'Από τον Πλατανιά, η διαδρομή ακολουθεί το εντυπωσιακό παράκτιο μονοπάτι που έχει λαξευτεί πάνω στα βράχια της ακτής, με ξύλινα προστατευτικά κάγκελα και απαράμιλλη θέα στο Αιγαίο, καταλήγοντας απευθείας στη χρυσή αμμουδιά και τις ταβέρνες του Μικρού.',
+        'Εναλλακτικά, η πρόσβαση με όχημα γίνεται μέσω του ασφαλτοστρωμένου δρόμου Λαύκου – Προμυρίου – Πλατανιά με παράκαμψη προς το Μικρό (περίπου 9 χλμ).',
+      ],
+      en: [
+        'The hike from Lafkos to Mikro is a quintessential Pelion walking experience, combining mountain ridges, ancient olive groves, and the wild beauty of the Aegean coastline.',
+        'Departing from the shaded central square of Lafkos, the path winds southward along traditional stone lanes and dirt tracks through silver olive orchards and Mediterranean scrub, steadily descending toward the coastal haven of Platanias.',
+        'From Platanias, the trail follows the famous seaside cliff path etched into the coastal rock formations, equipped with wooden safety railings and panoramic views of the open sea, leading straight onto the soft sand and inviting tavernas of Mikro Beach.',
+        'Alternatively, vehicular access is available via the paved road connecting Lafkos, Promyri, and Platanias with a turnoff to Mikro (approx. 9 km).',
+      ],
+    },
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [23.24656, 39.17804],
+        [23.24688, 39.17804],
+        [23.24698, 39.17806],
+        [23.24712, 39.17808],
+        [23.24716, 39.17788],
+        [23.24721, 39.17772],
+        [23.24728, 39.17751],
+        [23.24729, 39.17747],
+        [23.24732, 39.17737],
+        [23.24737, 39.17714],
+        [23.24736, 39.17701],
+        [23.24735, 39.17686],
+        [23.24731, 39.17645],
+        [23.24724, 39.17574],
+        [23.24725, 39.17545],
+        [23.24753, 39.17478],
+        [23.24789, 39.17401],
+        [23.2482, 39.17377],
+        [23.24858, 39.17347],
+        [23.24868, 39.17342],
+        [23.24876, 39.1734],
+        [23.24889, 39.17339],
+        [23.24919, 39.17341],
+        [23.2493, 39.17341],
+        [23.24943, 39.1734],
+        [23.25007, 39.17327],
+        [23.25035, 39.17321],
+        [23.25076, 39.17314],
+        [23.25131, 39.1726],
+        [23.25164, 39.17216],
+        [23.25172, 39.1718],
+        [23.25217, 39.17158],
+        [23.25254, 39.17127],
+        [23.25254, 39.1708],
+        [23.25291, 39.17044],
+        [23.25318, 39.16999],
+        [23.25329, 39.16895],
+        [23.25348, 39.16884],
+        [23.25389, 39.16846],
+        [23.25406, 39.16777],
+        [23.25389, 39.16721],
+        [23.25391, 39.16704],
+        [23.25399, 39.167],
+        [23.25404, 39.16695],
+        [23.25413, 39.16684],
+        [23.2542, 39.16669],
+        [23.25424, 39.16652],
+        [23.25428, 39.16643],
+        [23.25436, 39.16638],
+        [23.25453, 39.16632],
+        [23.25487, 39.16619],
+        [23.25511, 39.16603],
+        [23.25531, 39.16589],
+        [23.25549, 39.16567],
+        [23.25555, 39.16563],
+        [23.25564, 39.1656],
+        [23.25672, 39.16472],
+        [23.25724, 39.16454],
+        [23.25731, 39.16439],
+        [23.25738, 39.16422],
+        [23.2575, 39.16419],
+        [23.25755, 39.16406],
+        [23.25762, 39.16399],
+        [23.25768, 39.1639],
+        [23.25777, 39.16383],
+        [23.25791, 39.16377],
+        [23.25806, 39.1637],
+        [23.25835, 39.16356],
+        [23.2586, 39.1635],
+        [23.25885, 39.16327],
+        [23.25905, 39.16333],
+        [23.25927, 39.1629],
+        [23.26052, 39.16232],
+        [23.26073, 39.16188],
+        [23.26106, 39.16223],
+        [23.26172, 39.16242],
+        [23.26189, 39.16222],
+        [23.26264, 39.16193],
+        [23.26311, 39.16163],
+        [23.26395, 39.16157],
+        [23.26384, 39.16135],
+        [23.26425, 39.16115],
+        [23.26432, 39.16102],
+        [23.26466, 39.16096],
+        [23.26487, 39.16068],
+        [23.26496, 39.16032],
+        [23.26524, 39.16003],
+        [23.26554, 39.15979],
+        [23.26581, 39.15946],
+        [23.26608, 39.15938],
+        [23.26649, 39.15924],
+        [23.26677, 39.1587],
+        [23.26711, 39.15867],
+        [23.26723, 39.15816],
+        [23.26709, 39.15811],
+        [23.26706, 39.15809],
+        [23.267, 39.15806],
+        [23.26681, 39.15733],
+        [23.2667, 39.15709],
+        [23.26657, 39.15659],
+        [23.26661, 39.15596],
+        [23.26676, 39.15553],
+        [23.26698, 39.15541],
+        [23.26743, 39.15491],
+        [23.26711, 39.15473],
+        [23.26719, 39.15423],
+        [23.2673, 39.15383],
+        [23.26762, 39.15375],
+        [23.26758, 39.15351],
+        [23.26784, 39.15297],
+        [23.26831, 39.15263],
+        [23.26822, 39.15177],
+        [23.26781, 39.15165],
+        [23.26758, 39.15135],
+        [23.26796, 39.15105],
+        [23.26784, 39.15034],
+        [23.26807, 39.14994],
+        [23.26811, 39.14986],
+        [23.26833, 39.14942],
+        [23.26822, 39.14914],
+        [23.26796, 39.14914],
+        [23.26745, 39.14944],
+        [23.26728, 39.14944],
+        [23.26721, 39.14911],
+        [23.26699, 39.14898],
+        [23.26691, 39.14885],
+        [23.26711, 39.14872],
+        [23.26741, 39.14849],
+        [23.26749, 39.14821],
+        [23.26745, 39.14805],
+        [23.26756, 39.14773],
+        [23.26741, 39.14752],
+        [23.2675, 39.14729],
+        [23.26748, 39.14713],
+        [23.26784, 39.1469],
+        [23.26798, 39.14666],
+        [23.26803, 39.14659],
+        [23.26808, 39.1464],
+        [23.26798, 39.14611],
+        [23.268, 39.14593],
+        [23.26795, 39.14569],
+        [23.26797, 39.14544],
+        [23.26797, 39.14525],
+        [23.26791, 39.14518],
+        [23.26761, 39.1451],
+        [23.26732, 39.14504],
+        [23.267, 39.14501],
+        [23.26699, 39.14495],
+        [23.26717, 39.14478],
+        [23.26723, 39.14456],
+        [23.26698, 39.14438],
+        [23.26684, 39.14415],
+        [23.26675, 39.144],
+        [23.26683, 39.14394],
+        [23.26719, 39.14397],
+        [23.26741, 39.14401],
+        [23.26751, 39.14396],
+        [23.26759, 39.14377],
+        [23.26764, 39.1437],
+        [23.26765, 39.14357],
+        [23.26776, 39.14352],
+        [23.26792, 39.14355],
+        [23.26801, 39.14349],
+        [23.26814, 39.1434],
+        [23.2682, 39.1433],
+        [23.26825, 39.14271],
+        [23.26835, 39.1426],
+        [23.26839, 39.14223],
+        [23.26848, 39.14195],
+        [23.26853, 39.14179],
+        [23.26853, 39.14157],
+        [23.26853, 39.14145],
+        [23.26848, 39.14127],
+        [23.26854, 39.14112],
+        [23.2685, 39.141],
+        [23.26841, 39.1405],
+        [23.26819, 39.14019],
+        [23.26801, 39.13999],
+        [23.26778, 39.13991],
+        [23.26766, 39.13983],
+        [23.26756, 39.13974],
+        [23.26741, 39.13965],
+        [23.26729, 39.13957],
+        [23.26722, 39.13955],
+        [23.26718, 39.13943],
+        [23.26727, 39.13935],
+        [23.26725, 39.13931],
+        [23.2673, 39.13927],
+        [23.2673, 39.13923],
+        [23.26738, 39.1392],
+        [23.26739, 39.13917],
+        [23.26737, 39.13909],
+        [23.26733, 39.13909],
+        [23.26712, 39.13902],
+        [23.26718, 39.139],
+        [23.26718, 39.13898],
+        [23.26708, 39.13896],
+        [23.26701, 39.13893],
+        [23.26687, 39.13888],
+        [23.26684, 39.13883],
+        [23.26671, 39.13878],
+        [23.26664, 39.13874],
+        [23.26661, 39.13871],
+        [23.26657, 39.13868],
+        [23.26657, 39.13864],
+        [23.26647, 39.13857],
+        [23.26639, 39.13852],
+        [23.26631, 39.13851],
+        [23.26621, 39.13846],
+        [23.2661, 39.1384],
+        [23.26611, 39.13835],
+        [23.26607, 39.13831],
+        [23.26594, 39.13829],
+        [23.26578, 39.1382],
+        [23.26574, 39.1382],
+        [23.26571, 39.13817],
+        [23.26562, 39.13814],
+        [23.26564, 39.13813],
+        [23.26565, 39.13811],
+        [23.26565, 39.13807],
+        [23.26562, 39.13805],
+        [23.26558, 39.13805],
+        [23.26556, 39.13801],
+        [23.26549, 39.13797],
+        [23.26529, 39.13795],
+        [23.265, 39.13794],
+        [23.26492, 39.13793],
+        [23.2648, 39.1379],
+        [23.26455, 39.13768],
+        [23.26408, 39.13728],
+        [23.26381, 39.13713],
+        [23.26334, 39.13691],
+        [23.26321, 39.13672],
+        [23.2632, 39.1366],
+      ],
+    },
+    distanceMeters: 6500,
+    durationMinutes: 110,
+    elevationGainMeters: 320,
+    difficulty: 'moderate',
+    surface: {
+      el: 'Καλντερίμι, αγροτικός δρόμος και παράκτιο μονοπάτι',
+      en: 'Cobblestone lane, dirt track, and coastal cliff path',
+    },
+    safety: {
+      el: [
+        'Φορέστε κατάλληλα πεζοπορικά παπούτσια για τα χωμάτινα και βραχώδη τμήματα.',
+        'Έχετε μαζί σας τουλάχιστον 1.5L νερό και καπέλο/αντηλιακό κατά τους θερμούς μήνες.',
+        'Στο παραλιακό μονοπάτι Πλατανιά – Μικρό προσέξτε σε ημέρες με δυνατό άνεμο ή υψηλό κυματισμό.',
+      ],
+      en: [
+        'Wear supportive hiking shoes suitable for dirt paths and rocky coastal steps.',
+        'Carry at least 1.5L of drinking water and sun protection during warmer months.',
+        'Exercise care on the Platanias–Mikro coastal section during strong winds or heavy swell.',
+      ],
+    },
+    waypoints: [
+      {
+        title: {
+          el: 'Αφετηρία: Κεντρική Πλατεία Λαύκου',
+          en: 'Trailhead: Lafkos Central Square',
+        },
+        coordinate: [23.24665, 39.17795],
+        image: {
+          src: 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Platia_in_Lafkos%2C_Pilion.jpg',
+          alt: 'Η κεντρική πλατεία του Λαύκου',
+          credit: 'Photo by Cosa2244 (Wikimedia Commons)',
+          license: 'CC BY-SA 4.0',
+        },
+      },
+      {
+        title: {
+          el: 'Νότια έξοδος Λαύκου & Ελαιώνες',
+          en: 'South Village Exit & Olive Slopes',
+        },
+        coordinate: [23.25049, 39.17643],
+        image: {
+          src: 'https://upload.wikimedia.org/wikipedia/commons/a/ae/Pelion%2C_Pagassitikos_Gulf_and_coastline._Photo_taken_from_Lafkos_village.jpg',
+          alt: 'Ελαιώνες και μονοπάτια στο Νότιο Πήλιο',
+          credit: 'Photo by Ioannis Fakis (Wikimedia Commons)',
+          license: 'CC BY-SA 4.0',
+        },
+      },
+      {
+        title: {
+          el: 'Πλατανιάς: Αλιευτικό Καταφύγιο & Παραλία',
+          en: 'Platanias: Harbor & Beach Trailhead',
+        },
+        coordinate: [23.27164, 39.14072],
+        image: {
+          src: 'https://upload.wikimedia.org/wikipedia/commons/7/77/%CE%A0%CE%BB%CE%B1%CF%84%CE%B1%CE%BD%CE%B9%CE%B1%CF%82_%CF%80%CE%B7%CE%BB%CE%AF%CE%BF%CF%85.jpg',
+          alt: 'Ο παραθαλάσσιος Πλατανιάς',
+          credit: 'Photo by Nips (Wikimedia Commons)',
+          license: 'CC BY-SA 4.0',
+        },
+      },
+      {
+        title: {
+          el: 'Παράκτιο Μονοπάτι Πλατανιά – Μικρό στα Βράχια',
+          en: 'Coastal Cliff Path Platanias – Mikro',
+        },
+        coordinate: [23.2684, 39.14026],
+        image: {
+          src: 'https://upload.wikimedia.org/wikipedia/commons/a/a5/Pelion_%26_coast_line.jpg',
+          alt: 'Η βραχώδης ακτογραμμή και το παράκτιο μονοπάτι',
+          credit: 'Photo by Ioannis Fakis (Wikimedia Commons)',
+          license: 'CC BY-SA 4.0',
+        },
+      },
+      {
+        title: {
+          el: 'Τερματισμός: Παραλία & Οικισμός Μικρό',
+          en: 'Destination: Mikro Beach & Settlement',
+        },
+        coordinate: [23.26363, 39.13644],
+        image: {
+          src: 'https://upload.wikimedia.org/wikipedia/commons/9/9a/Sun_always_breaks_through%2C_Mikro_Beach%2C_South_Pelion.jpg',
+          alt: 'Η παραλία Μικρό στο Νότιο Πήλιο',
+          credit: 'Photo by Jnkar (Wikimedia Commons)',
+          license: 'CC BY-SA 4.0',
+        },
+      },
+    ],
+    sources: [
+      {
+        label: 'OpenStreetMap Contributors',
+        url: 'https://www.openstreetmap.org/',
+      },
+      {
+        label: 'Πολιτιστικός Σύλλογος Λαυκιωτών «Η Δράση»',
+        url: 'https://lafkos.gr/',
+      },
+      {
+        label: 'Pelion Routes & Trails Archive',
+        url: 'https://pelionroutes.com/',
+      },
+    ],
+    featured: true,
+    isSeed: true,
+  },
+  {
+    kind: 'trail',
     entityKey: 'lafkos-milina-trail',
     slug: {
       el: 'kalderimi-lafkos-milina',
@@ -2117,6 +2825,7 @@ export const trails: Trail[] = [
           en: 'Milina Beachfront (Finish)',
         },
         coordinate: [23.22064, 39.17136],
+        placeKey: 'milina',
         image: {
           src: 'https://upload.wikimedia.org/wikipedia/commons/b/b4/Milina%2C_Pelion.jpg',
           alt: 'Η παραλιακή ζώνη και τα νερά της Μηλίνας στον Παγασητικό',
@@ -2821,7 +3530,7 @@ export const trails: Trail[] = [
         [23.24644, 39.17723],
       ],
     },
-    distanceMeters: 2500,
+    distanceMeters: 4796,
     durationMinutes: 45,
     elevationGainMeters: 55,
     difficulty: 'easy',
@@ -2920,6 +3629,13 @@ export const trails: Trail[] = [
     featured: true,
     isSeed: true,
   },
+];
+
+export const trails: Trail[] = [
+  ...baseTrails.map(correctMikroTrail),
+  ...(coastalEditorialContent.trails as unknown as Array<Record<string, unknown>>).map(
+    mergeCoastalTrail,
+  ),
 ];
 
 export const stories: Story[] = [

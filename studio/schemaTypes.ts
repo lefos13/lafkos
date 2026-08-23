@@ -226,6 +226,22 @@ const trail = defineType({
     localizedSlug('slug', 'Slug'),
     localizedText('summary', 'Summary', 3),
     paragraphList('body', 'Body paragraphs'),
+    /* Keep hiking as the stored default so existing trails retain their
+     * meaning while drives and mixed routes can be filtered explicitly. */
+    defineField({
+      name: 'routeType',
+      title: 'Route type',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Hiking / Πεζοπορία', value: 'hiking' },
+          { title: 'Drive / Οδήγηση', value: 'drive' },
+          { title: 'Mixed / Μικτή', value: 'mixed' },
+        ],
+      },
+      initialValue: 'hiking',
+      validation: (rule) => rule.required(),
+    }),
     defineField({
       name: 'geometry',
       title: 'Line geometry (Coordinates)',
@@ -270,6 +286,12 @@ const trail = defineType({
               title: 'Waypoint coordinate',
               type: 'geopoint',
               validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: 'placeKey',
+              title: 'Linked place',
+              type: 'reference',
+              to: [{ type: 'place' }],
             }),
             defineField({
               name: 'image',

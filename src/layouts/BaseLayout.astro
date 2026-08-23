@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import { otherLocale, type Locale } from '../lib/locales';
 import { getCopy } from '../lib/ui-copy';
+import { fetchSanityContent } from '../lib/content-api';
 
 interface Props {
   locale: Locale;
@@ -12,6 +13,7 @@ interface Props {
   minimalHeader?: boolean;
   isMapPage?: boolean;
   alternateHref?: string;
+  contentSource?: 'sanity' | 'seed';
 }
 
 const {
@@ -23,6 +25,7 @@ const {
   minimalHeader = false,
   isMapPage = false,
   alternateHref,
+  contentSource,
 } = Astro.props;
 const ui = getCopy(locale);
 const alternateLocale = otherLocale(locale);
@@ -31,6 +34,9 @@ const alternatePath =
 const siteUrl = Astro.site ?? new URL('https://lafkos.guide');
 const canonical = new URL(Astro.url.pathname, siteUrl).toString();
 const socialImage = image ?? new URL('/icons/icon-512.svg', siteUrl).toString();
+const dataset = await fetchSanityContent();
+const activeSource = contentSource ?? dataset.source;
+const isCms = activeSource === 'sanity';
 ---
 
 <!doctype html>
@@ -96,6 +102,26 @@ const socialImage = image ?? new URL('/icons/icon-512.svg', siteUrl).toString();
             <a href={`/${locale}/accessibility`}>{ui.accessibilityTitle}</a>
             <a href={alternatePath}>{ui.language}</a>
           </nav>
+        </div>
+        <div class="container footer-status-wrap">
+          {isCms ? (
+            <aside class="footer-status footer-status--cms" role="status" aria-label={ui.dataSource}>
+              <span class="footer-status-dot" aria-hidden="true" />
+              <span class="footer-status-text">
+                {ui.dataSource} <strong>{ui.cmsLiveTitle}</strong>
+              </span>
+              <span class="footer-status-badge footer-status-badge--cms">{ui.cmsLiveBadge}</span>
+            </aside>
+          ) : (
+            <aside class="footer-status footer-status--warning" role="alert" aria-label={ui.dataSource}>
+              <div class="footer-status-warning-header">
+                <span class="footer-status-icon" aria-hidden="true">⚠️</span>
+                <strong>{ui.seedFallbackTitle}</strong>
+                <span class="footer-status-badge footer-status-badge--warning">{ui.seedFallbackBadge}</span>
+              </div>
+              <p class="footer-status-desc">{ui.seedFallbackWarning}</p>
+            </aside>
+          )}
         </div>
       </footer>
     </div>

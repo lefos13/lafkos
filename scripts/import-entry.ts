@@ -18,6 +18,7 @@ import {
   imageSchema,
   lineStringSchema,
   pointSchema,
+  routeTypeSchema,
   sourceSchema,
   type ImageAsset,
   type Place,
@@ -75,6 +76,7 @@ const trailInputSchema = z.object({
   summary: localizedStringSchema,
   body: localizedStringArraySchema,
   geometry: lineStringSchema,
+  routeType: routeTypeSchema.optional().default('hiking'),
   distanceMeters: z.number().positive(),
   durationMinutes: z.number().positive(),
   elevationGainMeters: z.number().min(0),
@@ -86,6 +88,11 @@ const trailInputSchema = z.object({
       z.object({
         title: localizedStringSchema,
         coordinate: z.tuple([z.number(), z.number()]),
+        placeKey: z
+          .string()
+          .min(1)
+          .regex(/^[a-z0-9-]+$/)
+          .optional(),
         image: imageSchema.optional(),
       }),
     )
@@ -128,6 +135,13 @@ function toSanityImage(image?: ImageAsset) {
     credit: image.credit,
     license: image.license,
   };
+}
+
+/* The import contract carries a stable place entityKey and expands it into
+ * the localized reference IDs expected by the Sanity waypoint object. */
+function toSanityPlaceReference(placeKey: string | undefined, language: 'el' | 'en') {
+  if (!placeKey) return undefined;
+  return { _type: 'reference', _ref: `place-${placeKey}-${language}` };
 }
 
 export function formatEntryDocuments(
@@ -219,6 +233,7 @@ export function formatEntryDocuments(
       _key: `wp-${idx}`,
       title: wp.title.el,
       coordinate: { _type: 'geopoint', lng: wp.coordinate[0], lat: wp.coordinate[1] },
+      placeKey: toSanityPlaceReference(wp.placeKey, 'el'),
       image: toSanityImage(wp.image),
     }));
 
@@ -226,6 +241,7 @@ export function formatEntryDocuments(
       _key: `wp-${idx}`,
       title: wp.title.en,
       coordinate: { _type: 'geopoint', lng: wp.coordinate[0], lat: wp.coordinate[1] },
+      placeKey: toSanityPlaceReference(wp.placeKey, 'en'),
       image: toSanityImage(wp.image),
     }));
 
@@ -249,6 +265,7 @@ export function formatEntryDocuments(
       body: entry.body.el,
       geometry,
       waypoints: waypointsEl,
+      routeType: entry.routeType ?? 'hiking',
       distanceMeters: entry.distanceMeters,
       durationMinutes: entry.durationMinutes,
       elevationGainMeters: entry.elevationGainMeters,
@@ -274,6 +291,7 @@ export function formatEntryDocuments(
       body: entry.body.en,
       geometry,
       waypoints: waypointsEn,
+      routeType: entry.routeType ?? 'hiking',
       distanceMeters: entry.distanceMeters,
       durationMinutes: entry.durationMinutes,
       elevationGainMeters: entry.elevationGainMeters,

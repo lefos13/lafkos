@@ -148,6 +148,39 @@ export const structure = (S: StructureBuilder) =>
                         ),
                     ]),
                 ),
+              /* Treat documents without routeType as hiking so legacy trails
+               * remain visible in the same editorial queue as new hikes. */
+              S.listItem()
+                .title('Trails by Route Type')
+                .child(
+                  S.list()
+                    .title('Route Types')
+                    .items([
+                      S.listItem()
+                        .title('Hiking / Πεζοπορία')
+                        .child(
+                          S.documentList()
+                            .title('Hiking Trails')
+                            .filter(
+                              '_type == "trail" && (routeType == "hiking" || !defined(routeType))',
+                            ),
+                        ),
+                      S.listItem()
+                        .title('Drive / Οδήγηση')
+                        .child(
+                          S.documentList()
+                            .title('Drive Routes')
+                            .filter('_type == "trail" && routeType == "drive"'),
+                        ),
+                      S.listItem()
+                        .title('Mixed / Μικτή')
+                        .child(
+                          S.documentList()
+                            .title('Mixed Routes')
+                            .filter('_type == "trail" && routeType == "mixed"'),
+                        ),
+                    ]),
+                ),
               S.listItem()
                 .title('Featured Trails')
                 .child(

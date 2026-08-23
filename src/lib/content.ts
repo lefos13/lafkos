@@ -19,6 +19,9 @@ export const categoryIds = [
 export type CategoryId = (typeof categoryIds)[number];
 
 export const categorySchema = z.enum(categoryIds);
+export const routeTypeIds = ['hiking', 'drive', 'mixed'] as const;
+export type RouteType = (typeof routeTypeIds)[number];
+export const routeTypeSchema = z.enum(routeTypeIds);
 export const coordinateSchema = z.tuple([
   z.number().min(-180).max(180),
   z.number().min(-90).max(90),
@@ -87,13 +90,21 @@ export interface Trail {
   summary: Localized<string>;
   body: Localized<string[]>;
   geometry: z.infer<typeof lineStringSchema>;
+  /* Drive routes reuse the shared metrics, but difficulty, elevation, and
+   * safety describe road/access character and driving hazards rather than fitness. */
+  routeType?: RouteType;
   distanceMeters: number;
   durationMinutes: number;
   elevationGainMeters: number;
   difficulty: 'easy' | 'moderate' | 'demanding';
   surface: Localized<string>;
   safety: Localized<string[]>;
-  waypoints: Array<{ title: Localized<string>; coordinate: Coordinate; image?: ImageAsset }>;
+  waypoints: Array<{
+    title: Localized<string>;
+    coordinate: Coordinate;
+    placeKey?: string;
+    image?: ImageAsset;
+  }>;
   sources: Source[];
   featured: boolean;
   isSeed: boolean;
@@ -118,6 +129,7 @@ export interface MapFeatureProperties {
   entityKey: string;
   kind: 'place' | 'trail' | 'waypoint';
   category: CategoryId;
+  routeType?: RouteType;
   slug: string;
   title: string;
   summary: string;

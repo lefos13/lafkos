@@ -419,14 +419,42 @@ export default function MapExplorer({
           id: 'lafkos-trails-casing',
           type: 'line',
           source: 'lafkos-trails',
+          filter: ['==', ['get', 'routeType'], 'hiking'],
           paint: { 'line-color': '#f7f0df', 'line-width': 6, 'line-opacity': 0.88 },
         });
+      }
+      /* Keep drive and mixed routes visually subordinate to hiking routes and
+       * place both solid layers below the hiking casing for clear hierarchy. */
+      if (!map.getLayer('lafkos-drive-casing')) {
+        map.addLayer(
+          {
+            id: 'lafkos-drive-casing',
+            type: 'line',
+            source: 'lafkos-trails',
+            filter: ['in', ['get', 'routeType'], ['literal', ['drive', 'mixed']]],
+            paint: { 'line-color': '#5b5548', 'line-width': 5, 'line-opacity': 0.85 },
+          },
+          'lafkos-trails-casing',
+        );
+      }
+      if (!map.getLayer('lafkos-drive-line')) {
+        map.addLayer(
+          {
+            id: 'lafkos-drive-line',
+            type: 'line',
+            source: 'lafkos-trails',
+            filter: ['in', ['get', 'routeType'], ['literal', ['drive', 'mixed']]],
+            paint: { 'line-color': '#8a7a5c', 'line-width': 2.5 },
+          },
+          'lafkos-trails-casing',
+        );
       }
       if (!map.getLayer('lafkos-trails-line')) {
         map.addLayer({
           id: 'lafkos-trails-line',
           type: 'line',
           source: 'lafkos-trails',
+          filter: ['==', ['get', 'routeType'], 'hiking'],
           paint: {
             'line-color': '#b9654a',
             'line-width': 3,
@@ -486,15 +514,17 @@ export default function MapExplorer({
     map.on('style.load', setupLayers);
     map.once('load', () => {
       setupLayers();
-      map.on('click', 'lafkos-trails-line', (event: MapMouseEvent) => {
+      function handleTrailClick(event: MapMouseEvent) {
         const feature = map.queryRenderedFeatures(event.point, {
-          layers: ['lafkos-trails-line'],
+          layers: ['lafkos-trails-line', 'lafkos-drive-line'],
         })[0];
         const match = mapDataRef.current.trails.find(
           (trail) => trail.properties.entityKey === feature?.properties?.entityKey,
         );
         if (match) selectFeature(match, true);
-      });
+      }
+      map.on('click', 'lafkos-trails-line', handleTrailClick);
+      map.on('click', 'lafkos-drive-line', handleTrailClick);
       map.on('moveend', () => {
         const center = map.getCenter();
         writeState({

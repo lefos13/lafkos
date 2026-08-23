@@ -23,6 +23,7 @@ Every entry authored for Lafkos Guide must satisfy these core invariants:
 4. **Sources & Provenance:** Every place, trail, and story MUST include at least one verified citation in `sources: [{ label: string, url: string }]` (e.g. Ministry of Culture, OpenStreetMap, Local Heritage Archive, Topoguide).
 5. **Geographical Bounds:** Coordinates must be inside the South Pelion bounding box `[23.08, 39.04, 23.42, 39.32]` in standard GeoJSON `[longitude, latitude]` coordinate order (e.g. `[23.24646, 39.17751]`).
 6. **Mandatory Final CMS Synchronization:** **Sanity CMS is the authoritative editorial content lake.** Any content added or updated in `src/data/content.ts` MUST immediately be exported via `pnpm studio:export-seed` and synced to Sanity via `pnpm studio:import-seed` (or imported directly via `scripts/import-entry.ts --direct`). Un-exported local edits are incomplete.
+
 ---
 
 ## 2. Schema Contracts
@@ -64,7 +65,7 @@ Every entry authored for Lafkos Guide must satisfy these core invariants:
   },
   "sources": [{ "label": "Υπουργείο Πολιτισμού", "url": "http://listedmonuments.culture.gr/" }],
   "featured": false,
-  "isSeed": false
+  "isSeed": true
 }
 ```
 
@@ -90,6 +91,7 @@ Every entry authored for Lafkos Guide must satisfy these core invariants:
       [23.2485, 39.1795]
     ]
   },
+  "routeType": "hiking", // hiking (default) | drive | mixed
   "distanceMeters": 3200,
   "durationMinutes": 60,
   "elevationGainMeters": 140,
@@ -103,6 +105,7 @@ Every entry authored for Lafkos Guide must satisfy these core invariants:
     {
       "title": { "el": "Κρήνη στην αφετηρία", "en": "Trailhead fountain" },
       "coordinate": [23.24646, 39.17751],
+      "placeKey": "lafkos-square", // optional existing Place entityKey; suppresses a duplicate map pin
       "image": {
         "src": "https://upload.wikimedia.org/...jpg",
         "alt": "Κρήνη",
@@ -113,9 +116,16 @@ Every entry authored for Lafkos Guide must satisfy these core invariants:
   ],
   "sources": [{ "label": "Pelion Routes", "url": "https://pelionroutes.com/" }],
   "featured": false,
-  "isSeed": false
+  "isSeed": true
 }
 ```
+
+#### Route type and access rules
+
+- `routeType` accepts `hiking`, `drive`, or `mixed`. Omit it for ordinary hiking routes; an absent value defaults to `hiking` so existing entries need no backfill.
+- `drive` routes are followed by car. Keep the required `difficulty`, `elevationGainMeters`, and `safety` fields, but interpret them as road/access character, elevation change, and driving hazards rather than hiking fitness. Describe asphalt, dirt, clearance, uncertain surfaces, missed turn-offs, or other practical cautions in `surface` and `safety`.
+- `mixed` routes combine a drive and a walk-in in one concatenated `LineString`. Do not use `MultiLineString` or separate per-segment geometry. Add a waypoint at the handover (for example, “Τέλος ασφάλτου — στάθμευση”) and state the walk-in distance and conditions in `body` and `safety`.
+- `waypoints[].placeKey` is an optional reference to an existing Place `entityKey`. Use it when a stop is already represented by a Place; the map uses the reference to suppress a duplicate synthetic waypoint pin while preserving the waypoint in route content. Anonymous stops should omit it.
 
 ### C. Story (`kind: "story"`)
 
@@ -140,7 +150,7 @@ Every entry authored for Lafkos Guide must satisfy these core invariants:
   "relatedKeys": ["example-monument"],
   "sources": [{ "label": "Πολιτιστικός Σύλλογος", "url": "https://lafkos.gr/" }],
   "featured": false,
-  "isSeed": false
+  "isSeed": true
 }
 ```
 
@@ -149,6 +159,7 @@ Every entry authored for Lafkos Guide must satisfy these core invariants:
 ## 3. How to Import Entries & Safe Sync Workflow
 
 ### ⚠️ Critical Rule: Preventing Cloud Data Loss
+
 1. **Live Sanity CMS is the authoritative master:** Manual edits in Sanity Studio take precedence over static files.
 2. **Granular addition (Method 1) is safest:** Mutates only the single entry without risking other cloud documents.
 3. **Pull before bulk seeding (Method 2):** Always pull live cloud content before exporting/replacing the seed dataset.
@@ -171,24 +182,25 @@ Every entry authored for Lafkos Guide must satisfy these core invariants:
    ```bash
    pnpm studio:pull-content
    ```
-   *(This pulls all live Sanity places, trails, stories, and categories into `src/data/content.ts`.)*
+   _(This pulls all live Sanity places, trails, stories, and categories into `src/data/content.ts`.)_
 2. Add or edit the TypeScript object directly in `places`, `trails`, or `stories` in `src/data/content.ts`.
 3. **Run the seed exporter to generate NDJSON:**
    ```bash
    pnpm studio:export-seed
    ```
-   *(This writes the latest bilingual Sanity documents to `studio/data/seed-dataset.ndjson`.)*
+   _(This writes the latest bilingual Sanity documents to `studio/data/seed-dataset.ndjson`.)_
 4. **Import into Sanity Content Lake:**
    ```bash
    pnpm studio:import-seed
    ```
-   *(Safe to run because cloud edits were pulled in step 1.)*
+   _(Safe to run because cloud edits were pulled in step 1.)_
 
 ### Method 3: Via Sanity Studio UI
 
 1. Run `pnpm studio:dev` and open `http://localhost:3333`.
 2. Navigate to **Places**, **Trails**, or **Stories**.
 3. Create a document in Greek (`el`), fill in the fields, and use the **Translations** menu to create its English (`en`) counterpart.
+
 ---
 
 ## 4. Keeping Data Structures in Sync
