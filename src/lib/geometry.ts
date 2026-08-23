@@ -33,3 +33,59 @@ export function formatDistance(meters: number, locale: 'el' | 'en'): string {
     }).format(kilometers) + ' km'
   );
 }
+
+export type BoundingBox = [[number, number], [number, number]];
+
+export function calculateBounds(coordinates: Coordinate[]): BoundingBox | undefined {
+  if (!coordinates || coordinates.length === 0) return undefined;
+  let minLng = Infinity;
+  let minLat = Infinity;
+  let maxLng = -Infinity;
+  let maxLat = -Infinity;
+
+  for (const [lng, lat] of coordinates) {
+    if (
+      typeof lng === 'number' &&
+      typeof lat === 'number' &&
+      !Number.isNaN(lng) &&
+      !Number.isNaN(lat)
+    ) {
+      if (lng < minLng) minLng = lng;
+      if (lat < minLat) minLat = lat;
+      if (lng > maxLng) maxLng = lng;
+      if (lat > maxLat) maxLat = lat;
+    }
+  }
+
+  if (minLng === Infinity || minLat === Infinity) return undefined;
+  return [
+    [minLng, minLat],
+    [maxLng, maxLat],
+  ];
+}
+
+export function getGeometryBounds(
+  geometry?:
+    | { type: 'Point'; coordinates: Coordinate }
+    | { type: 'LineString'; coordinates: Coordinate[] }
+    | { type: 'Polygon'; coordinates: Coordinate[][] }
+    | { type: string; coordinates: unknown }
+    | null,
+): BoundingBox | undefined {
+  if (!geometry || !geometry.coordinates) return undefined;
+  if (geometry.type === 'Point') {
+    const [lng, lat] = geometry.coordinates as Coordinate;
+    return [
+      [lng, lat],
+      [lng, lat],
+    ];
+  }
+  if (geometry.type === 'LineString') {
+    return calculateBounds(geometry.coordinates as Coordinate[]);
+  }
+  if (geometry.type === 'Polygon') {
+    const coords = (geometry.coordinates as Coordinate[][]).flat();
+    return calculateBounds(coords);
+  }
+  return undefined;
+}

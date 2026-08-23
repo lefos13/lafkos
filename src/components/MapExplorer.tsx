@@ -15,6 +15,7 @@ import {
   setWorkerUrl,
   type GeoJSONSource,
   type MapMouseEvent,
+  type PointLike,
   type StyleSpecification,
 } from 'maplibre-gl';
 import { Protocol } from 'pmtiles';
@@ -38,6 +39,7 @@ import type {
 import type { Locale } from '../lib/locales';
 import { parseMapState, serializeMapState, type MapState } from '../lib/map-state';
 import { getCopy } from '../lib/ui-copy';
+import { getGeometryBounds } from '../lib/geometry';
 
 interface Props {
   locale: Locale;
@@ -202,6 +204,9 @@ export default function MapExplorer({
   const [locationState, setLocationState] = useState<'idle' | 'locating' | 'denied'>('idle');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isListHidden, setIsListHidden] = useState(false);
+  const selectedRef = useRef<MapFeature | undefined>(selected);
+  const popupCoordRef = useRef<Coordinate | undefined>(undefined);
+  selectedRef.current = selected;
   stateRef.current = state;
   mapDataRef.current = mapData;
 
@@ -232,8 +237,9 @@ export default function MapExplorer({
     }
   }
 
-  function selectFeature(feature: MapFeature, scrollList = false) {
+  function selectFeature(feature: MapFeature, scrollList = false, clickedCoord?: Coordinate) {
     setSelected(feature);
+    popupCoordRef.current = clickedCoord;
     setPopupTrigger((prev) => prev + 1);
     const next = {
       ...state,
@@ -242,18 +248,33 @@ export default function MapExplorer({
     };
     writeState(next);
     if (mapRef.current) {
-      const geometry = feature.geometry;
-      const coordinates =
-        geometry.type === 'Point'
-          ? geometry.coordinates
-          : geometry.type === 'LineString'
-            ? geometry.coordinates[Math.floor(geometry.coordinates.length / 2)]
-            : geometry.coordinates[0][0];
-      mapRef.current.flyTo({
-        center: coordinates,
-        zoom: Math.max(mapRef.current.getZoom(), 15),
-        duration: 650,
-      });
+      const map = mapRef.current;
+      if (feature.geometry.type === 'Point') {
+        map.flyTo({
+          center: feature.geometry.coordinates,
+          zoom: Math.max(map.getZoom(), 15.5),
+          duration: 650,
+        });
+      } else {
+        const bounds = getGeometryBounds(feature.geometry);
+        if (bounds) {
+          map.fitBounds(bounds, {
+            padding: { top: 60, bottom: 60, left: 60, right: 60 },
+            maxZoom: 15.5,
+            duration: 650,
+          });
+        } else {
+          const coordinates =
+            feature.geometry.type === 'LineString'
+              ? feature.geometry.coordinates[Math.floor(feature.geometry.coordinates.length / 2)]
+              : feature.geometry.coordinates[0][0];
+          map.flyTo({
+            center: coordinates,
+            zoom: Math.max(map.getZoom(), 15),
+            duration: 650,
+          });
+        }
+      }
     }
     if (scrollList && listRef.current) {
       const list = listRef.current;
@@ -462,6 +483,36 @@ export default function MapExplorer({
           },
         });
       }
+      if (!map.getSource('lafkos-hovered-trail')) {
+        map.addSource('lafkos-hovered-trail', {
+          type: 'geojson',
+          data: featureCollection([]) as never,
+        });
+      }
+      if (!map.getLayer('lafkos-hovered-trail-glow')) {
+        map.addLayer({
+          id: 'lafkos-hovered-trail-glow',
+          type: 'line',
+          source: 'lafkos-hovered-trail',
+          paint: {
+            'line-color': '#ffffff',
+            'line-width': 8,
+            'line-opacity': 0.85,
+          },
+        });
+      }
+      if (!map.getLayer('lafkos-hovered-trail-line')) {
+        map.addLayer({
+          id: 'lafkos-hovered-trail-line',
+          type: 'line',
+          source: 'lafkos-hovered-trail',
+          paint: {
+            'line-color': '#2e7776',
+            'line-width': 4,
+            'line-opacity': 0.9,
+          },
+        });
+      }
       if (!map.getSource('lafkos-selected-trail')) {
         map.addSource('lafkos-selected-trail', {
           type: 'geojson',
@@ -492,6 +543,19 @@ export default function MapExplorer({
           },
         });
       }
+      /* Wide invisible hit-target layer positioned at the top for effortless clicking and hover */
+      if (!map.getLayer('lafkos-routes-hitbox')) {
+        map.addLayer({
+          id: 'lafkos-routes-hitbox',
+          type: 'line',
+          source: 'lafkos-trails',
+          paint: {
+            'line-color': '#000000',
+            'line-opacity': 0.001,
+            'line-width': 28,
+          },
+        });
+      }
     };
 
     let fallbackApplied = false;
@@ -514,17 +578,94 @@ export default function MapExplorer({
     map.on('style.load', setupLayers);
     map.once('load', () => {
       setupLayers();
-      function handleTrailClick(event: MapMouseEvent) {
+      const ROUTE_INTERACTIVE_LAYERS = [
+        'lafkos-routes-hitbox',
+        'lafkos-trails-line',
+        'lafkos-drive-line',
+        'lafkos-trails-casing',
+        'lafkos-drive-casing',
+      ];
+
+      const handleRouteEnter = (event: MapMouseEvent) => {
+        map.getCanvas().style.cursor = 'pointer';
         const feature = map.queryRenderedFeatures(event.point, {
-          layers: ['lafkos-trails-line', 'lafkos-drive-line'],
+          layers: ROUTE_INTERACTIVE_LAYERS,
         })[0];
-        const match = mapDataRef.current.trails.find(
-          (trail) => trail.properties.entityKey === feature?.properties?.entityKey,
+        const entityKey = feature?.properties?.entityKey;
+        const hoveredSource = map.getSource('lafkos-hovered-trail') as GeoJSONSource | undefined;
+        if (!hoveredSource) return;
+        if (entityKey && entityKey !== selectedRef.current?.properties.entityKey) {
+          const match = mapDataRef.current.trails.find((t) => t.properties.entityKey === entityKey);
+          if (match) {
+            hoveredSource.setData(featureCollection([match]) as never);
+            return;
+          }
+        }
+        hoveredSource.setData(featureCollection([]) as never);
+      };
+
+      const handleRouteLeave = () => {
+        map.getCanvas().style.cursor = '';
+        const hoveredSource = map.getSource('lafkos-hovered-trail') as GeoJSONSource | undefined;
+        if (hoveredSource) {
+          hoveredSource.setData(featureCollection([]) as never);
+        }
+      };
+
+      const handleRouteClick = (event: MapMouseEvent) => {
+        const buffer = 14;
+        const bbox: [PointLike, PointLike] = [
+          [event.point.x - buffer, event.point.y - buffer],
+          [event.point.x + buffer, event.point.y + buffer],
+        ];
+        const features = map.queryRenderedFeatures(bbox, {
+          layers: ROUTE_INTERACTIVE_LAYERS,
+        });
+        const feature = features[0];
+        if (feature?.properties?.entityKey) {
+          const match = mapDataRef.current.trails.find(
+            (trail) => trail.properties.entityKey === feature.properties.entityKey,
+          );
+          if (match) {
+            selectFeature(match, true, [event.lngLat.lng, event.lngLat.lat]);
+          }
+        }
+      };
+
+      ROUTE_INTERACTIVE_LAYERS.forEach((layerId) => {
+        map.on('mouseenter', layerId, handleRouteEnter);
+        map.on('mousemove', layerId, handleRouteEnter);
+        map.on('mouseleave', layerId, handleRouteLeave);
+        map.on('click', layerId, handleRouteClick);
+      });
+
+      const targetTrailKey = stateRef.current?.trail ?? initialState?.trail;
+      const targetPlaceKey = stateRef.current?.place ?? initialState?.place;
+      const hasExplicitView = Boolean(stateRef.current?.view ?? initialState?.view);
+
+      if (targetTrailKey && !hasExplicitView) {
+        const targetTrail = mapDataRef.current.trails.find(
+          (t) => t.properties.entityKey === targetTrailKey,
         );
-        if (match) selectFeature(match, true);
+        if (targetTrail) {
+          const bounds = getGeometryBounds(targetTrail.geometry);
+          if (bounds) {
+            map.fitBounds(bounds, {
+              padding: { top: 60, bottom: 60, left: 60, right: 60 },
+              maxZoom: 15.5,
+              duration: 0,
+            });
+          }
+        }
+      } else if (targetPlaceKey && !hasExplicitView) {
+        const targetPlace = mapDataRef.current.places.find(
+          (p) => p.properties.entityKey === targetPlaceKey,
+        );
+        if (targetPlace && targetPlace.geometry.type === 'Point') {
+          map.setCenter(targetPlace.geometry.coordinates);
+          map.setZoom(15.5);
+        }
       }
-      map.on('click', 'lafkos-trails-line', handleTrailClick);
-      map.on('click', 'lafkos-drive-line', handleTrailClick);
       map.on('moveend', () => {
         const center = map.getCenter();
         writeState({
@@ -560,8 +701,10 @@ export default function MapExplorer({
     const placesSource = map.getSource('lafkos-places') as GeoJSONSource | undefined;
     if (placesSource) placesSource.setData(featureCollection(mapData.places) as never);
     const trailsSource = map.getSource('lafkos-trails') as GeoJSONSource | undefined;
-    if (trailsSource) trailsSource.setData(featureCollection(mapData.trails) as never);
-  }, [mapData, status]);
+    if (trailsSource) {
+      trailsSource.setData(featureCollection(trailVisible ? mapData.trails : []) as never);
+    }
+  }, [mapData, status, trailVisible]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -572,6 +715,15 @@ export default function MapExplorer({
       selectedSource.setData(featureCollection([selected]) as never);
     } else {
       selectedSource.setData(featureCollection([]) as never);
+    }
+  }, [selected, status]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || status !== 'ready') return;
+    const hoveredSource = map.getSource('lafkos-hovered-trail') as GeoJSONSource | undefined;
+    if (hoveredSource) {
+      hoveredSource.setData(featureCollection([]) as never);
     }
   }, [selected, status]);
 
@@ -832,9 +984,36 @@ export default function MapExplorer({
   ]);
 
   useEffect(() => {
-    if (typeof window === 'undefined' || initialState) return;
-    setState(parseMapState(window.location.search));
-  }, [initialState]);
+    if (typeof window === 'undefined') return;
+    if (window.location.search) {
+      const parsed = parseMapState(window.location.search);
+      setState(parsed);
+      stateRef.current = parsed;
+      if (parsed.trail || parsed.place) {
+        setPopupTrigger((prev) => prev + 1);
+        if (mapRef.current && status === 'ready' && !parsed.view) {
+          const map = mapRef.current;
+          const targetKey = parsed.trail ?? parsed.place;
+          const targetFeature = allFeatures.find((f) => f.properties.entityKey === targetKey);
+          if (targetFeature) {
+            if (targetFeature.geometry.type === 'Point') {
+              map.setCenter(targetFeature.geometry.coordinates);
+              map.setZoom(15.5);
+            } else {
+              const bounds = getGeometryBounds(targetFeature.geometry);
+              if (bounds) {
+                map.fitBounds(bounds, {
+                  padding: { top: 60, bottom: 60, left: 60, right: 60 },
+                  maxZoom: 15.5,
+                  duration: 0,
+                });
+              }
+            }
+          }
+        }
+      }
+    }
+  }, [allFeatures, status]);
 
   useEffect(() => {
     const selectedKey = state.place ?? state.trail;
@@ -850,13 +1029,16 @@ export default function MapExplorer({
     }
     if (!map || status !== 'ready' || !selected) return;
     const geometry = selected.geometry;
-    const coordinates =
-      geometry.type === 'Point'
-        ? geometry.coordinates
-        : geometry.type === 'LineString'
-          ? geometry.coordinates[Math.floor(geometry.coordinates.length / 2)]
-          : geometry.coordinates[0][0];
-
+    let coordinates: Coordinate;
+    if (popupCoordRef.current && selected.properties.kind === 'trail') {
+      coordinates = popupCoordRef.current;
+    } else if (geometry.type === 'Point') {
+      coordinates = geometry.coordinates;
+    } else if (geometry.type === 'LineString') {
+      coordinates = geometry.coordinates[Math.floor(geometry.coordinates.length / 2)];
+    } else {
+      coordinates = geometry.coordinates[0][0];
+    }
     const category = categories.find((c) => c.id === selected.properties.category);
     const link = detailUrl(locale, selected.properties);
 
@@ -866,7 +1048,25 @@ export default function MapExplorer({
       ${selected.properties.thumbnail ? `<div class="map-popover-media"><img src="${selected.properties.thumbnail}" alt="${selected.properties.title}" /></div>` : ''}
       <div class="map-popover-body">
         <span class="map-popover-badge" style="background-color: ${category?.color || '#b66c45'}">
-          ${selected.properties.kind === 'place' ? category?.label[locale] || '' : selected.properties.kind === 'trail' ? (locale === 'el' ? 'Διαδρομή' : 'Trail') : locale === 'el' ? 'Στάση διαδρομής' : 'Trail stop'}
+          ${
+            selected.properties.kind === 'place'
+              ? category?.label[locale] || ''
+              : selected.properties.kind === 'trail'
+                ? selected.properties.routeType === 'drive'
+                  ? locale === 'el'
+                    ? 'Οδική διαδρομή'
+                    : 'Drive route'
+                  : selected.properties.routeType === 'mixed'
+                    ? locale === 'el'
+                      ? 'Μικτή διαδρομή'
+                      : 'Drive & walk'
+                    : locale === 'el'
+                      ? 'Διαδρομή'
+                      : 'Trail'
+                : locale === 'el'
+                  ? 'Στάση διαδρομής'
+                  : 'Trail stop'
+          }
         </span>
         <h4 class="map-popover-title">${selected.properties.title}</h4>
         <p class="map-popover-summary">${selected.properties.summary}</p>

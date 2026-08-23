@@ -105,3 +105,37 @@ test('mobile map layout features minimal header, prominent canvas, and collapsib
   await listToggle.click();
   await expect(resultList).toBeVisible();
 });
+
+test('direct road path link frames route and shows drive route popover badge', async ({
+  page,
+}) => {
+  await page.goto('/el/map?trail=lafkos-paltsi-drive');
+  const mapCanvas = page.locator('.map-canvas .maplibregl-canvas');
+  await expect(mapCanvas).toBeVisible();
+  const popover = page.locator('.map-popover-content');
+  await expect(popover).toBeVisible();
+  await expect(popover.locator('.map-popover-badge')).toHaveText('Οδική διαδρομή');
+  await expect(popover.locator('.map-popover-title')).toHaveText(
+    'Οδική διαδρομή Λαύκος – Πάλτση',
+  );
+});
+
+test('selecting road path updates URL and highlights drive route', async ({ page }) => {
+  await page.goto('/el/map');
+  const mapRegion = page.locator('.map-explorer');
+  await expect(mapRegion).toBeVisible();
+
+  // Search for the drive route
+  const searchInput = page.locator('#map-search');
+  await searchInput.fill('Πάλτση');
+  const driveButton = page
+    .locator('.map-result-button')
+    .filter({ hasText: 'Οδική διαδρομή Λαύκος – Πάλτση' });
+  await expect(driveButton).toBeVisible();
+  await driveButton.click();
+
+  await expect(page).toHaveURL(/trail=lafkos-paltsi-drive/);
+  const popover = page.locator('.map-popover-content');
+  await expect(popover).toBeVisible();
+  await expect(popover.locator('.map-popover-badge')).toHaveText('Οδική διαδρομή');
+});
