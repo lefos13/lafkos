@@ -647,6 +647,24 @@ img {
   background: var(--sea);
   transform: rotate(-45deg) scale(1.12);
 }
+/* Regional markers stay legible at map scale while yielding visual priority to Lafkos village. */
+.map-marker-btn.map-marker-btn--distant {
+  width: 1.65rem;
+  height: 1.65rem;
+}
+.map-marker--distant {
+  width: 1.65rem;
+  height: 1.65rem;
+  border-width: 1.5px;
+  box-shadow: 0 3px 9px rgba(36, 67, 63, 0.2);
+}
+.map-marker--distant:hover,
+.map-marker--distant:focus-visible,
+.map-marker--distant.is-selected,
+.map-marker-btn--distant:hover .map-marker--distant,
+.map-marker-btn--distant.is-selected .map-marker--distant {
+  transform: rotate(-45deg) scale(1.12);
+}
 .map-marker-btn {
   position: relative;
   display: flex;
@@ -763,6 +781,12 @@ img {
 .map-marker-label--waypoint {
   font-size: 0.62rem;
   padding: 0.12rem 0.42rem;
+}
+.map-marker-label--distant {
+  padding: 0.12rem 0.42rem;
+  border-width: 1px;
+  box-shadow: 0 1px 5px rgba(26, 43, 38, 0.11);
+  font-size: 0.58rem;
 }
 .map-marker-btn:hover,
 .map-marker-btn.is-selected {

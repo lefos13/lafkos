@@ -39,7 +39,7 @@ import type {
 import type { Locale } from '../lib/locales';
 import { parseMapState, serializeMapState, type MapState } from '../lib/map-state';
 import { getCopy } from '../lib/ui-copy';
-import { getGeometryBounds } from '../lib/geometry';
+import { getGeometryBounds, haversineDistanceMeters } from '../lib/geometry';
 
 interface Props {
   locale: Locale;
@@ -51,6 +51,8 @@ interface Props {
 
 type MapStatus = 'idle' | 'loading' | 'ready' | 'error';
 const defaultCenter: [number, number] = [23.24665, 39.17795];
+const LAFKOS_VILLAGE_CENTER: Coordinate = [23.24665, 39.17795];
+const DISTANT_PLACE_THRESHOLD_METERS = 1200;
 const defaultZoom = 13.6;
 const mapStyleUrl =
   import.meta.env.PUBLIC_MAP_STYLE_URL || 'https://tiles.openfreemap.org/styles/liberty';
@@ -739,8 +741,11 @@ export default function MapExplorer({
       labelElem: HTMLElement;
       title: string;
       priority: number;
+      isDistant: boolean;
     }
 
+    /* Keep regional place markers visually subordinate to village markers while
+     * preserving their full interactive affordance and label collision handling. */
     const labelItems: MarkerLabelItem[] = [];
 
     mapData.places
@@ -750,14 +755,23 @@ export default function MapExplorer({
           return;
         const category = categories.find((cat) => cat.id === feature.properties.category);
         const isSelected = selected?.properties.entityKey === feature.properties.entityKey;
+        const coordinates =
+          feature.geometry.type === 'Point' ? feature.geometry.coordinates : defaultCenter;
+        const isDistant =
+          haversineDistanceMeters(coordinates, LAFKOS_VILLAGE_CENTER) >
+          DISTANT_PLACE_THRESHOLD_METERS;
 
         const markerButton = document.createElement('button');
         markerButton.type = 'button';
-        markerButton.className = `map-marker-btn ${isSelected ? 'is-selected' : ''}`;
+        markerButton.className = `map-marker-btn ${isDistant ? 'map-marker-btn--distant' : ''} ${
+          isSelected ? 'is-selected' : ''
+        }`;
         markerButton.setAttribute('aria-label', feature.properties.title);
 
         const pinElem = document.createElement('span');
-        pinElem.className = `map-marker ${isSelected ? 'is-selected' : ''}`;
+        pinElem.className = `map-marker ${isDistant ? 'map-marker--distant' : ''} ${
+          isSelected ? 'is-selected' : ''
+        }`;
         if (category?.color) {
           pinElem.style.setProperty('--marker-bg', category.color);
           if (!isSelected) pinElem.style.backgroundColor = category.color;
@@ -765,7 +779,9 @@ export default function MapExplorer({
         pinElem.innerHTML = `<span aria-hidden="true">${category?.icon || '✦'}</span>`;
 
         const labelElem = document.createElement('span');
-        labelElem.className = `map-marker-label ${isSelected ? 'is-visible' : ''}`;
+        labelElem.className = `map-marker-label ${
+          isDistant ? 'map-marker-label--distant' : ''
+        } ${isSelected ? 'is-visible' : ''}`;
         labelElem.setAttribute('aria-hidden', 'true');
         labelElem.textContent = feature.properties.title;
 
@@ -773,8 +789,6 @@ export default function MapExplorer({
         markerButton.appendChild(labelElem);
 
         markerButton.addEventListener('click', () => selectFeature(feature, true));
-        const coordinates =
-          feature.geometry.type === 'Point' ? feature.geometry.coordinates : defaultCenter;
         markerRefs.current.push(
           new MapMarker({ element: markerButton, anchor: 'bottom' })
             .setLngLat(coordinates)
@@ -787,6 +801,7 @@ export default function MapExplorer({
           labelElem,
           title: feature.properties.title,
           priority: isSelected ? 0 : 1,
+          isDistant,
         });
       });
 
@@ -828,6 +843,7 @@ export default function MapExplorer({
           labelElem,
           title: feature.properties.title,
           priority: isSelected ? 0 : 2,
+          isDistant: false,
         });
       });
     }
@@ -876,10 +892,10 @@ export default function MapExplorer({
           return;
 
         const pinBox = {
-          x1: point.x - 18,
-          y1: point.y - 36,
-          x2: point.x + 18,
-          y2: point.y + 4,
+          x1: point.x - (item.isDistant ? 14 : 18),
+          y1: point.y - (item.isDistant ? 28 : 36),
+          x2: point.x + (item.isDistant ? 14 : 18),
+          y2: point.y,
           ownerKey: item.key,
         };
         itemPoints.push({ item, point, pinBox });
