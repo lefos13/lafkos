@@ -8,12 +8,12 @@ export default defineConfig({
   fullyParallel: true,
   reporter: 'html',
   use: {
-    baseURL: 'http://127.0.0.1:4321',
+    baseURL: 'http://localhost:4321',
     trace: 'on-first-retry',
   },
   webServer: {
-    command: 'ASTRO_DEV_BACKGROUND=0 pnpm dev --host 127.0.0.1',
-    url: 'http://127.0.0.1:4321',
+    command: 'ASTRO_DEV_BACKGROUND=0 pnpm dev --host',
+    url: 'http://localhost:4321',
     reuseExistingServer: true,
   },
   projects: [

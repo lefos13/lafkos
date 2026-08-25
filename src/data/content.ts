@@ -186,19 +186,25 @@ export const places: Place[] = [
       en: 'Argalasti',
     },
     eyebrow: {
-      el: 'Έδρα του Νοτίου Πηλίου',
-      en: 'Seat of South Pelion',
+      el: 'Ιστορικό κεφαλοχώρι και έδρα του Νοτίου Πηλίου',
+      en: 'Historic commercial capital and municipal seat of South Pelion',
     },
     summary: {
-      el: 'Κεντρικός οικισμός και συγκοινωνιακός κόμβος για τις διαδρομές του Νοτίου Πηλίου.',
-      en: 'The administrative and road hub for South Pelion routes.',
+      el: 'Το μεγαλύτερο χωριό και διοικητικό κέντρο του Νοτίου Πηλίου, χτισμένο σε εύφορο οροπέδιο με επιβλητικά αρχοντικά, το διάσημο μαρμάρινο καμπαναριό του 1913 και ζωντανή κεντρική πλατεία.',
+      en: 'The largest settlement and historic administrative capital of South Pelion, set on a fertile plateau featuring grand stone mansions, a renowned 1913 neoclassical marble belfry, and a bustling central square.',
     },
     body: {
       el: [
-        'Η Αργαλαστή λειτουργεί ως βασικός κόμβος για τις διαδρομές προς τον Παγασητικό και το Αιγαίο. Η εκκλησία των Αγίων Αποστόλων, του 1886, αποτελεί χαρακτηριστικό σημείο του οικισμού.',
+        'Απλωμένη σε ένα εύφορο οροπέδιο σε υψόμετρο περίπου 250 μέτρων, η Αργαλαστή υπήρξε ήδη από την εποχή της Τουρκοκρατίας το σπουδαιότερο εμπορικό, οικονομικό και πνευματικό κεφαλοχώρι του Νοτίου Πηλίου. Σήμερα αποτελεί την έδρα του ενιαίου Δήμου Νοτίου Πηλίου και τον βασικό κόμβο που ενώνει τις ακτές του Παγασητικού με εκείνες του ανοιχτού Αιγαίου.',
+        'Το πιο αναγνωρίσιμο τοπόσημο του χωριού είναι το περίφημο μαρμάρινο καμπαναριό του Ιερού Ναού των Αγίων Αποστόλων. Χτισμένο το 1913 από ντόπιο πηλιορείτικο μάρμαρο σε νεοκλασικό και ρωσικότροπο αρχιτεκτονικό ύφος —εμπνευσμένο από το καμπαναριό της Αγίας Σοφίας στην Κωνσταντινούπολη και της Μονής Αγίου Παντελεήμονος στο Άγιο Όρος— διαθέτει περίτεχνα γλυπτά ανάγλυφα και δύο αυθεντικά ελβετικά ρολόγια. Σε μικρή απόσταση βρίσκεται και το ιστορικό κτίριο του Παρθεναγωγείου, όπου δίδαξε ως σχολάρχης ο σπουδαίος ποιητής και λογοτέχνης Κώστας Βάρναλης στις αρχές του 20ού αιώνα (1907–1908).',
+        'Στην καρδιά της Αργαλαστής δεσπόζει η μεγάλη πλακόστρωτη πλατεία, σκεπασμένη από θεόρατα αιωνόβια πλατάνια, γύρω από την οποία σφύζει η καθημερινή ζωή στα παραδοσιακά καφενεία, τις ταβέρνες και τα ζαχαροπλαστεία. Κάθε Σάββατο πρωί, η πλατεία και τα γύρω σοκάκια φιλοξενούν το φημισμένο παραδοσιακό παζάρι, όπου παραγωγοί από ολόκληρο το Νότιο Πήλιο συγκεντρώνονται για να διαθέσουν αγνό μέλι, ελιές, λάδι, τσίπουρο, βότανα και τοπικά κηπευτικά.',
+        'Τα καλοδιατηρημένα λιθόστρωτα καλντερίμια που διακλαδώνονται από τον οικισμό οδηγούν σε παλιές πετρόχτιστες κρήνες (όπως η Κρήνη Κουτσιμάνη και η Κρήνη Αϊ-Γιάννη), σε αρχοντικά με περίτεχνες τοξωτές εισόδους, καθώς και σε σημαντικές πεζοπορικές διαδρομές προς τον Κάλαμο, το Λεφόκαστρο, το Πάου, την Ξινόβρυση και τον Λαύκο.',
       ],
       en: [
-        'Argalasti is the main hub for routes toward both the Pagasetic Gulf and the Aegean. The Church of the Holy Apostles, dated 1886, is one of the settlement’s landmarks.',
+        'Sprawled across a fertile plateau at an elevation of around 250 metres, Argalasti has served since the Ottoman period as the primary commercial, cultural, and administrative capital of South Pelion. Today, it stands as the seat of the Municipality of South Pelion and the geographic crossroad linking the tranquil shores of the Pagasetic Gulf with the open Aegean coastline.',
+        'The village’s most celebrated architectural landmark is the monumental marble bell tower of the Church of the Holy Apostles. Erected in 1913 from local Pelion marble in a neoclassical and Russian-influenced design — inspired by historic belfries of Mount Athos and Constantinople — it features finely sculpted reliefs and two working Swiss clocks. Nearby stands the historic Girls’ School building, where renowned Greek poet and essayist Kostas Varnalis served as headmaster in the early 20th century (1907–1908).',
+        'At the centre of village life is the expansive, stone-paved square sheltered under centuries-old plane trees, surrounded by traditional coffee houses, bakeries, and tavernas serving local specialties. Every Saturday morning, the square hosts a bustling open-air market (pazari) drawing farmers and artisans from across the region to sell wild herbs, local honey, olives, olive oil, tsipouro, and seasonal produce.',
+        'A network of preserved cobblestone paths (kalderimia) radiates from the village, guiding walkers past historic stone fountains (such as Koutsimani spring), neoclassical and traditional stone mansions, and scenic hiking trails descending to coastal hamlets including Kalamos, Lefokastro, Paou, Xynovrysi, and Lafkos.',
       ],
     },
     category: 'community',
@@ -209,24 +215,55 @@ export const places: Place[] = [
     mapAnchor: [23.219448, 39.22599],
     images: [
       {
-        src: 'https://commons.wikimedia.org/wiki/Special:FilePath/Pelion%2C_Pagassitikos_Gulf_and_coastline._Photo_taken_from_Lafkos_village.jpg',
-        alt: 'Οικισμός και τοπίο της Αργαλαστής στο Νότιο Πήλιο',
-        credit: 'Ioannis Fakis via Wikimedia Commons',
+        src: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/%CE%9A%CE%B1%CE%BC%CF%80%CE%B1%CE%BD%CE%B1%CF%81%CE%B9%CF%8C_%CE%91%CE%B3%CE%AF%CF%89%CE%BD_%CE%91%CF%80%CE%BF%CF%83%CF%84%CF%8C%CE%BB%CF%89%CE%BD%2C_%CE%91%CF%81%CE%B3%CE%B1%CE%BB%CE%B1%CF%83%CF%84%CE%AE_8966.jpg',
+        alt: 'Το επιβλητικό μαρμάρινο νεοκλασικό καμπαναριό του Ιερού Ναού Αγίων Αποστόλων στην Αργαλαστή',
+        credit: 'Photo by C messier (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/1/13/Platia_in_Argalasti%2C_Pilion.jpg',
+        alt: 'Η μεγάλη πλακόστρωτη κεντρική πλατεία της Αργαλαστής κάτω από τα πλατάνια',
+        credit: 'Photo by Cosa2244 (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/e/e3/%CE%91%CF%81%CE%B3%CE%B1%CE%BB%CE%B1%CF%83%CF%84%CE%AE_8975.jpg',
+        alt: 'Παραδοσιακό λιθόστρωτο καλντερίμι και παλιά αρχοντικά στην Αργαλαστή',
+        credit: 'Photo by C messier (Wikimedia Commons)',
         license: 'CC BY-SA 4.0',
       },
     ],
+    videoUrl: 'https://www.youtube.com/watch?v=Ksma4QfEMaM',
     practical: {
-      el: ['Χρήσιμος κόμβος ανεφοδιασμού πριν από τις παράκτιες διαδρομές.'],
-      en: ['A useful resupply stop before coastal routes.'],
+      el: [
+        'Αποτελεί το κεντρικό συγκοινωνιακό και εμπορικό σημείο του Νοτίου Πηλίου, με καταστήματα, φαρμακεία, τράπεζα, Κέντρο Υγείας, πρατήρια καυσίμων και τακτική σύνδεση ΚΤΕΛ με τον Βόλο.',
+        'Απέχει περίπου 9 χλμ. (12 λεπτά) βόρεια του Λαύκου και 40 χλμ. (50 λεπτά) από την πόλη του Βόλου.',
+        'Μην παραλείψετε το παραδοσιακό υπαίθριο παζάρι κάθε Σάββατο πρωί στην πλατεία για τοπικά προϊόντα.',
+        'Ιδανική βάση για πεζοπορία: σηματοδοτημένα καλντερίμια ξεκινούν προς Κάλαμο (45 λεπτά κατάβαση), Λεφόκαστρο (1 ώρα) και Ξινόβρυση (1 ώρα και 30 λεπτά).',
+      ],
+      en: [
+        'Serves as the main commercial and transit hub for South Pelion, featuring supermarkets, pharmacies, ATM/banks, a regional Health Centre, petrol stations, and regular KTEL bus connections to Volos.',
+        'Located roughly 9 km (12 minutes) north of Lafkos and 40 km (50 minutes) from the city of Volos.',
+        'Do not miss the lively Saturday morning farmers market in the central square for authentic local products.',
+        'An ideal walking trailhead: waymarked stone paths lead down to coastal Kalamos (45 min descent), Lefokastro (1 hr), and across to Xynovrysi (1 hr 30 min).',
+      ],
     },
     sources: [
       {
-        label: 'OpenStreetMap map reference',
+        label: 'Δήμος Νοτίου Πηλίου — Αργαλαστή',
+        url: 'https://dnpiliou.gov.gr/',
+      },
+      {
+        label: 'Topoguide: Αργαλαστή (Νότιο Πήλιο)',
+        url: 'https://www.topoguide.gr/mountains/thessaly/advs_pelion/pelion_southern.php',
+      },
+      {
+        label: 'OpenStreetMap — Αργαλαστή',
         url: 'https://www.openstreetmap.org/?mlat=39.22599&mlon=23.219448#map=17/39.22599/23.219448',
       },
       {
-        label: 'Lafkos Guide editorial field brief',
-        url: 'https://www.topoguide.gr/mountains/thessaly/advs_pelion/',
+        label: 'Papanikolaou Vassilis — Αργαλαστή από ψηλά',
+        url: 'https://www.youtube.com/watch?v=Ksma4QfEMaM',
       },
     ],
     featured: false,
@@ -388,19 +425,25 @@ export const places: Place[] = [
       en: 'Chorto',
     },
     eyebrow: {
-      el: 'Παραθαλάσσιος οικισμός',
-      en: 'Coastal village',
+      el: 'Γραφικός παραθαλάσσιος οικισμός και κοιτίδα πολιτισμού',
+      en: 'Picturesque coastal haven and cultural sanctuary',
     },
     summary: {
-      el: 'Ήσυχος οικισμός με ελαιώνες, ακτή και θερινό υπαίθριο θέατρο.',
-      en: 'A quiet coastal settlement with olive groves, shore access, and a summer open-air theatre.',
+      el: 'Γαλήνιο παραθαλάσσιο χωριό στον Παγασητικό Κόλπο με κρυστάλλινα νερά, γραφικά ταβερνάκια δίπλα στο κύμα και το φημισμένο Ίδρυμα Αγγελίνη με το υπαίθριο θερινό θέατρο.',
+      en: 'A tranquil seaside village on the Pagasetic Gulf with crystal-clear waters, waterfront tavernas, and the renowned Angelinis Cultural Foundation with its open-air amphitheatre.',
     },
     body: {
       el: [
-        'Το Χόρτο απλώνεται ανάμεσα στους ελαιώνες και τον Παγασητικό. Το υπαίθριο θέατρο φιλοξενεί καλοκαιρινές παραστάσεις και δίνει στον οικισμό ιδιαίτερο πολιτιστικό ρυθμό.',
+        'Φωλιασμένο σε έναν απάνεμο κόλπο του Παγασητικού, ανάμεσα σε πυκνούς αιωνόβιους ελαιώνες και τη θάλασσα, το Χόρτο αποτελεί έναν από τους πιο γοητευτικούς και ήρεμους παραθαλάσσιους προορισμούς του Νοτίου Πηλίου. Με ιστορία που ανάγεται στην αρχαιότητα —όταν η περιοχή λειτουργούσε ως επίνειο της αρχαίας πόλης Σπάλαθρα ή της Αργαλαστής— ο οικισμός διατηρεί αναλλοίωτη την αυθεντική ψαράδικη φυσιογνωμία του με παραδοσιακά πετρόχτιστα σπίτια και καταπράσινους κήπους που αγγίζουν την ακροθαλασσιά.',
+        'Το Χόρτο κατέχει μια ξεχωριστή θέση στον πολιτιστικό χάρτη της Ελλάδας χάρη στο Ίδρυμα Αγγελίνη (Κοινωφελές Ίδρυμα Νικολάου και Ευαγγελίας Αγγελίνη - Γιώργου Χατζηνίκου). Στο εντυπωσιακό λιθόκτιστο υπαίθριο θέατρο του Ιδρύματος διοργανώνεται κάθε καλοκαίρι το διεθνές «Φεστιβάλ Χόρτου», συγκεντρώνοντας κορυφαίους σολίστ, ορχήστρες δωματίου, θεατρικούς θιάσους και σπουδαστές μουσικής από όλο τον κόσμο για σεμινάρια, συναυλίες κλασικής μουσικής και παραστάσεις κάτω από τα αστέρια.',
+        'Η ακτογραμμή του οικισμού προσφέρει ιδανικές συνθήκες για χαλάρωση και οικογενειακό μπάνιο, καθώς τα ήρεμα και ρηχά νερά του Παγασητικού παραμένουν ασφαλή και ζεστά. Κατά μήκος του παραλιακού πεζοδρόμου, παραδοσιακές ταβέρνες και ουζερί απλώνουν τα τραπέζια τους κυριολεκτικά πάνω στην άμμο και το βότσαλο, σερβίροντας φρέσκο ψάρι, θαλασσινούς μεζέδες και πηλιορείτικο τσίπουρο με φόντο το μαγευτικό ηλιοβασίλεμα.',
+        'Για τους λάτρεις της πεζοπορίας, το Χόρτο αποτελεί αφετηρία και σταυροδρόμι όμορφων διαδρομών: το ιστορικό καλντερίμι προς τον Λαύκο (ανηφορική διαδρομή περίπου 1 ώρας και 15 λεπτών) και το παραλιακό μονοπάτι προς τη γειτονική Μηλίνα προσφέρουν μοναδικές περιπατητικές εμπειρίες ανάμεσα σε ελαιώνες και παράκτιους ορμίσκους.',
       ],
       en: [
-        'Chorto lies between olive groves and the Pagasetic Gulf. Its open-air theatre hosts summer performances and gives the settlement a distinct cultural rhythm.',
+        'Nestled in a sheltered bay of the Pagasetic Gulf, embraced by ancient olive groves and the sea, Chorto is one of South Pelion’s most charming and peaceful coastal retreats. With roots reaching back to antiquity — when the natural harbour served ancient settlements like Spalathra and later historic Argalasti — the village preserves its genuine maritime character with stone-built houses, blooming bougainvillea, and olive orchards dipping to the water’s edge.',
+        "Chorto holds an esteemed position on the Greek cultural landscape thanks to the Angelinis Cultural Foundation (Angelinis-Hadjinikos Foundation). In its enchanting stone-built open-air amphitheatre, the international 'Horto Music Festival' unfolds every summer, drawing world-renowned classical soloists, chamber ensembles, theatre artists, and music scholars for masterclasses and open-air concerts beneath the stars.",
+        'The village shore offers serene conditions for swimming and relaxation, with the calm, shallow waters of the Pagasetic Gulf remaining warm and gentle throughout the season. Along the seaside promenade, traditional tavernas and waterfront ouzeries set tables directly beside the gentle lapping waves, serving fresh seafood, local mezedes, and Pelian tsipouro with front-row views of the sunset.',
+        'For hikers and explorers, Chorto is connected to surrounding villages via scenic paths: a historic cobblestone trail (kalderimi) climbs up to the village of Lafkos (about 1 hr 15 min), while coastal tracks link to neighbouring Milina and quiet secluded bays like Olive Bay and Dipli Vrysi.',
       ],
     },
     category: 'community',
@@ -411,24 +454,55 @@ export const places: Place[] = [
     mapAnchor: [23.217915, 39.190758],
     images: [
       {
-        src: 'https://commons.wikimedia.org/wiki/Special:FilePath/Pelion%2C_Pagassitikos_Gulf_and_coastline._Photo_taken_from_Lafkos_village.jpg',
-        alt: 'Η ακτή και οι ελαιώνες του Χόρτου',
-        credit: 'Ioannis Fakis via Wikimedia Commons',
+        src: 'https://upload.wikimedia.org/wikipedia/commons/d/dc/Chorto.jpg',
+        alt: 'Το παραθαλάσσιο χωριό Χόρτο στον Παγασητικό Κόλπο',
+        credit: 'Photo by C messier (Wikimedia Commons)',
+        license: 'CC BY-SA 3.0',
+      },
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/e/e5/Horto%2C_Pelion_sunset_.jpg',
+        alt: 'Μαγευτικό ηλιοβασίλεμα στον κόλπο του Χόρτου',
+        credit: 'Photo by KaterinaFiliaKelly (Wikimedia Commons)',
         license: 'CC BY-SA 4.0',
       },
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/3/30/Place_in_horton%2C_greece.JPG',
+        alt: 'Γραφική γωνιά και πέτρινα σπίτια στο Χόρτο',
+        credit: 'Photo by Elian (Wikimedia Commons)',
+        license: 'CC BY 2.5',
+      },
     ],
+    videoUrl: 'https://www.youtube.com/watch?v=TJTMr7hjpGs',
     practical: {
-      el: ['Συνδυάζεται με στάσεις στην ακτή Χόρτου και τη Μηλίνα.'],
-      en: ['Combine with stops along the Chorto and Milina coast.'],
+      el: [
+        'Βρίσκεται περίπου 6 χλμ. (10 λεπτά) δυτικά του Λαύκου, 3 χλμ. (5 λεπτά) βόρεια της Μηλίνας και 46 χλμ. από τον Βόλο.',
+        'Η παραλία του οικισμού είναι βοτσαλωτή με αμμώδη βυθό, ήρεμα και ρηχά νερά, ιδανική για οικογένειες με μικρά παιδιά.',
+        'Στον παραλιακό πεζόδρομο λειτουργούν ταβέρνες, καφέ και μίνι μάρκετ, ενώ κατά τους θερινούς μήνες αξίζει να παρακολουθήσετε κάποια συναυλία ή παράσταση στο υπαίθριο θέατρο του Ιδρύματος Αγγελίνη.',
+        'Ιδανική πεζοπορία: το ιστορικό καλντερίμι Χόρτο – Λαύκος προσφέρει υπέροχη ανάβαση μέσα από ελαιώνες και ρεματιές (περίπου 1 ώρα και 15 λεπτά).',
+      ],
+      en: [
+        'Located roughly 6 km (10 minutes) west of Lafkos, 3 km (5 minutes) north of Milina, and 46 km from Volos.',
+        'The main village beach features smooth pebbles and a shallow sandy seabed with exceptionally calm, warm waters suitable for all ages.',
+        'Waterfront tavernas, cafes, and a local grocery store line the coast; during summer, checking the event calendar of the Angelinis Open-Air Theatre is highly recommended.',
+        'Great walking trail: the historic Chorto–Lafkos kalderimi offers a scenic climb through olive groves and wooded ravines (approx. 1 hr 15 min).',
+      ],
     },
     sources: [
       {
-        label: 'OpenStreetMap map reference',
+        label: 'Ίδρυμα Αγγελίνη — Φεστιβάλ Χόρτου',
+        url: 'https://horto.net/',
+      },
+      {
+        label: 'Topoguide: Χόρτο (Νότιο Πήλιο)',
+        url: 'https://www.topoguide.gr/mountains/thessaly/advs_pelion/pelion_southern.php',
+      },
+      {
+        label: 'OpenStreetMap — Χόρτο',
         url: 'https://www.openstreetmap.org/?mlat=39.190758&mlon=23.217915#map=17/39.190758/23.217915',
       },
       {
-        label: 'Lafkos Guide editorial field brief',
-        url: 'https://www.topoguide.gr/mountains/thessaly/advs_pelion/',
+        label: 'TMDRONE — Χόρτο Πήλιο από ψηλά',
+        url: 'https://www.youtube.com/watch?v=TJTMr7hjpGs',
       },
     ],
     featured: false,
@@ -760,19 +834,23 @@ export const places: Place[] = [
       en: 'Kallithea',
     },
     eyebrow: {
-      el: 'Ενδιάμεσος οικισμός στον δρόμο της ακτής',
-      en: 'Intermediate hamlet on the coastal road',
+      el: 'Ήσυχος αγροτικός οικισμός σε πανοραμικό πέρασμα',
+      en: 'Tranquil rural hamlet on a panoramic crossroads',
     },
     summary: {
-      el: 'Μικρός οικισμός περίπου στα 326 μ. πάνω στον δρόμο προς Ποτιστικά και Πάλτση.',
-      en: 'A small hamlet at about 326 m on the road to Potistika and Paltsi.',
+      el: 'Μικρός, γαλήνιος οικισμός σε υψόμετρο 326 μ., με ανοιχτό ορίζοντα προς τους κατάφυτους λόφους του Νοτίου Πηλίου, την Αργαλαστή και το Αιγαίο.',
+      en: 'A small, peaceful hamlet perched at 326 m altitude, commanding expansive panoramic views over South Pelion’s olive slopes, Argalasti, and the Aegean.',
     },
     body: {
       el: [
-        'Η Καλλιθέα λειτουργεί ως ενδιάμεσο πέρασμα στις οδικές διαδρομές προς τις βόρειες παραλίες. Οι συντεταγμένες της χρειάζονται επιτόπια ή χαρτογραφική επαλήθευση πριν από τη δημοσίευση.',
+        'Χτισμένη σε υψόμετρο περίπου 326 μέτρων σε ένα φυσικό ύψωμα ανάμεσα στην Αργαλαστή και την Ξινόβρυση, η Καλλιθέα (γνωστή στα χρόνια της Τουρκοκρατίας με την ονομασία Μπιρ) μετονομάστηκε επίσημα το 1951, παίρνοντας το όνομά της από την ανεμπόδιστη, πανοραμική θέα που προσφέρει προς το πηλιορείτικο ανάγλυφο και τον θαλασσινό ορίζοντα.',
+        'Ο οικισμός διατηρεί έναν αυθεντικό αγροτικό και κτηνοτροφικό χαρακτήρα, με διάσπαρτα πέτρινα σπίτια, παραδοσιακές ξερολιθιές και αιωνόβιους ελαιώνες. Εδώ η ζωή κυλά σε απόλυτη ηρεμία, μακριά από τη βοή των κεντρικών αρτηριών, μέσα σε ένα τοπίο όπου η πλούσια μεσογειακή βλάστηση εναλλάσσεται με καλλιεργημένα κτήματα.',
+        'Λόγω της κομβικής της θέσης, η Καλλιθέα αποτελεί φυσικό πέρασμα για όσους κατευθύνονται από την Αργαλαστή προς τις ανατολικές αιγαιοπελαγίτικες ακτές των Ποτιστικών, της Μελανής και της Πάλτσης, αλλά και ιδανικό σημείο αναφοράς για ήρεμες ποδηλατικές και περιπατητικές διαδρομές στην ενδοχώρα του Νοτίου Πηλίου.',
       ],
       en: [
-        'Kallithea is an intermediate stop on drives to the northern beaches. Its coordinates require field or map verification before publication.',
+        'Perched at an elevation of around 326 metres on a natural plateau between Argalasti and Xynovrysi, Kallithea (historically called Bir during the Ottoman period) was officially renamed in 1951 in honour of its sweeping panoramic views across the undulating Pelion hills and the Aegean horizon.',
+        'The settlement preserves an authentic rural atmosphere with scattered stone houses, dry-stone terraces, and venerable olive groves. Life unfolds here at an unhurried pace, surrounded by fragrant Mediterranean scrub, orchards, and peaceful country lanes.',
+        'Occupying a strategic crossroads, Kallithea serves as a scenic junction for travellers heading from Argalasti towards the eastern Aegean beaches of Potistika, Melani, and Paltsi, as well as an inviting waypost for cycling and leisurely walks across the South Pelion countryside.',
       ],
     },
     category: 'community',
@@ -783,24 +861,45 @@ export const places: Place[] = [
     mapAnchor: [23.2498, 39.2392],
     images: [
       {
-        src: 'https://commons.wikimedia.org/wiki/Special:FilePath/Pelion%2C_Pagassitikos_Gulf_and_coastline._Photo_taken_from_Lafkos_village.jpg',
-        alt: 'Τοπίο στον δρόμο προς την Καλλιθέα',
-        credit: 'Ioannis Fakis via Wikimedia Commons',
-        license: 'CC BY-SA 4.0',
+        src: 'https://upload.wikimedia.org/wikipedia/commons/8/81/Pilio_argalasti_panorama27x12.jpg',
+        alt: 'Πανοραμική θέα των λόφων και των ελαιώνων γύρω από την Καλλιθέα και την Αργαλαστή',
+        credit: 'Photo by Nik-P (Wikimedia Commons)',
+        license: 'CC BY-SA 3.0',
+      },
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/f/f2/Ancient_Olive_Tree_in_Pelion%2C_Greece.jpg',
+        alt: 'Αιωνόβιος ελαιώνας στο τοπίο του Νοτίου Πηλίου κοντά στην Καλλιθέα',
+        credit: 'Photo by Dennis koutou (Wikimedia Commons)',
+        license: 'CC BY-SA 3.0',
       },
     ],
+    videoUrl: 'https://www.youtube.com/watch?v=vaEqjet0754',
     practical: {
-      el: ['Να επιβεβαιωθεί η θέση πριν χρησιμοποιηθεί ως οδηγός στροφής.'],
-      en: ['Verify the position before using it as a turn-by-turn landmark.'],
+      el: [
+        'Βρίσκεται μόλις 3 χλμ. (5 λεπτά) ανατολικά της Αργαλαστής και περίπου 12 χλμ. (18 λεπτά) από τον Λαύκο.',
+        'Αποτελεί χαρακτηριστικό πέρασμα και διακλάδωση στη διαδρομή προς Ξινόβρυση, Ποτιστικά και Πάλτση.',
+        'Δεν διαθέτει εμπορικά καταστήματα ή καταστήματα εστίασης· για προμήθειες, καφέ και φαγητό εξυπηρετείται άμεσα από τη γειτονική Αργαλαστή (3 χλμ.) και την Ξινόβρυση.',
+        'Ιδανικό σημείο για στάση φωτογράφισης και αγνάντεμα του πανοράματος του Νοτίου Πηλίου.',
+      ],
+      en: [
+        'Located just 3 km (5 minutes) east of Argalasti and about 12 km (18 minutes) from Lafkos.',
+        'Functions as a natural junction on the route connecting Argalasti to Xynovrysi, Potistika, and Paltsi.',
+        'There are no commercial shops or tavernas in the hamlet; full amenities, groceries, and dining are available in nearby Argalasti (3 km) and Xynovrysi.',
+        'An excellent vantage point for a brief photo stop and enjoying wide views over the South Pelion landscape.',
+      ],
     },
     sources: [
       {
-        label: 'OpenStreetMap map reference',
+        label: 'OpenStreetMap — Καλλιθέα (Αργαλαστή)',
         url: 'https://www.openstreetmap.org/?mlat=39.2392&mlon=23.2498#map=17/39.2392/23.2498',
       },
       {
-        label: 'Lafkos Guide editorial field brief',
-        url: 'https://www.topoguide.gr/mountains/thessaly/advs_pelion/',
+        label: 'Topoguide — Νότιο Πήλιο',
+        url: 'https://www.topoguide.gr/mountains/thessaly/advs_pelion/pelion_southern.php',
+      },
+      {
+        label: 'All Roads Europe — Διαδρομή Αργαλαστή προς Ποτιστικά',
+        url: 'https://www.youtube.com/watch?v=vaEqjet0754',
       },
     ],
     featured: false,
@@ -1051,6 +1150,7 @@ export const places: Place[] = [
         license: 'CC BY-SA 4.0',
       },
     ],
+    videoUrl: 'https://www.youtube.com/watch?v=fV_O4f-pccE',
     practical: {
       el: [
         'Ιδανικό σημείο εκκίνησης για κάθε περιήγηση στον οικισμό.',
@@ -1424,19 +1524,25 @@ export const places: Place[] = [
       en: 'Milina',
     },
     eyebrow: {
-      el: 'Ψαροχώρι στον Παγασητικό',
-      en: 'Pagasetic fishing village',
+      el: 'Παραθαλάσσιο επίνειο του Λαύκου με διάσημα ηλιοβασιλέματα',
+      en: 'Coastal haven below Lafkos renowned for spectacular sunsets',
     },
     summary: {
-      el: 'Παραθαλάσσιος οικισμός γνωστός για το ήρεμο μέτωπο και τα ηλιοβασιλέματα.',
-      en: 'A coastal village known for its calm waterfront and sunsets.',
+      el: 'Ζωντανός παραθαλάσσιος οικισμός στον Παγασητικό Κόλπο, με εκτεταμένο παραλιακό πεζόδρομο, γραφικά ταβερνάκια, θέα στα νησάκια Αλατάς και Πρασούδα, και τον τερματισμό του ιστορικού καλντεριμιού από τον Λαύκο.',
+      en: 'A vibrant coastal resort on the Pagasetic Gulf, featuring an extensive seaside promenade, waterfront tavernas, panoramic views towards Alatas and Prasouda islets, and the finish of the historic kalderimi from Lafkos.',
     },
     body: {
       el: [
-        'Η Μηλίνα αποτελεί κοινό σημείο στις διαδρομές της δυτικής ακτής. Η άγκυρα του χάρτη βρίσκεται στο παραλιακό μέτωπο, στο ίδιο σημείο με τον καθιερωμένο τερματισμό του καλντεριμιού Λαύκος–Μηλίνα.',
+        'Απλωμένη κατά μήκος ενός εκτεταμένου παραλιακού μετώπου στον απάνεμο Παγασητικό Κόλπο, ακριβώς κάτω από τον Λαύκο, η Μηλίνα αποτελεί το κατεξοχήν θαλασσινό θέρετρο και επίνειο της περιοχής. Με ναυτική παράδοση που χάνεται στους αιώνες —συνδεδεμένη με την αρχαία Ολιζώνα, την παλιά σπογγαλιεία και τα φημισμένα παραδοσιακά καρνάγια— εξελίχθηκε από ιστορικό λιμάνι εξαγωγής λαδιού σε έναν από τους πιο φιλόξενους προορισμούς του Πηλίου.',
+        'Σήμα κατατεθέν του οικισμού είναι ο μακρύς παραλιακός πεζόδρομος, όπου τα παραδοσιακά ουζερί, οι ψαροταβέρνες, τα καφέ και τα μπαρ απλώνονται δίπλα στο νερό. Ακριβώς απέναντι δεσπόζουν τα δύο καταπράσινα νησάκια του κόλπου: ο μακρόστενος Αλατάς, με το ιστορικό μοναστήρι των Αγίων Σαράντα του 18ου αιώνα (θέατρο ηρωικών μαχών κατά την Επανάσταση του 1821), και η μικρότερη Πρασούδα με το βυζαντινό μοναστήρι της Ζωοδόχου Πηγής.',
+        'Η Μηλίνα φημίζεται σε ολόκληρο το Πήλιο για τα ανεπανάληπτα ηλιοβασιλέματά της: καθώς ο ήλιος βυθίζεται πίσω από τα βουνά της απέναντι ακτής, ο ουρανός και η γαλήνια θάλασσα του Παγασητικού βάφονται σε βαθιές πορφυρές και χρυσές αποχρώσεις. Τα ήρεμα, ρηχά και καθαρά νερά της ακτογραμμής προσφέρονται για κολύμπι, ενώ μικροί φυσικοί κολπίσκοι (όπως η Βαθιά Σπηλιά και ο Άγιος Ανδρέας) προσφέρουν επιπλέον επιλογές για μπάνιο.',
+        'Για τους πεζοπόρους, η Μηλίνα αποτελεί το σημείο κατάληξης της πιο διάσημης περιπατητικής διαδρομής του Νοτίου Πηλίου: του λιθόστρωτου καλντεριμιού Λαύκος – Μηλίνα, μιας κατάβασης 330 μέτρων υψομετρικής διαφοράς που καταλήγει απευθείας στην ακροθαλασσιά, καθώς και αφετηρία για διαδρομές προς το Χόρτο, τον Μαραθιά, το Βαλτούδι και το Τρίκερι.',
       ],
       en: [
-        'Milina is a shared stop on the western-coast routes. Its map anchor is on the waterfront, at the established finish of the Lafkos–Milina kalderimi.',
+        'Stretching along an extensive waterfront bay on the sheltered Pagasetic Gulf, directly below Lafkos, Milina is the quintessential seaside resort and maritime gateway of South Pelion. Steeped in seafaring heritage — linked to ancient Olizon, sponge-diving, and historic wooden boatyards (karnagia) — the village evolved from a trading port for olive oil into one of Pelion’s most welcoming coastal destinations.',
+        'The pulse of the village beats along its long pedestrian promenade, where traditional fish tavernas, ouzeries, and seaside cafes sit mere steps from the gentle lapping waves. Facing the shoreline are two emerald islets: elongated Alatas, sheltering the historic 18th-century Monastery of the Forty Saints (a site of heroic naval skirmishes during the 1821 War of Independence), and tiny Prasouda, crowned by the Byzantine Monastery of Zoodochos Pigi.',
+        'Milina is renowned throughout Pelion for its breathtaking, fiery sunsets: as the sun sinks behind the mountains across the gulf, the calm sea and sky ignite in deep shades of amber and rose gold. Its sheltered, shallow waters are ideal for relaxed swimming and water sports, while adjacent coves like Vathia Spilia and Agios Andreas offer serene coastal hideaways.',
+        'For walkers, Milina marks the triumphant coastal finish of South Pelion’s most celebrated heritage trail: the historic Lafkos–Milina kalderimi, an exhilarating 330-metre descent from Lafkos square down to the sea, as well as a trailhead for walks to Chorto, Marathias, Valtoudi, and the Trikeri peninsula.',
       ],
     },
     category: 'community',
@@ -1447,24 +1553,51 @@ export const places: Place[] = [
     mapAnchor: [23.22064, 39.17136],
     images: [
       {
-        src: 'https://commons.wikimedia.org/wiki/Special:FilePath/Pelion%2C_Pagassitikos_Gulf_and_coastline._Photo_taken_from_Lafkos_village.jpg',
-        alt: 'Το παραθαλάσσιο μέτωπο της Μηλίνας',
-        credit: 'Ioannis Fakis via Wikimedia Commons',
+        src: 'https://upload.wikimedia.org/wikipedia/commons/b/b4/Milina%2C_Pelion.jpg',
+        alt: 'Ο παραλιακός δρόμος και το γραφικό μέτωπο της Μηλίνας στον Παγασητικό',
+        credit: 'Photo by Pavlos1988 (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/3/34/%CE%9C%CE%B7%CE%BB%CE%AF%CE%BD%CE%B1_9083.jpg',
+        alt: 'Ο παραλιακός πεζόδρομος της Μηλίνας με θέα τα νησάκια του Παγασητικού',
+        credit: 'Photo by C messier (Wikimedia Commons)',
+        license: 'CC BY-SA 4.0',
+      },
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/5/50/%CE%9C%CE%B7%CE%BB%CE%AF%CE%BD%CE%B1_9084.jpg',
+        alt: 'Η ακτή και τα ήρεμα νερά της Μηλίνας',
+        credit: 'Photo by C messier (Wikimedia Commons)',
         license: 'CC BY-SA 4.0',
       },
     ],
+    videoUrl: 'https://www.youtube.com/watch?v=XoXLng2vqPU',
     practical: {
-      el: ['Το ιστορικό καλντερίμι από τον Λαύκο τερματίζει στο ίδιο παραλιακό σημείο.'],
-      en: ['The historic kalderimi from Lafkos finishes at this same waterfront point.'],
+      el: [
+        'Απέχει μόλις 6,5 χλμ. (10 λεπτά) από τον Λαύκο οδικώς, 3 χλμ. (5 λεπτά) νότια του Χόρτου και 48 χλμ. από τον Βόλο.',
+        'Διαθέτει πλήρεις παροχές διαμονής και εστίασης, φούρνους, φαρμακείο, σούπερ μάρκετ, πρατήριο καυσίμων και δυνατότητα ενοικίασης σκαφών για εξερεύνηση των νησιών Αλατά και Πρασούδα.',
+        'Το ιστορικό λιθόστρωτο καλντερίμι από τον Λαύκο τερματίζει απευθείας στο παραλιακό μέτωπο (περίπου 45 λεπτά άνετης κατάβασης).',
+        'Ιδανική ώρα επίσκεψης: αργά το απόγευμα για μπάνιο, περίπατο στον πεζόδρομο και απόλαυση του διάσημου ηλιοβασιλέματος.',
+      ],
+      en: [
+        'Located just 6.5 km (10 minutes) from Lafkos by road, 3 km (5 minutes) south of Chorto, and 48 km from Volos.',
+        'Provides full tourist amenities including accommodations, bakeries, pharmacy, supermarkets, petrol station, and boat rental services to visit Alatas and Prasouda islets.',
+        'The historic Lafkos–Milina stone kalderimi finishes right at the waterfront promenade (approx. 45 min easy descent).',
+        'Best time to visit: late afternoon for swimming, a promenade stroll, and experiencing the spectacular sunset.',
+      ],
     },
     sources: [
       {
-        label: 'OpenStreetMap map reference',
+        label: 'Topoguide: Λαύκος – Μηλίνα',
+        url: 'https://www.topoguide.gr/mountains/thessaly/advs_pelion/pelion_southern/Pelion_Lafkos_Milina.php',
+      },
+      {
+        label: 'OpenStreetMap — Μηλίνα',
         url: 'https://www.openstreetmap.org/?mlat=39.17136&mlon=23.22064#map=17/39.17136/23.22064',
       },
       {
-        label: 'Lafkos Guide editorial field brief',
-        url: 'https://www.topoguide.gr/mountains/thessaly/advs_pelion/',
+        label: 'John P. Vosnakis — Milina, Magnesia (Aerial 4K Tour)',
+        url: 'https://www.youtube.com/watch?v=XoXLng2vqPU',
       },
     ],
     featured: false,
@@ -2203,23 +2336,27 @@ export const places: Place[] = [
       en: 'potistika',
     },
     title: {
-      el: 'Ποτιστικά',
-      en: 'Potistika',
+      el: 'Παραλία Ποτιστικά',
+      en: 'Potistika Beach',
     },
     eyebrow: {
-      el: 'Μεγάλη αμμώδης παραλία του Αιγαίου',
-      en: 'Large Aegean sand-and-pebble beach',
+      el: 'Εμβληματική ακτή του Αιγαίου με τους επιβλητικούς βράχους',
+      en: 'Iconic Aegean beach with dramatic rock formations',
     },
     summary: {
-      el: 'Πάνω από ένα χιλιόμετρο άμμου και βότσαλου, με οργανωμένο τμήμα και απότομη βαθιά είσοδο.',
-      en: 'More than a kilometre of sand and pebble, partly organised, with a steep drop-off.',
+      el: 'Μία από τις πιο εντυπωσιακές ακτές του Νοτίου Πηλίου, με απέραντη χρυσή αμμουδιά, κρυστάλλινα τιρκουάζ νερά και γιγάντιους βραχώδεις σχηματισμούς που αναδύονται από τη θάλασσα.',
+      en: 'One of South Pelion’s most striking coastal landmarks, featuring an expansive stretch of golden sand, deep turquoise waters, and monumental rock monoliths rising from the sea.',
     },
     body: {
       el: [
-        'Τα Ποτιστικά έχουν οργανωμένο τμήμα με το Climax bar και άγρια πλευρά δίπλα στη Μελανή. Η απότομη βαθιά είσοδος, οι δυνατοί αυγουστιάτικοι άνεμοι και τα μεγάλα κύματα χρειάζονται ιδιαίτερη προσοχή.',
+        'Τα Ποτιστικά αποτελούν το αρχέτυπο της άγριας, επιβλητικής αιγαιοπελαγίτικης ακτής του Πηλίου. Σε μήκος που ξεπερνά το ένα χιλιόμετρο, η λεπτή άμμος και το ψιλό βοτσαλάκι συναντούν το ανοιχτό πέλαγος, ενώ οι τεράστιοι, σμιλεμένοι από τα κύματα βράχοι που υψώνονται μέσα στο νερό και στην ακτή χαρίζουν στο τοπίο μια σχεδόν απόκοσμη γοητεία.',
+        'Η παραλία διατηρεί μια ισορροπημένη διττή φυσιογνωμία: ένα τμήμα της διαθέτει ήπια οργάνωση με ομπρέλες, ξαπλώστρες και παραδοσιακές ταβέρνες σε μικρή απόσταση, ενώ το μεγαλύτερο μέρος της παραμένει ανέγγιχτο και παρθένο. Από το νότιο άκρο της, ένα βατό φυσικό μονοπάτι ανάμεσα στα βράχια οδηγεί στην εξίσου μαγευτική και άγρια παραλία της Μελανής.',
+        'Το ανοιχτό πέλαγος χαρίζει διαυγή, βαθιά νερά που δροσίζουν ακόμα και τις πιο ζεστές μέρες του καλοκαιριού. Όταν φυσούν τα καλοκαιρινά μελτέμια, η θάλασσα σηκώνει εντυπωσιακά κύματα που προσφέρουν μοναδικό θέαμα, αλλά απαιτούν ιδιαίτερη προσοχή από τους κολυμβητές.',
       ],
       en: [
-        'Potistika has an organised section by the Climax bar and a wilder side beside Melani. The abrupt depth, strong August winds, and large waves require particular care.',
+        'Potistika is the quintessential wild Aegean beach of Pelion. Stretching for over a kilometre, its fine sand and smooth pebbles meet the open sea, punctuated by massive, wave-sculpted rock formations rising dramatically from the turquoise water.',
+        'The beach strikes a natural balance between gentle convenience and untouched wilderness: one section offers seasonal amenities and beachside tavernas, while vast stretches remain entirely pristine and open. At the southern end, a natural pathway over the coastal rocks connects Potistika directly to the secluded cove of Melani.',
+        'Facing the open Aegean Sea, the waters are exceptionally clear and deep close to shore. When the summer meltemi winds pick up, powerful waves sweep into the bay, creating a stunning visual spectacle that calls for mindful swimming.',
       ],
     },
     category: 'nature',
@@ -2230,17 +2367,32 @@ export const places: Place[] = [
     mapAnchor: [23.291562, 39.265154],
     images: [
       {
-        src: 'https://commons.wikimedia.org/wiki/Special:FilePath/Pelion%2C_Pagassitikos_Gulf_and_coastline._Photo_taken_from_Lafkos_village.jpg',
-        alt: 'Η μεγάλη παραλία στα Ποτιστικά',
-        credit: 'Ioannis Fakis via Wikimedia Commons',
-        license: 'CC BY-SA 4.0',
+        src: 'https://upload.wikimedia.org/wikipedia/commons/7/73/Xinovrysi%2C_Potistica_beach.jpg',
+        alt: 'Η παραλία Ποτιστικά με τους χαρακτηριστικούς βραχώδεις σχηματισμούς και το Αιγαίο Πέλαγος',
+        credit: 'Photo by Flashdart2 (Wikimedia Commons)',
+        license: 'CC BY-SA 2.5',
+      },
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/7/74/Potistika3.jpg',
+        alt: 'Πανοραμική άποψη της παραλίας Ποτιστικά στο Νότιο Πήλιο',
+        credit: 'Photo by Handrian (Wikimedia Commons)',
+        license: 'CC BY-SA 3.0',
       },
     ],
+    videoUrl: 'https://www.youtube.com/watch?v=mfEO6yWD3Xs',
     practical: {
       el: [
-        'Η πεζοπορική σύνδεση Ξινόβρυση–Ποτιστικά είναι περίπου 4,6 χλμ. και ενδέχεται να είναι κατά τόπους χορταριασμένη.',
+        'Η οδική πρόσβαση γίνεται μέσω Ξινόβρυσης (περίπου 20 χλμ. / 32 λεπτά από τον Λαύκο) σε πλήρως ασφαλτοστρωμένο δρόμο με άνετο χώρο στάθμευσης κοντά στην ακτή.',
+        'Η θάλασσα βαθαίνει σχετικά απότομα μετά τα πρώτα μέτρα, ενώ τις μέρες με έντονο κυματισμό συνιστάται ιδιαίτερη προσοχή.',
+        'Στην περιοχή λειτουργούν εποχικά καφέ, beach bar και ταβέρνες για φαγητό και δροσερά ροφήματα.',
+        'Από το νότιο άκρο της ακτής υπάρχει βατό πέρασμα με τα πόδια προς τη γειτονική παραλία Μελανή (5–10 λεπτά).',
       ],
-      en: ['The Xynovrysi–Potistika walk is about 4.6 km and can be overgrown in places.'],
+      en: [
+        'Paved road access leads down from Xynovrysi (about 20 km / 32 minutes from Lafkos) with parking spaces available near the beach.',
+        'The sea deepens abruptly a few metres from the shoreline; caution is recommended on windy days with large swell.',
+        'Seasonal tavernas, a beach bar, and refreshments are available during the summer months.',
+        'A short coastal walk (5–10 minutes) across the southern rock formations connects directly to Melani beach.',
+      ],
     },
     sources: [
       {
@@ -2248,12 +2400,12 @@ export const places: Place[] = [
         url: 'https://www.topoguide.gr/mountains/thessaly/advs_pelion/pelion_southern/Pelion_Xynovrysi_Potistika.php',
       },
       {
-        label: 'OpenStreetMap map reference',
+        label: 'OpenStreetMap map reference — Παραλία Ποτιστικά',
         url: 'https://www.openstreetmap.org/?mlat=39.265154&mlon=23.291562#map=17/39.265154/23.291562',
       },
       {
-        label: 'Lafkos Guide editorial field brief',
-        url: 'https://www.topoguide.gr/mountains/thessaly/advs_pelion/',
+        label: 'MyThessaly — Ποτιστικά & Μελανή (Drone 4K)',
+        url: 'https://www.youtube.com/watch?v=mfEO6yWD3Xs',
       },
     ],
     featured: false,
@@ -2987,19 +3139,23 @@ export const places: Place[] = [
       en: 'Xynovrysi',
     },
     eyebrow: {
-      el: 'Ορεινό χωριό πάνω από την ακτή',
-      en: 'Hill village above the coast',
+      el: 'Παραδοσιακό ορεινό χωριό με θέα στο Αιγαίο',
+      en: 'Traditional hillside village overlooking the Aegean',
     },
     summary: {
-      el: 'Χωριό σε υψόμετρο περίπου 232 μ., γνωστό για την όξινη πηγή από την οποία πήρε το όνομά του.',
-      en: 'A village at about 232 m, named for its sour spring.',
+      el: 'Αυθεντικό πηλιορείτικο χωριό στις ανατολικές πλαγιές του βουνού, γνωστό για την πετρόχτιστη πλατεία με τα πλατάνια, την ιστορική εκκλησία της Κοιμήσεως και τα μονοπάτια προς τις αιγαιοπελαγίτικες ακτές.',
+      en: 'An authentic Pelion village nestled on the eastern slopes of the mountain, renowned for its shaded stone square, historic basilica, and scenic footpaths leading down to Aegean shores.',
     },
     body: {
       el: [
-        'Η Ξινόβρυση βρίσκεται πάνω από τον δρόμο προς τα Ποτιστικά και αποτελεί φυσικό ενδιάμεσο σημείο της παράκτιας εξόρμησης.',
+        'Χτισμένη σε υψόμετρο περίπου 240 μέτρων στις καταπράσινες ανατολικές πλαγιές του Πηλίου, η Ξινόβρυση (γνωστή στα οθωμανικά χρόνια ως Μουτζέλα) οφείλει το σύγχρονο όνομά της στην παλιά πηγή με το δροσερό, υπόξινο μεταλλικό νερό που ανέβλυζε στην περιοχή.',
+        'Στην καρδιά του οικισμού απλώνεται η γραφική πλακόστρωτη πλατεία, σκεπασμένη από τη σκιά αιωνόβιων πλατάνων. Εδώ δεσπόζει ο ιστορικός ναός της Κοιμήσεως της Θεοτόκου —μια επιβλητική τρίκλιτη βασιλική του 18ου αιώνα με περίτεχνο ξυλόγλυπτο τέμπλο και λιθόκτιστο καμπαναριό— καθώς και παραδοσιακά καφενεία όπου οι ντόπιοι και οι περιπατητές απολαμβάνουν τσίπουρο και τοπικά εδέσματα.',
+        'Η Ξινόβρυση αποτελεί σημαντικό πεζοπορικό και συγκοινωνιακό σταυροδρόμι του Νοτίου Πηλίου: από εδώ διέρχεται το καλοδιατηρημένο καλντερίμι που συνδέει την Αργαλαστή με το χωριό, ενώ από τον οικισμό ξεκινούν οι διαδρομές και οι δρόμοι προς τις διάσημες παραλίες των Ποτιστικών και της Μελανής.',
       ],
       en: [
-        'Xynovrysi sits above the road to Potistika and is a natural intermediate stop on a coastal outing.',
+        'Perched at an elevation of around 240 metres on the verdant eastern slopes of Mount Pelion, Xynovrysi (historically known during Ottoman times as Medzela or Moutzela) takes its modern name from a natural mineral spring known for its crisp, slightly acidulous water.',
+        'At the heart of the village lies a picturesque stone-paved square shaded by massive plane trees. The square is anchored by the historic Church of the Dormition of the Virgin Mary — an 18th-century three-aisled basilica with an intricate carved iconostasis and a freestanding stone bell tower — flanked by welcoming local kafeneia serving tsipouro and hearty regional mezedes.',
+        'The village serves as a key hiking hub and gateway to the eastern coastline: it sits along the well-preserved kalderimi connecting Argalasti to Xynovrysi, and marks the starting point for paths and scenic drives down to the celebrated Aegean beaches of Potistika and Melani.',
       ],
     },
     category: 'community',
@@ -3010,28 +3166,49 @@ export const places: Place[] = [
     mapAnchor: [23.260532, 39.249229],
     images: [
       {
-        src: 'https://commons.wikimedia.org/wiki/Special:FilePath/Pelion%2C_Pagassitikos_Gulf_and_coastline._Photo_taken_from_Lafkos_village.jpg',
-        alt: 'Τοπίο γύρω από την Ξινόβρυση',
-        credit: 'Ioannis Fakis via Wikimedia Commons',
+        src: 'https://upload.wikimedia.org/wikipedia/commons/5/5b/Xinovrysi.jpg',
+        alt: 'Πανοραμική άποψη του παραδοσιακού χωριού της Ξινόβρυσης στις πλαγιές του Πηλίου',
+        credit: 'Photo by Flashdart2 (Wikimedia Commons)',
+        license: 'CC BY-SA 2.5',
+      },
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/0/0c/%CE%9E%CE%B9%CE%BD%CF%8C%CE%B2%CF%81%CF%85%CF%83%CE%B7-%CE%8C%CF%81%CE%BF%CF%82_%CE%A0%CE%AE%CE%BB%CE%B9%CE%BF_3_GR1430001.jpg',
+        alt: 'Πέτρινο περιβάλλον και παραδοσιακή αρχιτεκτονική στην Ξινόβρυση',
+        credit: 'Photo by Ioannis Skrimpas (Wikimedia Commons)',
         license: 'CC BY-SA 4.0',
       },
     ],
+    videoUrl: 'https://www.youtube.com/watch?v=y5I4WqNpxLA',
     practical: {
-      el: ['Πέρασμα προς Ποτιστικά και Πάλτση.'],
-      en: ['A route junction for Potistika and Paltsi.'],
+      el: [
+        'Βρίσκεται περίπου 5 χλμ. (8 λεπτά) ανατολικά της Αργαλαστής και 15 χλμ. (22 λεπτά) από τον Λαύκο μέσω του κεντρικού οδικού δικτύου.',
+        'Στην πλατεία του χωριού λειτουργούν παραδοσιακά καφενεία και ταβέρνες με αυθεντικές τοπικές γεύσεις.',
+        'Αποτελεί αφετηρία για την κατάβαση προς τα Ποτιστικά και τη Μελανή (περίπου 5 χλμ. ασφάλτου / 10 λεπτά με αυτοκίνητο ή 1 ώρα και 15 λεπτά πεζοπορίας μέσω μονοπατιού).',
+        'Η πεζοπορική διαδρομή Αργαλαστή – Ξινόβρυση είναι σηματοδοτημένη και διαρκεί περίπου 1 ώρα και 30 λεπτά.',
+      ],
+      en: [
+        'Located about 5 km (8 minutes) east of Argalasti and 15 km (22 minutes) from Lafkos via the paved provincial road.',
+        'Traditional kafeneia and tavernas around the village square offer authentic local food, coffee, and refreshments.',
+        'Serves as the primary gateway to Potistika and Melani beaches (about 5 km / 10 minutes by car, or a 1 hr 15 min scenic hike via footpath).',
+        'The waymarked Argalasti–Xynovrysi trail follows historic kalderimia and takes approximately 1 hour and 30 minutes.',
+      ],
     },
     sources: [
       {
-        label: 'OpenStreetMap map reference',
+        label: 'Topoguide: Αργαλαστή – Ξινόβρυση',
+        url: 'https://www.topoguide.gr/mountains/thessaly/advs_pelion/pelion_southern/Pelion_Argalasti_Xynovrysi.php',
+      },
+      {
+        label: 'Topoguide: Ξινόβρυση – Ποτιστικά',
+        url: 'https://www.topoguide.gr/mountains/thessaly/advs_pelion/pelion_southern/Pelion_Xynovrysi_Potistika.php',
+      },
+      {
+        label: 'OpenStreetMap — Ξινόβρυση',
         url: 'https://www.openstreetmap.org/?mlat=39.249229&mlon=23.260532#map=17/39.249229/23.260532',
       },
       {
-        label: 'Lafkos Guide editorial field brief',
-        url: 'https://www.topoguide.gr/mountains/thessaly/advs_pelion/',
-      },
-      {
-        label: 'Topoguide: Ξινόβρυση–Ποτιστικά',
-        url: 'https://www.topoguide.gr/mountains/thessaly/advs_pelion/pelion_southern/Pelion_Xynovrysi_Potistika.php',
+        label: 'AnaDigit — Διαδρομή Αργαλαστή-Ξινόβρυση',
+        url: 'https://www.youtube.com/watch?v=y5I4WqNpxLA',
       },
     ],
     featured: false,
@@ -3465,6 +3642,7 @@ export const trails: Trail[] = [
         'The destination beach is unorganized with no commercial facilities.',
       ],
     },
+    videoUrl: 'https://www.youtube.com/watch?v=RH7zxUEjgjU',
     waypoints: [
       {
         title: {

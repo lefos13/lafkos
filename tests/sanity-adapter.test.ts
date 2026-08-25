@@ -83,6 +83,7 @@ describe('Sanity Document Transformers', () => {
           },
         ],
         practical: ['Ανοιχτά όλο το 24ωρο'],
+        videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
         sources: [{ label: 'Source 1', url: 'https://example.com' }],
         featured: true,
         isSeed: false,
@@ -112,10 +113,28 @@ describe('Sanity Document Transformers', () => {
         featured: true,
         isSeed: false,
       },
+      {
+        _id: 'place-test-cafe-el',
+        _type: 'place',
+        entityKey: 'test-cafe',
+        language: 'el',
+        title: 'Δοκιμαστικό Καφέ',
+        category: 'community',
+        coordinate: { lng: 23.245, lat: 39.176 },
+      },
+      {
+        _id: 'place-test-cafe-en',
+        _type: 'place',
+        entityKey: 'test-cafe',
+        language: 'en',
+        title: 'Test Cafe',
+        category: 'community',
+        coordinate: { lng: 23.245, lat: 39.176 },
+      },
     ];
 
     const places = transformSanityPlaces(rawPlaces);
-    expect(places).toHaveLength(1);
+    expect(places).toHaveLength(2);
 
     const place = places[0];
     expect(place.entityKey).toBe('test-square');
@@ -130,6 +149,12 @@ describe('Sanity Document Transformers', () => {
 
     expect(pointSchema.parse(place.geometry).coordinates).toEqual([23.246, 39.177]);
     expect(place.mapAnchor).toEqual([23.2465, 39.1775]);
+    /* The el doc carries the video; the en doc omits it, so the merged
+     * value must come from el (el-first fallback, like geometry). */
+    expect(place.videoUrl).toBe('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
+
+    expect(places[1].entityKey).toBe('test-cafe');
+    expect(places[1].videoUrl).toBeUndefined();
   });
 
   it('transforms paired bilingual Trail documents with LineString geometry and waypoints', () => {
@@ -168,6 +193,7 @@ describe('Sanity Document Transformers', () => {
         difficulty: 'moderate',
         surface: 'Καλντερίμι',
         safety: ['Νερό και καλά παπούτσια'],
+        videoUrl: 'https://youtu.be/jNQXAC9IVRw',
         sources: [{ label: 'Topoguide', url: 'https://example.com' }],
         featured: true,
         isSeed: false,
@@ -206,6 +232,7 @@ describe('Sanity Document Transformers', () => {
         difficulty: 'moderate',
         surface: 'Cobblestone',
         safety: ['Water and hiking shoes'],
+        videoUrl: 'https://www.youtube.com/watch?v=M7lc1UVf-VE',
         sources: [{ label: 'Topoguide', url: 'https://example.com' }],
         featured: true,
         isSeed: false,
@@ -224,6 +251,8 @@ describe('Sanity Document Transformers', () => {
     expect(trail.waypoints).toHaveLength(1);
     expect(trail.waypoints[0].title.el).toBe('Κρήνη');
     expect(trail.waypoints[0].title.en).toBe('Spring');
+    /* Both language docs set a videoUrl here; el must win. */
+    expect(trail.videoUrl).toBe('https://youtu.be/jNQXAC9IVRw');
 
     const parsedGeometry = lineStringSchema.parse(trail.geometry);
     expect(parsedGeometry.coordinates).toHaveLength(3);
@@ -416,6 +445,7 @@ describe('Seed NDJSON Archive Integrity & Entry Formatter', () => {
         },
       ],
       practical: { el: [], en: [] },
+      videoUrl: 'https://www.youtube.com/watch?v=aqz-KE-bpKQ',
       sources: [{ label: 'Source', url: 'https://example.com' }],
       featured: false,
       isSeed: false,
@@ -428,5 +458,47 @@ describe('Seed NDJSON Archive Integrity & Entry Formatter', () => {
 
     const translations = metaDoc.translations as Array<{ _type: string; _key: string }>;
     expect(translations[0]._type).toBe('internationalizedArrayReferenceValue');
+
+    /* videoUrl is not localized: both language docs carry the same value. */
+    expect(elDoc.videoUrl).toBe('https://www.youtube.com/watch?v=aqz-KE-bpKQ');
+    expect(enDoc.videoUrl).toBe('https://www.youtube.com/watch?v=aqz-KE-bpKQ');
+
+    const [trailElDoc, trailEnDoc] = formatEntryDocuments({
+      kind: 'trail',
+      entityKey: 'sample-path',
+      slug: { el: 'deigma-monopatiou', en: 'sample-path' },
+      title: { el: 'Δείγμα Μονοπατιού', en: 'Sample Path' },
+      eyebrow: { el: 'Πεζοπορική διαδρομή', en: 'Hiking trail' },
+      summary: { el: 'Περίληψη', en: 'Summary' },
+      body: { el: ['Κείμενο'], en: ['Text'] },
+      geometry: {
+        type: 'LineString',
+        coordinates: [
+          [23.246, 39.177],
+          [23.248, 39.179],
+        ],
+      },
+      distanceMeters: 2500,
+      durationMinutes: 45,
+      elevationGainMeters: 120,
+      difficulty: 'moderate',
+      surface: { el: 'Καλντερίμι', en: 'Cobblestone' },
+      safety: { el: ['Πάρτε νερό'], en: ['Bring water'] },
+      waypoints: [
+        {
+          title: { el: 'Κρήνη', en: 'Spring' },
+          coordinate: [23.247, 39.178],
+        },
+      ],
+      videoUrl: 'https://youtu.be/jNQXAC9IVRw',
+      sources: [{ label: 'Source', url: 'https://example.com' }],
+      featured: false,
+      isSeed: true,
+    });
+
+    expect(trailElDoc._id).toBe('trail-sample-path-el');
+    expect(trailElDoc.videoUrl).toBe('https://youtu.be/jNQXAC9IVRw');
+    expect(trailEnDoc._id).toBe('trail-sample-path-en');
+    expect(trailEnDoc.videoUrl).toBe('https://youtu.be/jNQXAC9IVRw');
   });
 });

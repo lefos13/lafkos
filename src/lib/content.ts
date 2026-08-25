@@ -6,6 +6,7 @@
 
 import { z } from 'zod';
 import type { Locale } from './locales';
+import { parseYouTubeVideoId } from './video';
 
 export const categoryIds = [
   'heritage',
@@ -48,6 +49,16 @@ export const sourceSchema = z.object({
   url: z.url(),
 });
 
+/* Optional embedded-video URL for places and trails. Only YouTube is in
+ * contract; the parser is shared with the embed component. NOTE: the same
+ * validation regex lives duplicated in studio/schemaTypes.ts because Studio
+ * cannot import from src/ — keep both in sync when the accepted forms change. */
+export const youTubeUrlSchema = z
+  .string()
+  .refine((url) => parseYouTubeVideoId(url) !== undefined, {
+    message: 'Must be a https YouTube watch, youtu.be, shorts, or embed URL',
+  });
+
 export const geometrySchema = z.union([pointSchema, lineStringSchema, polygonSchema]);
 export type Coordinate = z.infer<typeof coordinateSchema>;
 export type Geometry = z.infer<typeof geometrySchema>;
@@ -75,6 +86,8 @@ export interface Place {
   geometry: z.infer<typeof pointSchema> | z.infer<typeof polygonSchema>;
   mapAnchor: Coordinate;
   images: ImageAsset[];
+  /** Single optional, non-localized YouTube URL for an inline embed. */
+  videoUrl?: string;
   practical: Localized<string[]>;
   sources: Source[];
   featured: boolean;
@@ -105,6 +118,8 @@ export interface Trail {
     placeKey?: string;
     image?: ImageAsset;
   }>;
+  /** Single optional, non-localized YouTube URL for an inline embed. */
+  videoUrl?: string;
   sources: Source[];
   featured: boolean;
   isSeed: boolean;

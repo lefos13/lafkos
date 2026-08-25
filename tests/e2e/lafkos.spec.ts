@@ -139,3 +139,45 @@ test('selecting road path updates URL and highlights drive route', async ({ page
   await expect(popover).toBeVisible();
   await expect(popover.locator('.map-popover-badge')).toHaveText('Οδική διαδρομή');
 });
+
+test('entity pages embed their YouTube video and pages without one stay iframe-free', async ({
+  page,
+}) => {
+  await page.goto('/el/trails/lafkos-mousges-chondri-ammos');
+  const trailVideo = page.locator("iframe[src*='RH7zxUEjgjU']");
+  await expect(trailVideo).toBeVisible();
+
+  await page.goto('/el/places/plateia-lafkou');
+  const placeVideo = page.locator("iframe[src*='fV_O4f-pccE']");
+  await expect(placeVideo).toBeVisible();
+
+  // A trail without videoUrl must not render any embed at all.
+  await page.goto('/el/trails/kalderimi-lafkos-milina');
+  await expect(page.locator('iframe')).toHaveCount(0);
+});
+test('clicking on an overlapping place marker and route prioritizes the place over the route', async ({
+  page,
+}) => {
+  // Frame the map on Metochi where the potistika-drive route passes directly through
+  await page.goto('/el/map?place=metochi');
+  const mapRegion = page.locator('.map-explorer');
+  await expect(mapRegion).toBeVisible();
+
+  // Close initial popover
+  const closeBtn = page.locator('.maplibregl-popup-close-button');
+  await expect(closeBtn).toBeVisible();
+  await closeBtn.click();
+  await expect(closeBtn).toBeHidden();
+
+  // Metochi marker is now right in the center of the map
+  const metochiMarker = page.locator('.map-marker-btn[aria-label="Μέτοχι"]');
+  await expect(metochiMarker).toBeVisible();
+  await metochiMarker.click();
+
+  // URL must remain focused on the place and NOT switch to the overlapping drive route
+  await expect(page).toHaveURL(/place=metochi/);
+  const popover = page.locator('.map-popover-content');
+  await expect(popover).toBeVisible();
+  await expect(popover.locator('.map-popover-title')).toHaveText('Μέτοχι');
+  await expect(popover.locator('.map-popover-badge')).toContainText('Καθημερινή ζωή');
+});

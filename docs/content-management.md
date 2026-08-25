@@ -52,6 +52,7 @@ Represents cultural landmarks, historic buildings, squares, cafes, museums, chur
 - **Hero & Gallery Images:** Supports uploaded Sanity assets or external URLs (e.g. Wikimedia Commons) with mandatory `alt`, `credit`, and `license` fields.
 - **Practical notes (`practical`):** Opening hours, access details, admission fees, or seasonality.
 - **Sources & Citations (`sources`):** Array of labeled URLs for historical provenance.
+- **Video (`videoUrl`):** Optional single YouTube URL (watch/youtu.be/shorts/embed forms). Rendered as a privacy-enhanced youtube-nocookie embedded player on the place page below the practical notes. The field is NOT localized — both language documents share the same URL; validation accepts only `https://` YouTube URLs in Studio and the import CLI, and the production CSP allows only `www.youtube-nocookie.com` frames, so other embed hosts will not render.
 - **Featured (`featured`):** Boolean highlighting top spots on the home screen.
 - **Seed Flag (`isSeed`):** Boolean marking entries that require on-the-ground local verification before launch.
 
@@ -66,6 +67,7 @@ Represents hiking routes, road routes, mixed access routes, cobbled kalderimi pa
 - **Metrics:** `distanceMeters`, `durationMinutes`, `elevationGainMeters`, `difficulty` (`easy`, `moderate`, `demanding`). For `drive` and `mixed` routes, `difficulty` describes road/access character rather than physical hiking fitness, and `elevationGainMeters` records the route elevation change even when it is primarily a drive.
 - **Surface & Safety:** Localized descriptions of path or road condition (e.g. kalderimi, dirt road, asphalt) and equipment/safety advice. For drives, explain road character, surfaces, clearance or caution points, and any access uncertainty; for mixed routes, state the handover and walk-in conditions explicitly.
 - **GPX File (`gpx`):** Optional downloadable track file.
+- **Video (`videoUrl`):** Optional single YouTube URL (watch/youtu.be/shorts/embed forms). Rendered as a privacy-enhanced youtube-nocookie embedded player on the trail page above the waypoint list. The field is NOT localized — both language documents share the same URL; validation accepts only `https://` YouTube URLs in Studio and the import CLI, and the production CSP allows only `www.youtube-nocookie.com` frames, so other embed hosts will not render.
 - **Verification & Status:** `lastVerifiedAt` date, `featured`, and `isSeed`.
 
 ### 3. Story (`story`)

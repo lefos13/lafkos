@@ -616,6 +616,7 @@ img {
   border: 0;
   background: transparent;
   cursor: pointer;
+  z-index: 2;
 }
 .map-marker-btn--waypoint {
   width: 1.15rem;
@@ -665,23 +666,6 @@ img {
 .map-marker-btn--distant.is-selected .map-marker--distant {
   transform: rotate(-45deg) scale(1.12);
 }
-.map-marker-btn {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 2.2rem;
-  height: 2.2rem;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-  z-index: 2;
-}
-.map-marker-btn--waypoint {
-  width: 1.15rem;
-  height: 1.15rem;
-}
 .map-marker--waypoint {
   width: 1.15rem;
   height: 1.15rem;
@@ -719,7 +703,9 @@ img {
   max-width: 13rem;
   overflow: hidden;
   text-overflow: ellipsis;
-  pointer-events: none;
+  pointer-events: auto;
+  cursor: pointer;
+  user-select: none;
   opacity: 0;
   visibility: hidden;
   transition:
@@ -1154,6 +1140,21 @@ img {
   width: 100%;
   aspect-ratio: 4/3;
   object-fit: cover;
+}
+/* Privacy-enhanced YouTube embed: fixed 16:9 box so lazy iframes never reflow the page. */
+.video-embed {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--deep-olive);
+  margin: 1.5rem 0;
+}
+.video-embed iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
 }
 .detail-meta {
   display: flex;

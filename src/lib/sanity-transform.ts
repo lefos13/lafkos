@@ -33,6 +33,7 @@ export const PLACES_QUERY = `*[_type == "place" && !(_id in path("drafts.**"))] 
     asset-> { _id, url }
   },
   practical,
+  videoUrl,
   sources,
   featured,
   isSeed
@@ -65,6 +66,7 @@ export const TRAILS_QUERY = `*[_type == "trail" && !(_id in path("drafts.**"))] 
   difficulty,
   surface,
   safety,
+  videoUrl,
   sources,
   featured,
   isSeed
@@ -178,6 +180,7 @@ export interface SanityPlaceDoc {
   hero?: SanityImageRaw;
   gallery?: SanityImageRaw[];
   practical?: string[];
+  videoUrl?: string;
   sources?: Array<{ label: string; url: string }>;
   featured?: boolean;
   isSeed?: boolean;
@@ -255,6 +258,9 @@ export function transformSanityPlaces(docs: SanityPlaceDoc[]): Place[] {
       },
       mapAnchor: anchor,
       images,
+      /* GROQ projects absent fields as explicit null; normalize so the seed
+       * archive omits the key entirely instead of emitting `videoUrl: null`. */
+      videoUrl: el.videoUrl ?? en.videoUrl ?? undefined,
       practical: {
         el: el.practical || [],
         en: en.practical || [],
@@ -293,6 +299,7 @@ export interface SanityTrailDoc {
   difficulty?: 'easy' | 'moderate' | 'demanding';
   surface?: string;
   safety?: string[];
+  videoUrl?: string;
   sources?: Array<{ label: string; url: string }>;
   featured?: boolean;
   isSeed?: boolean;
@@ -406,6 +413,7 @@ export function transformSanityTrails(docs: SanityTrailDoc[]): Trail[] {
         el: el.safety || [],
         en: en.safety || [],
       },
+      videoUrl: el.videoUrl ?? en.videoUrl ?? undefined,
       waypoints,
       sources:
         sources.length > 0

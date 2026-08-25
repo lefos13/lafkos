@@ -6,6 +6,7 @@ import { locales, otherLocale, type Locale } from '../../../lib/locales';
 import { getCopy } from '../../../lib/ui-copy';
 import { formatDistance } from '../../../lib/geometry';
 import type { Trail } from '../../../lib/content';
+import { parseYouTubeVideoId } from '../../../lib/video';
 
 export async function getStaticPaths() {
   const dataset = await fetchSanityContent();
@@ -23,6 +24,8 @@ const { locale, trail, dataset } = Astro.props as {
 };
 const ui = getCopy(locale);
 const category = dataset.categories.find((item) => item.id === 'trail');
+// Only a successfully parsed YouTube id produces an embed; other hosts are blocked by CSP anyway.
+const videoId = parseYouTubeVideoId(trail.videoUrl ?? '');
 ---
 
 <BaseLayout
@@ -69,6 +72,20 @@ const category = dataset.categories.find((item) => item.id === 'trail');
       <div class="prose-copy">
         {trail.body[locale].map((paragraph) => <p>{paragraph}</p>)}
         <ul>{trail.safety[locale].map((item) => <li>{item}</li>)}</ul>
+        {videoId && (
+          <>
+            <p class="eyebrow">{ui.video}</p>
+            <figure class="video-embed">
+              <iframe
+                src={`https://www.youtube-nocookie.com/embed/${videoId}`}
+                title={trail.title[locale]}
+                loading="lazy"
+                allowfullscreen
+                referrerpolicy="strict-origin-when-cross-origin"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+            </figure>
+          </>
+        )}
         <h2 class="section-title">{locale === 'el' ? 'Σημεία στη διαδρομή' : 'Waypoints'}</h2>
         {
           trail.waypoints.map((waypoint) => (

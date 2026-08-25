@@ -134,6 +134,27 @@ const paragraphList = (name: string, title: string) =>
     validation: (rule) => rule.min(1),
   });
 
+/* YouTube embed validation must live here because the Studio package cannot
+ * import from src/. The pattern mirrors youTubeUrlSchema in
+ * src/lib/content.ts and parseYouTubeVideoId in src/lib/video.ts:
+ * https-only watch / youtu.be / shorts / embed links on youtube.com,
+ * youtube-nocookie.com, or youtu.be (with optional www./m. prefixes) carrying
+ * the canonical 11-character video id; extra query parameters are tolerated.
+ * Keep the two contracts in sync when editing either side. */
+const YOUTUBE_URL_PATTERN =
+  /^https:\/\/(?:(?:www|m)\.)?(?:youtu\.be\/[A-Za-z0-9_-]{11}(?:[?&#][^\s]*)?|(?:youtube\.com|youtube-nocookie\.com)\/(?:watch\?(?:[^#\s]*&)?v=[A-Za-z0-9_-]{11}(?:[&#][^\s]*)?|(?:shorts|embed)\/[A-Za-z0-9_-]{11}\/?(?:[?&#][^\s]*)?))$/;
+
+const videoUrlField = defineField({
+  name: 'videoUrl',
+  title: 'YouTube video URL (optional)',
+  type: 'url',
+  validation: (rule) =>
+    rule.uri({ scheme: ['https'] }).custom((value) =>
+      !value || YOUTUBE_URL_PATTERN.test(value)
+        ? true
+        : 'Must be a valid YouTube video URL (youtube.com/watch, youtu.be, shorts, or embed link)',
+    ),
+});
 const place = defineType({
   name: 'place',
   title: 'Place',
@@ -172,6 +193,7 @@ const place = defineType({
     imageField('hero', 'Hero image', true),
     galleryField('gallery', 'Gallery'),
     paragraphList('practical', 'Practical notes (hours, access, tips)'),
+    videoUrlField,
     sourceField,
     defineField({
       name: 'featured',
@@ -344,6 +366,7 @@ const trail = defineType({
       type: 'file',
       options: { accept: '.gpx,application/gpx+xml' },
     }),
+    videoUrlField,
     sourceField,
     defineField({
       name: 'lastVerifiedAt',

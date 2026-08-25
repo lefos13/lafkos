@@ -181,6 +181,65 @@ function buildPmtilesStyle(url: string): StyleSpecification {
     ],
   });
 }
+function findNearbyMarker(
+  screenPoint: { x: number; y: number },
+  map: MapLibreMap,
+  places: MapFeature[],
+  waypoints: MapFeature[],
+  categories: string[],
+  isTrailVisible: boolean,
+): MapFeature | null {
+  let bestMatch: MapFeature | null = null;
+  let minDistance = Infinity;
+
+  // 1. Check visible place markers
+  const activePlaces = places.filter(
+    (p) =>
+      p.geometry.type === 'Point' &&
+      (categories.length === 0 || categories.includes(p.properties.category)),
+  );
+
+  for (const place of activePlaces) {
+    if (place.geometry.type !== 'Point') continue;
+    const coords = place.geometry.coordinates;
+    const pt = map.project(coords);
+    const isDistant =
+      haversineDistanceMeters(coords, LAFKOS_VILLAGE_CENTER) > DISTANT_PLACE_THRESHOLD_METERS;
+
+    // Pin is bottom-anchored; height is 26px (distant) or 35px (village)
+    const pinHeight = isDistant ? 26 : 35;
+    const pinCenterY = pt.y - pinHeight / 2;
+
+    const distCenter = Math.hypot(screenPoint.x - pt.x, screenPoint.y - pinCenterY);
+    const distBase = Math.hypot(screenPoint.x - pt.x, screenPoint.y - pt.y);
+    const dist = Math.min(distCenter, distBase);
+
+    // Generous hit tolerance around place markers so clicking on/near a marker always focuses the place over overlapping route lines
+    const threshold = isDistant ? 34 : 38;
+    if (dist <= threshold && dist < minDistance) {
+      minDistance = dist;
+      bestMatch = place;
+    }
+  }
+
+  // 2. Check visible waypoints (if trails are active)
+  if (isTrailVisible) {
+    for (const wp of waypoints) {
+      if (wp.geometry.type !== 'Point') continue;
+      const coords = wp.geometry.coordinates;
+      const pt = map.project(coords);
+      const dist = Math.hypot(screenPoint.x - pt.x, screenPoint.y - pt.y);
+      const threshold = 26;
+      if (dist <= threshold && dist < minDistance) {
+        minDistance = dist;
+        bestMatch = wp;
+      }
+    }
+  }
+
+  return bestMatch;
+}
+
 
 export default function MapExplorer({
   locale,
@@ -589,12 +648,28 @@ export default function MapExplorer({
       ];
 
       const handleRouteEnter = (event: MapMouseEvent) => {
+        const nearbyMarker = findNearbyMarker(
+          event.point,
+          map,
+          mapDataRef.current.places,
+          mapDataRef.current.waypoints,
+          stateRef.current.categories,
+          stateRef.current.categories.length === 0 || stateRef.current.categories.includes('trail'),
+        );
+        const hoveredSource = map.getSource('lafkos-hovered-trail') as GeoJSONSource | undefined;
+        if (nearbyMarker) {
+          if (hoveredSource) {
+            hoveredSource.setData(featureCollection([]) as never);
+          }
+          map.getCanvas().style.cursor = 'pointer';
+          return;
+        }
+
         map.getCanvas().style.cursor = 'pointer';
         const feature = map.queryRenderedFeatures(event.point, {
           layers: ROUTE_INTERACTIVE_LAYERS,
         })[0];
         const entityKey = feature?.properties?.entityKey;
-        const hoveredSource = map.getSource('lafkos-hovered-trail') as GeoJSONSource | undefined;
         if (!hoveredSource) return;
         if (entityKey && entityKey !== selectedRef.current?.properties.entityKey) {
           const match = mapDataRef.current.trails.find((t) => t.properties.entityKey === entityKey);
@@ -615,6 +690,24 @@ export default function MapExplorer({
       };
 
       const handleRouteClick = (event: MapMouseEvent) => {
+        // Priority: if click was near a place or waypoint marker, select the marker instead of the route
+        const nearbyMarker = findNearbyMarker(
+          event.point,
+          map,
+          mapDataRef.current.places,
+          mapDataRef.current.waypoints,
+          stateRef.current.categories,
+          stateRef.current.categories.length === 0 || stateRef.current.categories.includes('trail'),
+        );
+        if (nearbyMarker) {
+          if (nearbyMarker.properties.kind === 'place') {
+            selectFeature(nearbyMarker, true);
+          } else {
+            setSelected(nearbyMarker);
+          }
+          return;
+        }
+
         const buffer = 14;
         const bbox: [PointLike, PointLike] = [
           [event.point.x - buffer, event.point.y - buffer],
@@ -634,12 +727,32 @@ export default function MapExplorer({
         }
       };
 
+      const handleMapClick = (event: MapMouseEvent) => {
+        const nearbyMarker = findNearbyMarker(
+          event.point,
+          map,
+          mapDataRef.current.places,
+          mapDataRef.current.waypoints,
+          stateRef.current.categories,
+          stateRef.current.categories.length === 0 || stateRef.current.categories.includes('trail'),
+        );
+        if (nearbyMarker) {
+          if (nearbyMarker.properties.kind === 'place') {
+            selectFeature(nearbyMarker, true);
+          } else {
+            setSelected(nearbyMarker);
+          }
+        }
+      };
+
       ROUTE_INTERACTIVE_LAYERS.forEach((layerId) => {
         map.on('mouseenter', layerId, handleRouteEnter);
         map.on('mousemove', layerId, handleRouteEnter);
         map.on('mouseleave', layerId, handleRouteLeave);
         map.on('click', layerId, handleRouteClick);
       });
+      map.on('click', handleMapClick);
+
 
       const targetTrailKey = stateRef.current?.trail ?? initialState?.trail;
       const targetPlaceKey = stateRef.current?.place ?? initialState?.place;
@@ -788,7 +901,18 @@ export default function MapExplorer({
         markerButton.appendChild(pinElem);
         markerButton.appendChild(labelElem);
 
-        markerButton.addEventListener('click', () => selectFeature(feature, true));
+        const handleMarkerClick = (e: MouseEvent) => {
+          e.stopPropagation();
+          selectFeature(feature, true);
+        };
+        const stopEvent = (e: Event) => {
+          e.stopPropagation();
+        };
+
+        markerButton.addEventListener('click', handleMarkerClick);
+        markerButton.addEventListener('mousedown', stopEvent);
+        markerButton.addEventListener('pointerdown', stopEvent);
+        markerButton.addEventListener('touchstart', stopEvent);
         markerRefs.current.push(
           new MapMarker({ element: markerButton, anchor: 'bottom' })
             .setLngLat(coordinates)
@@ -830,7 +954,18 @@ export default function MapExplorer({
         markerButton.appendChild(pinElem);
         markerButton.appendChild(labelElem);
 
-        markerButton.addEventListener('click', () => setSelected(feature));
+        const handleWaypointClick = (e: MouseEvent) => {
+          e.stopPropagation();
+          setSelected(feature);
+        };
+        const stopEvent = (e: Event) => {
+          e.stopPropagation();
+        };
+
+        markerButton.addEventListener('click', handleWaypointClick);
+        markerButton.addEventListener('mousedown', stopEvent);
+        markerButton.addEventListener('pointerdown', stopEvent);
+        markerButton.addEventListener('touchstart', stopEvent);
         markerRefs.current.push(
           new MapMarker({ element: markerButton, anchor: 'center' })
             .setLngLat(feature.geometry.coordinates)

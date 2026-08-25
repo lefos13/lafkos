@@ -63,6 +63,7 @@ Every entry authored for Lafkos Guide must satisfy these core invariants:
     "el": ["Ελεύθερη είσοδος όλο το 24ωρο"],
     "en": ["Free 24/7 access"]
   },
+  "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", // optional; https YouTube URL only (watch / youtu.be / shorts / embed)
   "sources": [{ "label": "Υπουργείο Πολιτισμού", "url": "http://listedmonuments.culture.gr/" }],
   "featured": false,
   "isSeed": true
@@ -101,6 +102,7 @@ Every entry authored for Lafkos Guide must satisfy these core invariants:
     "el": ["Πάρτε νερό και καπέλο το καλοκαίρι"],
     "en": ["Bring water and sun protection in summer"]
   },
+  "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", // optional; same rules as places
   "waypoints": [
     {
       "title": { "el": "Κρήνη στην αφετηρία", "en": "Trailhead fountain" },
@@ -125,7 +127,10 @@ Every entry authored for Lafkos Guide must satisfy these core invariants:
 - `routeType` accepts `hiking`, `drive`, or `mixed`. Omit it for ordinary hiking routes; an absent value defaults to `hiking` so existing entries need no backfill.
 - `drive` routes are followed by car. Keep the required `difficulty`, `elevationGainMeters`, and `safety` fields, but interpret them as road/access character, elevation change, and driving hazards rather than hiking fitness. Describe asphalt, dirt, clearance, uncertain surfaces, missed turn-offs, or other practical cautions in `surface` and `safety`.
 - `mixed` routes combine a drive and a walk-in in one concatenated `LineString`. Do not use `MultiLineString` or separate per-segment geometry. Add a waypoint at the handover (for example, “Τέλος ασφάλτου — στάθμευση”) and state the walk-in distance and conditions in `body` and `safety`.
-- `waypoints[].placeKey` is an optional reference to an existing Place `entityKey`. Use it when a stop is already represented by a Place; the map uses the reference to suppress a duplicate synthetic waypoint pin while preserving the waypoint in route content. Anonymous stops should omit it.
+
+#### Optional video (`videoUrl`)
+
+Both places and trails may carry a single optional `videoUrl` (https YouTube URL in `watch`, `youtu.be`, `shorts`, or `embed` form). It is **not localized** — both language documents share the same URL, so set it on either translation and it syncs across. Detail pages render it as a privacy-enhanced `youtube-nocookie` embedded player (places: after the practical notes; trails: before the waypoint list). The production CSP allowlists only `www.youtube-nocookie.com`, so other embed hosts will not render.
 
 ### C. Story (`kind: "story"`)
 

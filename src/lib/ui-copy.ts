@@ -51,6 +51,7 @@ export const copy = {
     moderate: 'μέτρια',
     demanding: 'απαιτητική',
     safety: 'Ασφάλεια διαδρομής',
+    video: 'Βίντεο',
     visitTitle: 'Πριν έρθεις',
     visitIntro:
       'Ο Λαύκος είναι χωριό για αργή εξερεύνηση. Έλα με χρόνο, σεβάσου τον τόπο και άφησε χώρο στην καθημερινή ζωή.',
@@ -117,6 +118,7 @@ export const copy = {
     moderate: 'moderate',
     demanding: 'demanding',
     safety: 'Trail safety',
+    video: 'Video',
     visitTitle: 'Before you go',
     visitIntro:
       'Lafkos rewards a slower pace. Bring time, respect the village, and leave room for everyday life.',
