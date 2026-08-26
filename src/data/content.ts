@@ -705,18 +705,25 @@ export const places: Place[] = [
     mapAnchor: [23.24666, 39.17654],
     images: [
       {
-        src: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/Pelion%2CLafkos_village%2Cfor_centuries_well_preserved%2C_local_traditional_Architecture.jpg',
-        alt: 'Πέτρινα αρχοντικά και παραδοσιακή πηλιορείτικη αρχιτεκτονική στον Λαύκο',
-        credit: 'Photo by Ioannis Fakis (Wikimedia Commons)',
-        license: 'CC BY-SA 4.0',
+        src: 'https://www.greekgastronomyguide.gr/wp-content/uploads/2022/06/paradosiako-artopoieio-drositi-lafko-pilio-fournos.jpg',
+        alt: 'Ο αυθεντικός παραδοσιακός θολωτός ξυλόφουρνος του Ιωάννη Δροσίτη στον Λαύκο',
+        credit: 'Φωτογραφία: Γιώργος Πίττας — Greek Gastronomy Guide (greekgastronomyguide.gr)',
+        license: '© Γιώργος Πίττας / Greek Gastronomy Guide — αναπαραγωγή με αναφορά',
       },
       {
-        src: 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Platia_in_Lafkos%2C_Pilion.jpg',
-        alt: 'Η κεντρική πλατεία του Λαύκου κάτω από τα αιωνόβια πλατάνια',
-        credit: 'Photo by Cosa2244 (Wikimedia Commons)',
-        license: 'CC BY-SA 4.0',
+        src: 'https://www.greekgastronomyguide.gr/wp-content/uploads/2022/06/paradosiako-artopoieio-drositi-lafko-pilio-DSC_5912.jpg',
+        alt: 'Η πετρόκτιστη πρόσοψη και η είσοδος του ιστορικού φούρνου Δροσίτη στον Λαύκο',
+        credit: 'Φωτογραφία: Γιώργος Πίττας — Greek Gastronomy Guide (greekgastronomyguide.gr)',
+        license: '© Γιώργος Πίττας / Greek Gastronomy Guide — αναπαραγωγή με αναφορά',
+      },
+      {
+        src: 'https://www.greekgastronomyguide.gr/wp-content/uploads/2022/06/paradosiako-artopoieio-drositi-lafko-pilio-DSC_5917.jpg',
+        alt: 'Φρεσκοψημένα προζυμένια καρβέλια και παραδοσιακά αρτοσκευάσματα στα ράφια του φούρνου Δροσίτη',
+        credit: 'Φωτογραφία: Γιώργος Πίττας — Greek Gastronomy Guide (greekgastronomyguide.gr)',
+        license: '© Γιώργος Πίττας / Greek Gastronomy Guide — αναπαραγωγή με αναφορά',
       },
     ],
+    videoUrl: 'https://www.youtube.com/watch?v=7_cM3wWCx60',
     practical: {
       el: [
         'Επισκεφθείτε τον νωρίς το πρωί (07:30–11:00) για ζεστό προζυμένιο ψωμί και πίτες.',
@@ -729,12 +736,20 @@ export const places: Place[] = [
     },
     sources: [
       {
-        label: 'Πολιτιστικός Σύλλογος Λαυκιωτών «Η Δράση»',
-        url: 'https://lafkos.gr/',
+        label: 'TripAdvisor — Ioannis Drositis Lafkos Bakery',
+        url: 'https://www.tripadvisor.com.gr/Restaurant_Review-g3526427-d11797775-Reviews-Ioannis_Drositis_Lafkos_Bakery-Lafkos_Magnesia_Region_Thessaly.html',
       },
       {
-        label: 'Wikimedia Commons — Lafkos, Pelion Collection',
-        url: 'https://commons.wikimedia.org/wiki/Category:Lafkos',
+        label: 'Greek Gastronomy Guide — Παραδοσιακό Αρτοποιείο Δροσίτη στον Λαύκο (Γιώργος Πίττας)',
+        url: 'https://www.greekgastronomyguide.gr/item/paradosiako-artopoieio-drositi-lafko-pilio/',
+      },
+      {
+        label: 'OPEN TV — Στον παραδοσιακό φούρνο του Γιάννη στο Πήλιο',
+        url: 'https://www.youtube.com/watch?v=7_cM3wWCx60',
+      },
+      {
+        label: 'Πολιτιστικός Σύλλογος Λαυκιωτών «Η Δράση»',
+        url: 'https://lafkos.gr/',
       },
       {
         label: 'OpenStreetMap Contributors',
@@ -12210,11 +12225,12 @@ export const trails: Trail[] = [
           en: 'Drositis Stone Bakery',
         },
         coordinate: [23.24666, 39.17654],
+        placeKey: 'drositis-bakery',
         image: {
-          src: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/Pelion%2CLafkos_village%2Cfor_centuries_well_preserved%2C_local_traditional_Architecture.jpg',
-          alt: 'Πέτρινα αρχοντικά και παραδοσιακή πηλιορείτικη αρχιτεκτονική στον Λαύκο',
-          credit: 'Photo by Ioannis Fakis (Wikimedia Commons)',
-          license: 'CC BY-SA 4.0',
+          src: 'https://www.greekgastronomyguide.gr/wp-content/uploads/2022/06/paradosiako-artopoieio-drositi-lafko-pilio-fournos.jpg',
+          alt: 'Ο αυθεντικός παραδοσιακός θολωτός ξυλόφουρνος του Ιωάννη Δροσίτη στον Λαύκο',
+          credit: 'Φωτογραφία: Γιώργος Πίττας — Greek Gastronomy Guide (greekgastronomyguide.gr)',
+          license: '© Γιώργος Πίττας / Greek Gastronomy Guide — αναπαραγωγή με αναφορά',
         },
       },
       {
