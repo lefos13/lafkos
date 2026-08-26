@@ -2,6 +2,12 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 import {
+  categories as seedCategories,
+  places as seedPlaces,
+  stories as seedStories,
+  trails as seedTrails,
+} from '../src/data/content';
+import {
   fetchSanityContent,
   findPlace,
   findStory,
@@ -462,9 +468,11 @@ describe('Seed NDJSON Archive Integrity & Entry Formatter', () => {
     const content = readFileSync(ndjsonPath, 'utf-8');
     const lines = content.trim().split('\n');
 
-    /* Each bilingual entity contributes three documents; these additions
-     * expand the original 107-document archive by 21 places and 13 trails. */
-    expect(lines.length).toBe(107 + 3 * 21 + 3 * 13);
+    /* Each bilingual entity contributes two language documents plus one
+     * translation.metadata record; categories and siteSettings add one each. */
+    const expectedDocs =
+      3 * (seedPlaces.length + seedTrails.length + seedStories.length) + seedCategories.length + 1;
+    expect(lines.length).toBe(expectedDocs);
 
     const types = new Set<string>();
     for (const line of lines) {
