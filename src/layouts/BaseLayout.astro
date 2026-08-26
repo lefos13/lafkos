@@ -37,6 +37,8 @@ const socialImage = image ?? new URL('/icons/icon-512.svg', siteUrl).toString();
 const dataset = await fetchSanityContent();
 const activeSource = contentSource ?? dataset.source;
 const isCms = activeSource === 'sanity';
+const navEventsLabel = locale === 'el' ? 'Εκδηλώσεις' : 'Events';
+const navTimelineLabel = locale === 'el' ? 'Χρονολόγιο' : 'Timeline';
 ---
 
 <!doctype html>
@@ -79,6 +81,8 @@ const isCms = activeSource === 'sanity';
         <nav class="nav-links" aria-label={ui.primaryNav}>
           <a href={`/${locale}/map`}>{ui.navMap}</a>
           <a href={`/${locale}/stories/reading-lafkos`}>{ui.navStories}</a>
+          <a href={`/${locale}/events`}>{navEventsLabel}</a>
+          <a href={`/${locale}/timeline`}>{navTimelineLabel}</a>
           <a href={`/${locale}/visit`}>{ui.navVisit}</a>
           <a href={`/${locale}/about`}>{ui.navAbout}</a>
           <a class="language-link" href={alternatePath}>{ui.language}</a>
@@ -97,6 +101,8 @@ const isCms = activeSource === 'sanity';
             <p class="footer-copy">{ui.footer}</p>
           </div>
           <nav class="footer-links" aria-label={ui.footerNav}>
+            <a href={`/${locale}/events`}>{navEventsLabel}</a>
+            <a href={`/${locale}/timeline`}>{navTimelineLabel}</a>
             <a href={`/${locale}/about`}>{ui.navAbout}</a>
             <a href={`/${locale}/privacy`}>{ui.privacyTitle}</a>
             <a href={`/${locale}/accessibility`}>{ui.accessibilityTitle}</a>
@@ -104,24 +110,38 @@ const isCms = activeSource === 'sanity';
           </nav>
         </div>
         <div class="container footer-status-wrap">
-          {isCms ? (
-            <aside class="footer-status footer-status--cms" role="status" aria-label={ui.dataSource}>
-              <span class="footer-status-dot" aria-hidden="true" />
-              <span class="footer-status-text">
-                {ui.dataSource} <strong>{ui.cmsLiveTitle}</strong>
-              </span>
-              <span class="footer-status-badge footer-status-badge--cms">{ui.cmsLiveBadge}</span>
-            </aside>
-          ) : (
-            <aside class="footer-status footer-status--warning" role="alert" aria-label={ui.dataSource}>
-              <div class="footer-status-warning-header">
-                <span class="footer-status-icon" aria-hidden="true">⚠️</span>
-                <strong>{ui.seedFallbackTitle}</strong>
-                <span class="footer-status-badge footer-status-badge--warning">{ui.seedFallbackBadge}</span>
-              </div>
-              <p class="footer-status-desc">{ui.seedFallbackWarning}</p>
-            </aside>
-          )}
+          {
+            isCms ? (
+              <aside
+                class="footer-status footer-status--cms"
+                role="status"
+                aria-label={ui.dataSource}
+              >
+                <span class="footer-status-dot" aria-hidden="true" />
+                <span class="footer-status-text">
+                  {ui.dataSource} <strong>{ui.cmsLiveTitle}</strong>
+                </span>
+                <span class="footer-status-badge footer-status-badge--cms">{ui.cmsLiveBadge}</span>
+              </aside>
+            ) : (
+              <aside
+                class="footer-status footer-status--warning"
+                role="alert"
+                aria-label={ui.dataSource}
+              >
+                <div class="footer-status-warning-header">
+                  <span class="footer-status-icon" aria-hidden="true">
+                    ⚠️
+                  </span>
+                  <strong>{ui.seedFallbackTitle}</strong>
+                  <span class="footer-status-badge footer-status-badge--warning">
+                    {ui.seedFallbackBadge}
+                  </span>
+                </div>
+                <p class="footer-status-desc">{ui.seedFallbackWarning}</p>
+              </aside>
+            )
+          }
         </div>
       </footer>
     </div>

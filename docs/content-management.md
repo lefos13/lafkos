@@ -33,6 +33,7 @@ The content pipeline separates editorial workflows from public static delivery:
 - **Content Boundary (`src/lib/content-api.ts`):** Astro pages query unified domain models (`Place`, `Trail`, `Story`, `Category`) without coupling to CMS or database specifics.
 - **CMS Authority:** Sanity CMS is the authoritative production content lake. `src/data/content.ts` serves as the initial offline seed and development fallback.
 - **Granular Synchronization & Webhook Protection:** Local additions/updates should use granular single-document mutations (`scripts/import-entry.ts --direct`). Bulk dataset re-imports (`pnpm studio:import-seed`) trigger multiple transaction batches that fire rapid bursts of Vercel production deployment webhooks and must NEVER be performed without explicit user verification.
+
 ---
 
 ## 2. Content Schemas & Field Contracts
@@ -46,7 +47,7 @@ Represents cultural landmarks, historic buildings, squares, cafes, museums, chur
 - **Entity Key (`entityKey`):** Unique identifier shared across language translations (e.g. `lafkos-square`, `forlidas-cafe`).
 - **Language (`language`):** `'el'` or `'en'`, managed by `@sanity/document-internationalization`.
 - **Title, Eyebrow, Slug, Summary, Body:** Localized editorial text.
-- **Category (`category`):** Enum (`heritage`, `architecture`, `sacred`, `nature`, `viewpoint`, `community`).
+- **Category (`category`):** Enum (`heritage`, `architecture`, `sacred`, `nature`, `viewpoint`, `community`, `stay`). `stay` is labeled **Φιλοξενία / Stay** in the Studio.
 - **Coordinate (`coordinate`):** `geopoint` (`lat`, `lng`) for primary map marker.
 - **Map Camera Anchor (`mapAnchor`):** Optional override `geopoint` for centering camera views.
 - **Hero & Gallery Images:** Supports uploaded Sanity assets or external URLs (e.g. Wikimedia Commons) with mandatory `alt`, `credit`, and `license` fields.
@@ -77,12 +78,13 @@ Represents cultural oral histories, historical background, traditions, and artis
 - **Entity Key & Language:** Shared key across translations.
 - **Title, Eyebrow, Slug, Summary, Body:** Localized article copy.
 - **Hero Image:** Featured image with full attribution.
+- **Optional Event (`event`):** A dated or recurring event descriptor with shape `{ month: number (1-12); dayStart?: number; dayEnd?: number; whenLabel: Localized<string> }`. `month` is required and must be `1`–`12`; optional day values must be `1`–`31`, and `dayEnd` must be greater than or equal to `dayStart` when both are provided. `whenLabel` is the localized display label. The field is optional so legacy stories without event metadata remain valid and need no backfill.
 - **Related Keys (`relatedKeys`):** Links to places or trails referenced in the narrative.
 - **Featured & Seed Flags:** Curation and audit controls.
 
 ### 4. Category (`category`)
 
-Taxonomy definitions with map color coding and icons (`heritage`, `architecture`, `sacred`, `nature`, `viewpoint`, `community`, `trail`).
+Taxonomy definitions with map color coding and icons (`heritage`, `architecture`, `sacred`, `nature`, `viewpoint`, `community`, `trail`, `stay`). `stay` is labeled **Φιλοξενία / Stay**.
 
 ### 5. Site Settings (`siteSettings`)
 

@@ -106,18 +106,14 @@ test('mobile map layout features minimal header, prominent canvas, and collapsib
   await expect(resultList).toBeVisible();
 });
 
-test('direct road path link frames route and shows drive route popover badge', async ({
-  page,
-}) => {
+test('direct road path link frames route and shows drive route popover badge', async ({ page }) => {
   await page.goto('/el/map?trail=lafkos-paltsi-drive');
   const mapCanvas = page.locator('.map-canvas .maplibregl-canvas');
   await expect(mapCanvas).toBeVisible();
   const popover = page.locator('.map-popover-content');
   await expect(popover).toBeVisible();
   await expect(popover.locator('.map-popover-badge')).toHaveText('Οδική διαδρομή');
-  await expect(popover.locator('.map-popover-title')).toHaveText(
-    'Οδική διαδρομή Λαύκος – Πάλτση',
-  );
+  await expect(popover.locator('.map-popover-title')).toHaveText('Οδική διαδρομή Λαύκος – Πάλτση');
 });
 
 test('selecting road path updates URL and highlights drive route', async ({ page }) => {
@@ -143,7 +139,7 @@ test('selecting road path updates URL and highlights drive route', async ({ page
 test('entity pages embed their YouTube video and pages without one stay iframe-free', async ({
   page,
 }) => {
-  await page.goto('/el/trails/lafkos-mousges-chondri-ammos');
+  await page.goto('/el/trails/lafkos-mousges-agios-spiridona');
   const trailVideo = page.locator("iframe[src*='RH7zxUEjgjU']");
   await expect(trailVideo).toBeVisible();
 
@@ -152,7 +148,7 @@ test('entity pages embed their YouTube video and pages without one stay iframe-f
   await expect(placeVideo).toBeVisible();
 
   // A trail without videoUrl must not render any embed at all.
-  await page.goto('/el/trails/kalderimi-lafkos-milina');
+  await page.goto('/el/trails/profitis-ilias-trail');
   await expect(page.locator('iframe')).toHaveCount(0);
 });
 test('clicking on an overlapping place marker and route prioritizes the place over the route', async ({

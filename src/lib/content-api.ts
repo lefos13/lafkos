@@ -10,7 +10,16 @@ import {
   stories as seedStories,
   trails as seedTrails,
 } from '../data/content';
-import type { Coordinate, MapData, MapFeature, Place, Story, Trail, Category } from './content';
+import {
+  storyEventSchema,
+  type Category,
+  type Coordinate,
+  type MapData,
+  type MapFeature,
+  type Place,
+  type Story,
+  type Trail,
+} from './content';
 import type { Locale } from './locales';
 import { isSanityConfigured, getSanityClient } from './sanity-client';
 import {
@@ -71,7 +80,11 @@ export async function fetchSanityContent(): Promise<ContentDataset> {
 
     const places = rawPlaces?.length ? transformSanityPlaces(rawPlaces) : seedPlaces;
     const trails = rawTrails?.length ? transformSanityTrails(rawTrails) : seedTrails;
-    const stories = rawStories?.length ? transformSanityStories(rawStories) : seedStories;
+    const stories = rawStories?.length
+      ? transformSanityStories(rawStories).map((story) =>
+          story.event ? { ...story, event: storyEventSchema.parse(story.event) } : story,
+        )
+      : seedStories;
     const categories = rawCategories?.length
       ? transformSanityCategories(rawCategories)
       : seedCategories;

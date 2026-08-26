@@ -1,0 +1,979 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { fetchSanityContent } from '../../../lib/content-api';
+import { locales, otherLocale, type Locale } from '../../../lib/locales';
+import { getCopy } from '../../../lib/ui-copy';
+import type { Story } from '../../../lib/content';
+
+export function getStaticPaths() {
+  return locales.map((locale) => ({ params: { locale }, props: { locale } }));
+}
+
+const { locale } = Astro.props as { locale: Locale };
+const ui = getCopy(locale);
+const other = otherLocale(locale);
+
+const pageTitle = locale === 'el' ? 'Ο ετήσιος κύκλος του Λαύκου' : 'The Annual Cycle of Lafkos';
+
+const pageDescription =
+  locale === 'el'
+    ? 'Ο ετήσιος κύκλος και οι εποχικές εκδηλώσεις στον Λαύκο του Νοτίου Πηλίου: από τα υπαίθρια πανηγύρια της άνοιξης στο Μοναστήρι του Αγίου Αθανασίου μέχρι τις φθινοπωρινές και χειμερινές συνάξεις στην πλατεία.'
+    : 'The annual cycle and seasonal events of Lafkos in South Pelion: from open-air spring celebrations at the Monastery of Agios Athanasios to autumn and winter gatherings in the village square.';
+
+const eyebrowLabel = locale === 'el' ? 'Εποχικό Ημερολόγιο' : 'Seasonal Calendar';
+const backToHomeLabel = locale === 'el' ? '← Αρχική' : '← Home';
+const seasonsSidebarHeading = locale === 'el' ? 'Εποχές του Έτους' : 'Seasons of the Year';
+const highlightsSidebarHeading = locale === 'el' ? 'Χωρικός Κύκλος' : 'Spatial Cycle';
+const allStoriesLabel = locale === 'el' ? 'Όλες οι Ιστορίες' : 'All Stories';
+
+const dataset = await fetchSanityContent();
+
+type SeasonKey = 'spring' | 'summer' | 'autumn' | 'winter';
+
+interface SeasonDefinition {
+  id: SeasonKey;
+  months: number[];
+  title: Record<Locale, string>;
+  period: Record<Locale, string>;
+  theme: Record<Locale, string>;
+  description: Record<Locale, string>;
+}
+
+const seasonDefinitions: SeasonDefinition[] = [
+  {
+    id: 'spring',
+    months: [3, 4, 5],
+    title: {
+      el: 'Άνοιξη',
+      en: 'Spring',
+    },
+    period: {
+      el: 'Μάρτιος – Μάιος',
+      en: 'March – May',
+    },
+    theme: {
+      el: 'Άνοιγμα στο τοπίο & ύπαιθρος',
+      en: 'Outward into the Landscape',
+    },
+    description: {
+      el: 'Η φύση αναγεννάται, τα καλντερίμια ανοίγουν και οι πρώτες μεγάλες υπαίθριες συνάξεις οδηγούν προς το Μοναστήρι του Αγίου Αθανασίου και τα εξωκλήσια.',
+      en: 'Nature reawakens, stone footpaths are cleared, and the first major outdoor gatherings lead outward to the Monastery of Agios Athanasios and countryside chapels.',
+    },
+  },
+  {
+    id: 'summer',
+    months: [6, 7, 8],
+    title: {
+      el: 'Καλοκαίρι',
+      en: 'Summer',
+    },
+    period: {
+      el: 'Ιούνιος – Αύγουστος',
+      en: 'June – August',
+    },
+    theme: {
+      el: 'Το απόγειο της κοινότητας & πανηγύρια',
+      en: 'Peak of Community & Panigyria',
+    },
+    description: {
+      el: 'Το χωριό γεμίζει ζωή, οι βραδιές κάτω από τα πλατάνια μακραίνουν και το μεγάλο πανηγύρι του Δεκαπενταύγουστου ενώνει ντόπιους και επισκέπτες στην πλατεία.',
+      en: 'The village hums with life, evenings beneath the plane trees linger, and the grand August celebrations unite locals and travelers in the central square.',
+    },
+  },
+  {
+    id: 'autumn',
+    months: [9, 10, 11],
+    title: {
+      el: 'Φθινόπωρο',
+      en: 'Autumn',
+    },
+    period: {
+      el: 'Σεπτέμβριος – Νοέμβριος',
+      en: 'September – November',
+    },
+    theme: {
+      el: 'Επιστροφή στην πλατεία & συγκομιδή',
+      en: 'Return to the Square & Harvest',
+    },
+    description: {
+      el: 'Ο ρυθμός γαληνεύει, η συγκομιδή της ελιάς αρχίζει στους ελαιώνες και η κοινοτική συνάντηση επιστρέφει στη θαλπωρή των παραδοσιακών καφενείων.',
+      en: 'The pace settles, the olive harvest begins across the groves, and communal life gathers once more inside the sheltered warmth of traditional village cafés.',
+    },
+  },
+  {
+    id: 'winter',
+    months: [12, 1, 2],
+    title: {
+      el: 'Χειμώνας',
+      en: 'Winter',
+    },
+    period: {
+      el: 'Δεκέμβριος – Φεβρουάριος',
+      en: 'December – February',
+    },
+    theme: {
+      el: 'Εσωτερικότητα & χειμερινές μνήμες',
+      en: 'Inward Hearth & Winter Memories',
+    },
+    description: {
+      el: 'Η γαλήνη του χειμερινού Πηλίου, ο καπνός από τα τζάκια στα αρχοντικά και οι λιτές συνάξεις γύρω από τις αναμμένες σόμπες.',
+      en: 'The serene stillness of winter Pelion, woodsmoke rising from stone mansions, and intimate gatherings around wood-burning stoves.',
+    },
+  },
+];
+
+function getSeasonKey(month: number): SeasonKey {
+  if (month >= 3 && month <= 5) return 'spring';
+  if (month >= 6 && month <= 8) return 'summer';
+  if (month >= 9 && month <= 11) return 'autumn';
+  return 'winter';
+}
+
+function getNormalizedMonthOrder(month: number, seasonId: SeasonKey): number {
+  if (seasonId === 'winter') {
+    return month === 12 ? 0 : month;
+  }
+  return month;
+}
+
+function sortSeasonStories(stories: Story[], seasonId: SeasonKey): Story[] {
+  return [...stories].sort((a, b) => {
+    const eventA = a.event;
+    const eventB = b.event;
+    if (!eventA || !eventB) return 0;
+
+    const monthA = getNormalizedMonthOrder(eventA.month, seasonId);
+    const monthB = getNormalizedMonthOrder(eventB.month, seasonId);
+
+    if (monthA !== monthB) {
+      return monthA - monthB;
+    }
+
+    const dayA = eventA.dayStart;
+    const dayB = eventB.dayStart;
+
+    if (dayA !== undefined && dayB !== undefined) {
+      return dayA - dayB;
+    }
+    if (dayA !== undefined && dayB === undefined) {
+      return -1;
+    }
+    if (dayA === undefined && dayB !== undefined) {
+      return 1;
+    }
+
+    return 0;
+  });
+}
+
+const storiesWithEvents = dataset.stories.filter((story) => story.event !== undefined);
+
+const seasons = seasonDefinitions.map((def) => {
+  const matchingStories = storiesWithEvents.filter(
+    (story) => story.event && getSeasonKey(story.event.month) === def.id,
+  );
+  return {
+    ...def,
+    stories: sortSeasonStories(matchingStories, def.id),
+  };
+});
+
+const activeSeasons = seasons.filter((season) => season.stories.length > 0);
+---
+
+<BaseLayout
+  locale={locale}
+  title={pageTitle}
+  description={pageDescription}
+  alternateHref={`/${other}/events`}
+>
+  <section class="prose-section container events-page">
+    <nav
+      class="events-breadcrumb"
+      aria-label={locale === 'el' ? 'Πλοήγηση διαδρομής' : 'Breadcrumb'}
+    >
+      <a href={`/${locale}/`} class="events-back-link">{backToHomeLabel}</a>
+      <span class="breadcrumb-separator" aria-hidden="true">/</span>
+      <span class="breadcrumb-current">{eyebrowLabel}</span>
+    </nav>
+
+    <header class="events-hero">
+      <p class="eyebrow">{eyebrowLabel}</p>
+      <h1 class="page-title">{pageTitle}</h1>
+      <p class="lede">{pageDescription}</p>
+    </header>
+
+    <div class="events-layout">
+      <aside class="events-sidebar">
+        <div class="sidebar-card">
+          <h2 class="sidebar-title">{seasonsSidebarHeading}</h2>
+          <div class="sidebar-pills">
+            {
+              seasonDefinitions.map((s) => (
+                <a href={`#season-${s.id}`} class="meta-pill meta-pill--stacked season-nav-pill">
+                  <strong>{s.title[locale]}</strong>
+                  <span>
+                    {s.period[locale]} · {s.theme[locale]}
+                  </span>
+                </a>
+              ))
+            }
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <h2 class="sidebar-title">{highlightsSidebarHeading}</h2>
+          <ul class="summary-list">
+            <li>
+              <span class="summary-label"
+                >{locale === 'el' ? 'Χωρικός άξονας' : 'Spatial axis'}</span
+              >
+              <span class="summary-value"
+                >{locale === 'el' ? 'Ύπαιθρος ↔ Πλατεία' : 'Landscape ↔ Square'}</span
+              >
+            </li>
+            <li>
+              <span class="summary-label"
+                >{locale === 'el' ? 'Άνοιξη / Καλοκαίρι' : 'Spring / Summer'}</span
+              >
+              <span class="summary-value"
+                >{
+                  locale === 'el'
+                    ? 'Μοναστήρι Αγ. Αθανασίου & Ξωκλήσια'
+                    : 'Ag. Athanasios & Chapels'
+                }</span
+              >
+            </li>
+            <li>
+              <span class="summary-label"
+                >{locale === 'el' ? 'Φθινόπωρο / Χειμώνας' : 'Autumn / Winter'}</span
+              >
+              <span class="summary-value"
+                >{
+                  locale === 'el'
+                    ? 'Κεντρική Πλατεία & Καφενεία'
+                    : 'Central Square & Historic Cafés'
+                }</span
+              >
+            </li>
+            <li>
+              <span class="summary-label"
+                >{locale === 'el' ? 'Αγροτικός ρυθμός' : 'Agrarian rhythm'}</span
+              >
+              <span class="summary-value"
+                >{
+                  locale === 'el'
+                    ? 'Νοέμβριος–Ιανουάριος (Ελαιοκομία)'
+                    : 'November–January (Olive harvest)'
+                }</span
+              >
+            </li>
+          </ul>
+          <a
+            class="button button-secondary events-sidebar-cta"
+            href={`/${locale}/stories/reading-lafkos`}
+          >
+            {allStoriesLabel}
+            <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </aside>
+
+      <div class="events-main-wrap">
+        <section class="spatial-intro-card" aria-labelledby="spatial-intro-heading">
+          <div class="spatial-intro-header">
+            <span class="spatial-intro-eyebrow">
+              {locale === 'el' ? 'Χωρική Σοφία' : 'Spatial Wisdom'}
+            </span>
+            <h2 id="spatial-intro-heading" class="spatial-intro-title">
+              {
+                locale === 'el'
+                  ? 'Ο κύκλος του τόπου και των εποχών'
+                  : 'The Cycle of Place and Seasons'
+              }
+            </h2>
+          </div>
+          <p class="spatial-intro-body">
+            {
+              locale === 'el'
+                ? 'Στον Λαύκο, ο ετήσιος κύκλος δεν είναι απλώς μια διαδοχή ημερομηνιών αλλά μια βαθιά χωρική εναλλαγή ανάμεσα στην ανοιχτή ύπαιθρο και στον προστατευμένο πυρήνα του χωριού. Την άνοιξη και το καλοκαίρι, η κοινότητα βγαίνει έξω: τα καλντερίμια ζωντανεύουν και οι γιορτές απλώνονται στα ξωκλήσια, στους ελαιώνες και στο ιστορικό Μοναστήρι του Αγίου Αθανασίου. Το φθινόπωρο και τον χειμώνα, με το μάζεμα της ελιάς και τα πρωτοβρόχια, η ζωή επιστρέφει στην πλατεία: η γιορτή μαζεύεται ξανά κάτω από τα πλατάνια, στα ιστορικά καφενεία και γύρω από τις αναμμένες εστίες.'
+                : 'In Lafkos, the annual cycle is not merely a sequence of dates on a calendar, but a profound spatial movement between the open landscape and the sheltered village heart. In spring and summer, the community expands outward: stone paths awaken and celebrations radiate toward countryside chapels, olive groves, and the historic Monastery of Agios Athanasios. In autumn and winter, as the olive harvest begins and rains arrive, life returns to the central square: festivities gather once more beneath the plane trees, inside historic cafés, and around warm hearths.'
+            }
+          </p>
+
+          <div class="spatial-poles-grid">
+            <div class="spatial-pole-item">
+              <div class="pole-icon pole-icon--spring" aria-hidden="true">↗</div>
+              <div class="pole-details">
+                <h3 class="pole-heading">
+                  {
+                    locale === 'el'
+                      ? 'Άνοιξη & Καλοκαίρι: Έξω στο Μοναστήρι'
+                      : 'Spring & Summer: Outward to the Monastery'
+                  }
+                </h3>
+                <p class="pole-summary">
+                  {
+                    locale === 'el'
+                      ? 'Ανοιχτά μονοπάτια, υπαίθριες συνάξεις και το μεγάλο πανηγύρι του Αγίου Αθανασίου στη φύση.'
+                      : 'Open stone footpaths, outdoor gatherings, and the major feast of Agios Athanasios out in nature.'
+                  }
+                </p>
+              </div>
+            </div>
+
+            <div class="spatial-pole-item">
+              <div class="pole-icon pole-icon--autumn" aria-hidden="true">↘</div>
+              <div class="pole-details">
+                <h3 class="pole-heading">
+                  {
+                    locale === 'el'
+                      ? 'Φθινόπωρο & Χειμώνας: Επιστροφή στην Πλατεία'
+                      : 'Autumn & Winter: Return to the Square'
+                  }
+                </h3>
+                <p class="pole-summary">
+                  {
+                    locale === 'el'
+                      ? 'Συγκομιδή της ελιάς, συντροφιά στα παραδοσιακά καφενεία και χειμερινές γιορτές γύρω από τη φωτιά.'
+                      : 'Olive harvest, communal warmth inside historic cafés, and winter gatherings around the fire.'
+                  }
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {
+          activeSeasons.length > 0 ? (
+            <div class="seasons-container">
+              {activeSeasons.map((season) => (
+                <section
+                  class="season-section"
+                  id={`season-${season.id}`}
+                  aria-labelledby={`heading-${season.id}`}
+                >
+                  <header class="season-section-header">
+                    <div class="season-meta-row">
+                      <span class="season-badge season-badge--period">{season.period[locale]}</span>
+                      <span class="season-badge season-badge--count">
+                        {season.stories.length}{' '}
+                        {season.stories.length === 1
+                          ? locale === 'el'
+                            ? 'εκδήλωση'
+                            : 'event'
+                          : locale === 'el'
+                            ? 'εκδηλώσεις'
+                            : 'events'}
+                      </span>
+                    </div>
+                    <h2 id={`heading-${season.id}`} class="season-section-title">
+                      {season.title[locale]}
+                    </h2>
+                    <p class="season-section-theme">{season.theme[locale]}</p>
+                    <p class="season-section-description">{season.description[locale]}</p>
+                  </header>
+
+                  <div class="events-grid">
+                    {season.stories.map((story) => (
+                      <article class="event-card">
+                        {story.image?.src && (
+                          <div class="event-card-media">
+                            <img
+                              src={story.image.src}
+                              alt={story.image.alt}
+                              loading="lazy"
+                              class="event-card-img"
+                            />
+                          </div>
+                        )}
+                        <div class="event-card-copy">
+                          <div class="event-meta-group">
+                            {story.event?.whenLabel && (
+                              <span class="event-pill event-pill--when">
+                                {story.event.whenLabel[locale]}
+                              </span>
+                            )}
+                            <span class="event-pill event-pill--eyebrow">
+                              {story.eyebrow[locale]}
+                            </span>
+                          </div>
+                          <h3 class="event-card-title">
+                            <a href={`/${locale}/stories/${story.slug[locale]}`}>
+                              {story.title[locale]}
+                            </a>
+                          </h3>
+                          <p class="event-card-summary">{story.summary[locale]}</p>
+                          <div class="event-card-action">
+                            <a
+                              class="text-link event-card-link"
+                              href={`/${locale}/stories/${story.slug[locale]}`}
+                            >
+                              {ui.readStory} <span aria-hidden="true">→</span>
+                            </a>
+                          </div>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                </section>
+              ))}
+            </div>
+          ) : (
+            <div class="events-empty-state">
+              <div class="empty-icon" aria-hidden="true">
+                🗓
+              </div>
+              <h2 class="empty-title">
+                {locale === 'el' ? 'Το ημερολόγιο εμπλουτίζεται' : 'Calendar in Progress'}
+              </h2>
+              <p class="empty-text">
+                {locale === 'el'
+                  ? 'Οι εποχικές εκδηλώσεις, τα παραδοσιακά πανηγύρια και οι ιστορικές ημερομηνίες-σταθμοί του Λαύκου καταγράφονται και θα αναρτηθούν σύντομα στο πλαίσιο της κοινοτικής τεκμηρίωσης.'
+                  : 'Seasonal events, traditional village feasts, and milestone dates for Lafkos are being curated and will be published here shortly as community documentation grows.'}
+              </p>
+              <a class="button button-primary empty-cta" href={`/${locale}/stories/reading-lafkos`}>
+                {locale === 'el' ? 'Ανακαλύψτε τις Ιστορίες του Τόπου' : 'Explore Village Stories'}{' '}
+                <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .events-page {
+    padding-top: 2rem;
+    padding-bottom: 6rem;
+  }
+
+  .events-breadcrumb {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .events-back-link {
+    font-weight: 600;
+    color: var(--olive);
+    transition: color 150ms ease;
+  }
+
+  .events-back-link:hover {
+    color: var(--deep-olive);
+    text-decoration: underline;
+  }
+
+  .breadcrumb-separator {
+    color: var(--line);
+  }
+
+  .breadcrumb-current {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .events-hero {
+    max-width: 52rem;
+    margin-bottom: 3.5rem;
+  }
+
+  .events-layout {
+    display: grid;
+    gap: 2.5rem;
+  }
+
+  @media (min-width: 900px) {
+    .events-layout {
+      grid-template-columns: minmax(16rem, 20rem) minmax(0, 1fr);
+      align-items: start;
+      gap: 3.5rem;
+    }
+
+    .events-sidebar {
+      position: sticky;
+      top: 2rem;
+    }
+  }
+
+  .events-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+
+  .sidebar-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(26, 43, 38, 0.03);
+  }
+
+  .sidebar-title {
+    font-family: Newsreader, Georgia, serif;
+    font-size: 1.35rem;
+    font-weight: 500;
+    color: var(--deep-olive);
+    margin: 0 0 1rem;
+    line-height: 1.15;
+  }
+
+  .sidebar-pills {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .meta-pill--stacked {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+    padding: 0.65rem 0.85rem;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.65);
+    border: 1px solid var(--line);
+    transition:
+      border-color 150ms ease,
+      background 150ms ease,
+      transform 150ms ease;
+  }
+
+  .season-nav-pill:hover {
+    background: #ffffff;
+    border-color: var(--olive);
+    transform: translateX(3px);
+  }
+
+  .meta-pill--stacked strong {
+    color: var(--deep-olive);
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  .meta-pill--stacked span {
+    color: var(--muted);
+    font-size: 0.78rem;
+    line-height: 1.35;
+  }
+
+  .summary-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .summary-list li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    border-bottom: 1px solid rgba(36, 67, 63, 0.08);
+    padding-bottom: 0.6rem;
+  }
+
+  .summary-list li:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .summary-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+    font-weight: 700;
+  }
+
+  .summary-value {
+    font-size: 0.88rem;
+    color: var(--ink);
+    font-weight: 500;
+    line-height: 1.35;
+  }
+
+  .events-sidebar-cta {
+    width: 100%;
+    justify-content: center;
+    font-size: 0.85rem;
+  }
+
+  .events-sidebar-cta:hover {
+    background: var(--deep-olive);
+    color: var(--paper);
+    border-color: var(--deep-olive);
+  }
+
+  .events-main-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 3.5rem;
+  }
+
+  /* Spatial Wisdom Intro Card */
+  .spatial-intro-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 2rem 2.25rem;
+    box-shadow: 0 4px 24px rgba(26, 43, 38, 0.04);
+  }
+
+  .spatial-intro-eyebrow {
+    display: inline-block;
+    color: var(--terracotta);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .spatial-intro-title {
+    font-family: Newsreader, Georgia, serif;
+    font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+    font-weight: 500;
+    color: var(--deep-olive);
+    line-height: 1.15;
+    margin: 0 0 1rem;
+    letter-spacing: -0.02em;
+  }
+
+  .spatial-intro-body {
+    color: #455650;
+    font-size: 1.02rem;
+    line-height: 1.75;
+    margin: 0 0 2rem;
+  }
+
+  .spatial-poles-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 640px) {
+    .spatial-poles-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .spatial-pole-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid var(--line);
+  }
+
+  .pole-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .pole-icon--spring {
+    background: rgba(79, 103, 87, 0.12);
+    color: var(--olive);
+    border: 1px solid var(--olive);
+  }
+
+  .pole-icon--autumn {
+    background: rgba(185, 101, 74, 0.12);
+    color: var(--terracotta);
+    border: 1px solid var(--terracotta);
+  }
+
+  .pole-heading {
+    font-family: Newsreader, Georgia, serif;
+    font-size: 1.12rem;
+    font-weight: 600;
+    color: var(--deep-olive);
+    margin: 0 0 0.35rem;
+    line-height: 1.25;
+  }
+
+  .pole-summary {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* Seasons Container & Sections */
+  .seasons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+  }
+
+  .season-section {
+    scroll-margin-top: 2rem;
+  }
+
+  .season-section-header {
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 1.5rem;
+  }
+
+  .season-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .season-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+  }
+
+  .season-badge--period {
+    background: rgba(36, 67, 63, 0.08);
+    color: var(--deep-olive);
+    border: 1px solid rgba(36, 67, 63, 0.15);
+  }
+
+  .season-badge--count {
+    background: rgba(209, 167, 88, 0.15);
+    color: #8a6414;
+    border: 1px solid var(--gold);
+  }
+
+  .season-section-title {
+    font-family: Newsreader, Georgia, serif;
+    font-size: clamp(2rem, 4.5vw, 2.75rem);
+    font-weight: 500;
+    color: var(--deep-olive);
+    line-height: 1.05;
+    margin: 0 0 0.35rem;
+    letter-spacing: -0.03em;
+  }
+
+  .season-section-theme {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--terracotta);
+    margin: 0 0 0.6rem;
+  }
+
+  .season-section-description {
+    color: var(--muted);
+    font-size: 0.98rem;
+    line-height: 1.6;
+    margin: 0;
+    max-width: 44rem;
+  }
+
+  /* Events Grid & Cards */
+  .events-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+  }
+
+  @media (min-width: 640px) {
+    .events-grid {
+      grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+    }
+  }
+
+  .event-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 20px rgba(26, 43, 38, 0.04);
+    transition:
+      transform 180ms ease,
+      box-shadow 180ms ease,
+      border-color 180ms ease;
+  }
+
+  .event-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(26, 43, 38, 0.08);
+    border-color: rgba(36, 67, 63, 0.25);
+  }
+
+  .event-card-media {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: rgba(36, 67, 63, 0.05);
+  }
+
+  .event-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 300ms ease;
+  }
+
+  .event-card:hover .event-card-img {
+    transform: scale(1.03);
+  }
+
+  .event-card-copy {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+
+  .event-meta-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .event-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+  }
+
+  .event-pill--when {
+    background: rgba(185, 101, 74, 0.12);
+    color: var(--terracotta);
+    border: 1px solid var(--terracotta);
+  }
+
+  .event-pill--eyebrow {
+    background: rgba(36, 67, 63, 0.06);
+    color: var(--deep-olive);
+  }
+
+  .event-card-title {
+    font-family: Newsreader, Georgia, serif;
+    font-size: 1.35rem;
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--ink);
+    margin: 0 0 0.6rem;
+  }
+
+  .event-card-title a {
+    color: inherit;
+    transition: color 150ms ease;
+  }
+
+  .event-card-title a:hover {
+    color: var(--terracotta);
+  }
+
+  .event-card-summary {
+    color: #455650;
+    font-size: 0.92rem;
+    line-height: 1.6;
+    margin: 0 0 1.25rem;
+    flex-grow: 1;
+  }
+
+  .event-card-action {
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(36, 67, 63, 0.08);
+  }
+
+  .event-card-link {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--deep-olive);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .event-card-link:hover {
+    color: var(--terracotta);
+  }
+
+  /* Empty State */
+  .events-empty-state {
+    background: var(--paper);
+    border: 1px dashed rgba(36, 67, 63, 0.25);
+    border-radius: var(--radius-md);
+    padding: 3.5rem 2rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 36rem;
+    margin: 0 auto;
+  }
+
+  .empty-icon {
+    font-size: 2.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .empty-title {
+    font-family: Newsreader, Georgia, serif;
+    font-size: 1.75rem;
+    font-weight: 500;
+    color: var(--deep-olive);
+    margin: 0 0 0.75rem;
+  }
+
+  .empty-text {
+    color: var(--muted);
+    font-size: 0.98rem;
+    line-height: 1.65;
+    margin: 0 0 1.75rem;
+  }
+
+  .empty-cta {
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 640px) {
+    .spatial-intro-card {
+      padding: 1.5rem 1.25rem;
+    }
+
+    .event-card-copy {
+      padding: 1.25rem;
+    }
+
+    .events-empty-state {
+      padding: 2.5rem 1.25rem;
+    }
+  }
+</style>

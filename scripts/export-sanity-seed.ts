@@ -2,7 +2,7 @@ import { writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { categories, places, stories, trails } from '../src/data/content';
 import { copy } from '../src/lib/ui-copy';
-import type { ImageAsset } from '../src/lib/content';
+import type { ImageAsset, StoryEvent } from '../src/lib/content';
 
 function toSanityImage(image?: ImageAsset) {
   if (!image) return undefined;
@@ -12,6 +12,16 @@ function toSanityImage(image?: ImageAsset) {
     alt: image.alt,
     credit: image.credit,
     license: image.license,
+  };
+}
+
+function toSanityStoryEvent(event: StoryEvent | undefined, language: 'el' | 'en') {
+  if (!event) return undefined;
+  return {
+    month: event.month,
+    ...(event.dayStart === undefined ? {} : { dayStart: event.dayStart }),
+    ...(event.dayEnd === undefined ? {} : { dayEnd: event.dayEnd }),
+    whenLabel: event.whenLabel[language],
   };
 }
 
@@ -296,6 +306,7 @@ function generateNdjson() {
       summary: story.summary.el,
       body: story.body.el,
       hero,
+      event: toSanityStoryEvent(story.event, 'el'),
       relatedKeys: story.relatedKeys,
       sources,
       featured: story.featured,
@@ -316,6 +327,7 @@ function generateNdjson() {
       summary: story.summary.en,
       body: story.body.en,
       hero,
+      event: toSanityStoryEvent(story.event, 'en'),
       relatedKeys: story.relatedKeys,
       sources,
       featured: story.featured,

@@ -15,6 +15,7 @@ export const categoryIds = [
   'nature',
   'viewpoint',
   'community',
+  'stay',
   'trail',
 ] as const;
 export type CategoryId = (typeof categoryIds)[number];
@@ -53,11 +54,9 @@ export const sourceSchema = z.object({
  * contract; the parser is shared with the embed component. NOTE: the same
  * validation regex lives duplicated in studio/schemaTypes.ts because Studio
  * cannot import from src/ — keep both in sync when the accepted forms change. */
-export const youTubeUrlSchema = z
-  .string()
-  .refine((url) => parseYouTubeVideoId(url) !== undefined, {
-    message: 'Must be a https YouTube watch, youtu.be, shorts, or embed URL',
-  });
+export const youTubeUrlSchema = z.string().refine((url) => parseYouTubeVideoId(url) !== undefined, {
+  message: 'Must be a https YouTube watch, youtu.be, shorts, or embed URL',
+});
 
 export const geometrySchema = z.union([pointSchema, lineStringSchema, polygonSchema]);
 export type Coordinate = z.infer<typeof coordinateSchema>;
@@ -65,6 +64,28 @@ export type Geometry = z.infer<typeof geometrySchema>;
 export type ImageAsset = z.infer<typeof imageSchema>;
 export type Source = z.infer<typeof sourceSchema>;
 export type Localized<T> = Record<Locale, T>;
+
+export const storyEventSchema = z
+  .object({
+    month: z.number().int().min(1).max(12),
+    dayStart: z.number().int().min(1).max(31).optional(),
+    dayEnd: z.number().int().min(1).max(31).optional(),
+    whenLabel: z.object({
+      el: z.string().min(1),
+      en: z.string().min(1),
+    }),
+  })
+  .refine(
+    ({ dayStart, dayEnd }) => dayStart === undefined || dayEnd === undefined || dayEnd >= dayStart,
+    { message: 'dayEnd must be greater than or equal to dayStart' },
+  );
+
+export interface StoryEvent {
+  month: number;
+  dayStart?: number;
+  dayEnd?: number;
+  whenLabel: Localized<string>;
+}
 
 export interface Category {
   id: CategoryId;
@@ -134,6 +155,7 @@ export interface Story {
   summary: Localized<string>;
   body: Localized<string[]>;
   image: ImageAsset;
+  event?: StoryEvent;
   relatedKeys: string[];
   sources: Source[];
   featured: boolean;

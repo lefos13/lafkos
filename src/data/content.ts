@@ -74,6 +74,19 @@ export const categories: Category[] = [
     icon: '✚',
   },
   {
+    id: 'stay',
+    label: {
+      el: 'Διαμονή',
+      en: 'Places to stay',
+    },
+    description: {
+      el: 'Αρχοντικά, ξενώνες και παραδοσιακά σπίτια για διαμονή στον Λαύκο.',
+      en: 'Mansions, guesthouses, and traditional homes for a stay in Lafkos.',
+    },
+    color: '#9a7564',
+    icon: '⌂',
+  },
+  {
     id: 'trail',
     label: {
       el: 'Διαδρομές',
@@ -101,6 +114,29 @@ export const categories: Category[] = [
   },
 ];
 
+/* New editorial records use the same credited archive image and source trail
+ * as nearby seed entries, keeping the content layer honest while dedicated
+ * photography and point-level field verification remain outstanding. */
+const lafkosArchiveImage: Place['images'][number] = {
+  src: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/Pelion%2CLafkos_village%2Cfor_centuries_well_preserved%2C_local_traditional_Architecture.jpg',
+  alt: 'Πέτρινα αρχοντικά και παραδοσιακή πηλιορείτικη αρχιτεκτονική στον Λαύκο',
+  credit: 'Photo by Ioannis Fakis (Wikimedia Commons)',
+  license: 'CC BY-SA 4.0',
+};
+
+const compiledResearchSources: Place['sources'] = [
+  {
+    label: 'Εμπεριστατωμένη μελέτη Λαύκου — τοπικό ιστορικό αρχείο',
+    url: 'https://lafkos.gr/',
+  },
+  {
+    label: 'Ελληνικό Πανόραμα — Λαύκος, η κρυμμένη γοητεία',
+    url: 'https://elliniko-panorama.gr/lafkos-i-krymeni-goiteia-tou-notio-pilio/',
+  },
+];
+
+/* Existing place narratives below carry the research-backed additions while
+ * keeping uncertainty visible wherever the compiled sources are not precise. */
 export const places: Place[] = [
   {
     kind: 'place',
@@ -369,13 +405,13 @@ export const places: Place[] = [
         'Φωλιασμένη στην άγρια και απόκρημνη ανατολική ακτογραμμή του Νοτίου Πηλίου, η Χονδρή Άμμος αποτελεί έναν από τους πιο παρθένους και ανέγγιχτους προορισμούς της περιοχής. Το τοπίο ορίζεται από επιβλητικές πλαγιές κατάφυτες με σχίνους, κουμαριές και ελαιώνες που καταλήγουν σε μια εντυπωσιακή ακρογιαλιά από χοντρόκοκκη άμμο και στρογγυλεμένα βότσαλα, απέναντι από τον ανοιχτό ορίζοντα του Αιγαίου και τα βόρεια παράλια της Σκιάθου.',
         'Η περιοχή φέρει έντονο ιστορικό και μυθολογικό φορτίο, καθώς ταυτίζεται με την επικράτεια της αρχαίας Ολιζώνας —της ομηρικής πόλης που σύμφωνα με την Ιλιάδα κυβερνούσε ο ήρωας και τοξότης Φιλοκτήτης πριν εκστρατεύσει στην Τροία. Η απομόνωση και η φυσική προστασία του όρμου προσέφεραν ανά τους αιώνες ασφαλές καταφύγιο σε ψαράδες και ναυτικούς.',
         'Η παραλία παραμένει απολύτως παρθένα και ανοργάνωτη, χωρίς ίχνος εμπορικής δραστηριότητας, προσφέροντας μια σπάνια εμπειρία απόλυτης ηρεμίας, άγριας ομορφιάς και επαφής με τη φύση. Τα νερά είναι βαθιά, διαυγή και αναζωογονητικά, ενώ η ακτή παραμένει ιδανική για όσους αναζητούν την αυθεντική, ανεξερεύνητη πλευρά του Πηλίου.',
-        'Για τους πεζοπόρους, η Χονδρή Άμμος αποτελεί το αποκορύφωμα της πανέμορφης σηματοδοτημένης διαδρομής Λαύκος – Μούσγες – Χονδρή Άμμος (πεζοπορία περίπου 1 ώρας και 15 λεπτών με κόκκινα σημάδια), καθώς και σημαντικό σταθμό στο 10ο σκέλος του Μεγάλου Μονοπατιού του Πηλίου (Long Pelion Trail).',
+        'Για τους πεζοπόρους, η Χονδρή Άμμος αποτελεί σταθμό στο 10ο σκέλος του Μεγάλου Μονοπατιού του Πηλίου (Long Pelion Trail, Πλατανιάς – Χονδρή Άμμος – Καστρί). Προσοχή στη σύγχυση: η σηματοδοτημένη πεζοπορική διαδρομή που ξεκινά από τον Λαύκο μέσω των Μούσγκων οδηγεί στη Μονή Αγίου Σπυρίδωνα και στο Προμύρι — όχι στην παραλία.',
       ],
       en: [
         'Tucked along the wild, cliff-lined eastern coastline of South Pelion, Chondri Ammos is one of the region’s most pristine and secluded coastal sanctuaries. The dramatic landscape is framed by rugged hillsides draped in wild Mediterranean macchia and olive groves that cascade down to an expansive shore of coarse golden sand and smooth pebbles, facing the boundless Aegean horizon and northern Skiathos.',
         'The cove is steeped in ancient legend, linked to the territory of ancient Olizon — the Homeric city ruled by the mythical archer Philoctetes before the Trojan War, as chronicled in the Iliad. Over the centuries, the natural seclusion of this Aegean inlet provided safe anchorage for local mariners and fishermen.',
         'The beach remains entirely unorganized and untouched by commercial development, offering visitors a rare experience of profound solitude, raw natural beauty, and pristine marine environment. The waters are deep, crystal-clear, and refreshing, making it an extraordinary escape for travellers seeking Pelion’s authentic, untamed spirit.',
-        'For hikers, Chondri Ammos is the rewarding terminus of the waymarked Lafkos–Mousges–Chondri Ammos trail (approx. 1 hr 15 min descent following red trail blazes), as well as a scenic waypoint along the 10th leg of the renowned Long Pelion Trail.',
+        'For hikers, Chondri Ammos is a waypoint along the 10th leg of the renowned Long Pelion Trail (Platanias – Chondri Ammos – Kastri). Note against a common mix-up: the waymarked hiking route starting from Lafkos via Mousges leads to the Agios Spiridon Monastery and Promyri — not to this beach.',
       ],
     },
     category: 'nature',
@@ -403,20 +439,20 @@ export const places: Place[] = [
       el: [
         'Οδικώς προσεγγίζεται μέσω της επαρχιακής οδού Αργαλαστής – Πλατανιά (περίπου 13 χλμ. / 30 λεπτά από τον Λαύκο) ακολουθώντας βατό χωματόδρομο που σταματά περίπου 160 μ. πριν από την ακτή, με την τελική πρόσβαση να γίνεται με σύντομο περπάτημα.',
         'Η παραλία είναι πλήρως ανοργάνωτη —φροντίστε οπωσδήποτε να έχετε μαζί σας επαρκές πόσιμο νερό, σνακ και προστασία από τον ήλιο.',
-        'Η πεζοπορική διαδρομή από τον Λαύκο μέσω της περιοχής Μούσγες είναι σηματοδοτημένη με κόκκινα σημάδια (περίπου 3,7 χλμ. / 1 ώρα και 15 λεπτά κατάβαση).',
+        'Η πεζοπορική διαδρομή από τον Λαύκο μέσω των Μούσγκων οδηγεί στη Μονή Αγίου Σπυρίδωνα και στο Προμύρι (7,8 χλμ.) — δεν καταλήγει στην παραλία. Για πεζή προσέγγιση της Χονδρής Άμμου ακολουθήστε το 10ο σκέλος του Long Pelion Trail από Πλατανιά.',
         'Τις ημέρες με έντονα καλοκαιρινά μελτέμια η θάλασσα σηκώνει κύμα· συνιστάται προσοχή στους κολυμβητές.',
       ],
       en: [
         'Accessible by car via the Argalasti–Platanias provincial road (about 13 km / 30 minutes from Lafkos) followed by a short dirt track that ends ~160 m above the shore, with the final descent on foot.',
         'The beach is completely unorganized with no amenities — bring plenty of drinking water, snacks, and sun protection.',
-        'The waymarked hiking trail from Lafkos via Mousges is marked with red trail blazes (approx. 3.7 km / 1 hr 15 min descent).',
+        'The hiking trail from Lafkos via Mousges leads to the Agios Spiridon Monastery and Promyri (7.8 km) — it does not reach this beach. For a walking approach to Chondri Ammos, follow the 10th leg of the Long Pelion Trail from Platanias.',
         'During strong summer meltemi winds, large waves can develop on the open Aegean shore; swim with awareness.',
       ],
     },
     sources: [
       {
-        label: 'Topoguide: Λαύκος – Μούσγες – Χονδρή Άμμος',
-        url: 'https://www.topoguide.gr/mountains/thessaly/advs_pelion/pelion_southern/Pelion_Lafkos_Chondri_Ammos.php',
+        label: 'Topoguide: Λαύκος – Μούσγες (διαδρομή προς Πλατανιά)',
+        url: 'https://www.topoguide.gr/mountains/thessaly/advs_pelion/pelion_southern/Pelion_Lafkos_Mousges.php',
       },
       {
         label: 'Long Pelion Trail — Σκέλος 10',
@@ -550,12 +586,12 @@ export const places: Place[] = [
     },
     body: {
       el: [
-        'Στον δρόμο που συνδέει την πλατεία με τη νότια γειτονιά βρίσκεται το παραδοσιακό αρτοποιείο της οικογένειας Δροσίτη. Το εμβληματικό πέτρινο κτίριο χτίστηκε το 1904 (με τοπική παράδοση να το συνδέει με τον Ιταλό μηχανικό Evaristo de Chirico) και λειτουργεί αδιάλειπτα ως αρτοποιείο από το 1955.',
+        'Στον δρόμο που συνδέει την πλατεία με τη νότια γειτονιά βρίσκεται το παραδοσιακό αρτοποιείο της οικογένειας Δροσίτη. Το εμβληματικό πέτρινο κτίριο χτίστηκε το 1904 και λειτουργεί αδιάλειπτα ως αρτοποιείο από το 1955. Η σύνδεσή του με τον Ιταλό μηχανικό Evaristo de Chirico ανήκει σε τοπική παράδοση που δεν επιβεβαιώνεται αρχειακά, παρότι παραμένει μέρος της αφήγησης του τόπου.',
         'Ο τεράστιος θολωτός πέτρινος φούρνος καίει αποκλειστικά ξύλα οξιάς και πουρναριού, παράγοντας παραδοσιακό καρβέλι με αργή ζύμωση, τραγανή κόρα, αφράτη ψίχα, καθώς και παραδοσιακές πηλιορείτικες τυρόπιτες, ελιόψωμα και παξιμάδια.',
         'Μια επίσκεψη νωρίς το πρωί, όταν ο καπνός βγαίνει από την καμινάδα και η μυρωδιά του φρεσκοψημένου ψωμιού γεμίζει τα καλντερίμια, αποτελεί αναπόσπαστη εμπειρία του Λαύκου.',
       ],
       en: [
-        'On the stone lane leading south from the central square stands the historic Drositis family bakery. The handsome stone edifice was constructed in 1904 (historically attributed to Italian railway engineer Evaristo de Chirico) and has operated as an artisan wood bakery continuously since 1955.',
+        'On the stone lane leading south from the central square stands the historic Drositis family bakery. The handsome stone edifice was constructed in 1904 and has operated as an artisan wood bakery continuously since 1955. Its connection with Italian engineer Evaristo de Chirico belongs to a local tradition that is not confirmed by archival evidence, although it remains part of the place’s story.',
         'The massive domed stone hearth is fired solely with mountain oak and beech timber, baking sourdough country loaves with golden crusts, alongside traditional cheese pies (tyropites), olive breads, and rusks.',
         'Visiting early in the morning as fragrant woodsmoke rises and warm bread scents the cobblestones is one of the quintessential sensory experiences of Lafkos.',
       ],
@@ -710,10 +746,12 @@ export const places: Place[] = [
       el: [
         'Το Λαογραφικό Μουσείο Λαύκου προσφέρει ένα συναρπαστικό ταξίδι στην καθημερινότητα των προγόνων του χωριού κατά τον 19ο και 20ό αιώνα. Στεγάζεται στο κτιριακό συγκρότημα του παλαιού σχολείου.',
         'Τα εκθέματα περιλαμβάνουν παραδοσιακούς ξύλινους αργαλειούς, περίτεχνα υφαντά και κεντήματα, αυθεντικές παραδοσιακές φορεσιές, εργαλεία ελαιοκομίας, γεωργίας και κτηνοτροφίας, καθώς και χάλκινα σκεύη και πήλινα πιθάρια αποθήκευσης λαδιού και κρασιού.',
+        'Η αφήγηση του μουσείου συμπληρώνεται από τη «Φάμπρικα», το παλιό ελαιοτριβείο με τα μηχανήματα, τις μυλόπετρες και τα εργαλεία του, που θυμίζει πόσο κεντρικό ήταν το λάδι στην τοπική οικονομία. Η ακριβής θέση και η σύνδεση ορισμένων αντικειμένων με συγκεκριμένες οικογένειες ή χρήσεις παραμένουν εν μέρει παράδοση που δεν έχει τεκμηριωθεί επαρκώς σε αρχειακές πηγές.',
       ],
       en: [
         'The Lafkos Folklore Museum offers an evocative window into rural domestic life and village crafts throughout the 19th and early 20th centuries, housed within the old school cultural complex.',
         'Exhibits include traditional wooden looms, intricately embroidered textiles, authentic South Pelion festive costumes, olive harvesting gear, cooperage and farming implements, and antique copper cookware and ceramic storage pithoi.',
+        'The museum’s story is complemented by the “Fabrika”, the old olive mill with its machinery, millstones, and tools, recalling how central olive oil was to the local economy. The exact location and some links between individual objects, families, and uses remain traditions that are not sufficiently documented in archival sources.',
       ],
     },
     category: 'heritage',
@@ -787,13 +825,16 @@ export const places: Place[] = [
         'Το Καφενείο του Φορλίδα, στην άκρη της κεντρικής πλατείας, αποτελεί το παλαιότερο εν λειτουργία καφενείο στην Ελλάδα, με τεκμηριωμένη ιστορία από το 1785. Για πάνω από 240 χρόνια παραμένει στα χέρια της ίδιας οικογένειας, διατηρώντας αναλλοίωτη την ατμόσφαιρα του 18ου και 19ου αιώνα.',
         'Στον επάνω όροφο λειτουργούσε άλλοτε χάνι, όπου διανυκτέρευαν ταξιδιώτες και έμποροι που κατευθύνονταν από τις Βόρειες Σποράδες προς τον Βόλο. Μεταξύ των τακτικών θαμώνων υπήρξαν ο Αλέξανδρος Παπαδιαμάντης, ο Κώστας Βάρναλης (όταν δίδασκε στην Αργαλαστή), ο Αλέξανδρος Δελμούζος και ο Γιώργος Σεφέρης.',
         'Στο εσωτερικό του σώζονται η παραδοσιακή ξυλόσομπα, οι αυθεντικές ξύλινες καρέκλες, τα μαρμάρινα τραπεζάκια και ιστορικές φωτογραφίες που εξιστορούν δύο αιώνες ζωής.',
+        'Οι μεταλλικοί γάντζοι που σώζονται ακόμη στην οροφή, από όπου κρέμονταν τα σφάγια, θυμίζουν την πολυλειτουργική ιστορία του ισογείου, όπου συνυπήρχαν καφενείο, ταβέρνα, κουρείο και κρεοπωλείο. Στον επάνω όροφο το χάνι είχε τρία δωμάτια για εμπόρους από τη Σκόπελο, τη Σκιάθο, το Προμύρι και τον Κατηγιώργη.',
       ],
       en: [
         'Located on the central square, Café Forlidas is the oldest continuously operating coffee house in Greece, documented since 1785. For over 240 years and seven generations of the Forlidas family, it has preserved an untouched 18th-century atmosphere.',
         'Its upper floor once served as an inn (hani) where sea travelers and merchants from the Sporades islands (Skiathos, Skopelos, Alonnisos) stayed before boarding caïques to Volos. Notable patrons include the celebrated novelist Alexandros Papadiamantis, poet Kostas Varnalis, progressive educator Alexandros Delmouzos, and Nobel laureate Giorgos Seferis.',
         'Inside, an antique cast-iron woodstove, classic thonet wooden chairs, marble tables, and sepia photographs preserve a rare window into authentic Greek social history.',
+        'The metal hooks still fixed to the ceiling recall the ground floor’s multi-use past as café, tavern, barber shop, and butcher’s. Upstairs, the three-room hani accommodated merchants travelling from Skopelos, Skiathos, Promyri, and Katigiorgis.',
       ],
     },
+    videoUrl: 'https://www.youtube.com/watch?v=-Vig18AuSfo',
     category: 'heritage',
     geometry: {
       type: 'Point',
@@ -1191,10 +1232,12 @@ export const places: Place[] = [
       el: [
         'Η πλατεία του Λαύκου αποτελεί τον κεντρικό πυρήνα της κοινωνικής, εμπορικής και πολιτιστικής ζωής του χωριού εδώ και αιώνες. Η έκτασή της και η σκιά των γιγάντιων πλατάνων δημιουργούν ένα δροσερό μικροκλίμα ακόμα και στις πιο θερμές μέρες του καλοκαιριού.',
         'Γύρω από την πλατεία συγκεντρώνονται τα ιστορικά καφενεία, οι παραδοσιακές ταβέρνες, ο επιβλητικός ναός της Γεννήσεως της Θεοτόκου, το Φάμπειο Μουσείο και η μαρμάρινη κρήνη. Εδώ ξεκινούν και καταλήγουν τα περισσότερα καλντερίμια του χωριού.',
+        'Το 1887 η πλατεία γνώρισε μια τριπλή αναγέννηση: άρχισε η ανοικοδόμηση της μεγάλης βασιλικής, φυτεύτηκαν τα πλατάνια και μετακινήθηκε το παλιό νεκροταφείο. Έτσι διαμορφώθηκε ο δημόσιος πυρήνας που ενώνει σήμερα ναό, νερό, σκιά και καθημερινή ζωή.',
       ],
       en: [
         'Lafkos central square has stood as the heart of social, commercial, and cultural life in South Pelion for centuries. Its generous scale and the deep canopy of monumental plane trees provide a cool refuge even during the hottest summer afternoons.',
         'Surrounding the square are historic coffee houses, traditional tavernas, the grand Church of the Nativity of the Theotokos, the Fampas Art Museum, and a carved marble fountain. It serves as the natural crossroads for all the village stone lanes.',
+        'In 1887 the square experienced a triple rebirth: rebuilding began on the great basilica, the plane trees were planted, and the old cemetery was relocated. This created the civic heart that now binds church, water, shade, and everyday life together.',
       ],
     },
     category: 'community',
@@ -1754,54 +1797,74 @@ export const places: Place[] = [
       en: 'Fortified 18th-century monument',
     },
     summary: {
-      el: 'Ιδρύθηκε το 1795 από τον πρωτομάστορα Δήμο Ζηπανιώτη με χορηγία του Στέργιου Μπασδέκη — φημίζεται για τα μοναδικά ανάγλυφα του λιθογλύπτη Μίλιου.',
-      en: 'Founded in 1795 by master builder Dimos Zipaniotis and chieftain Stergios Basdekis, famous for stone sun reliefs by sculptor Milios.',
+      el: 'Οχυρωμένη μονή του 1795 στο λιβάδι Κωτίκι, στο μέσο ρου της ρεματιάς Αξυλίθρα — έργο του πρωτομάστορα Δήμου Ζουπανιώτη με τα ανάγλυφα του Σπύρου Μίλιου και τον φημισμένο ακτινωτό ήλιο.',
+      en: 'A fortified 1795 monastery in the Kotiki meadow on the middle course of the Axylithra ravine — built by master builder Dimos Zoupaniotis, with stone reliefs by Spyros Milios and the famed radiant sun.',
     },
     body: {
       el: [
-        'Κρυμμένη σε μια γαλήνια κοιλάδα με ελαιώνες στη θέση «Κωτίκι», βορειοανατολικά του Λαύκου στη ρεματιά της Αξυλίθρας, βρίσκεται η ιστορική Μονή του Αγίου Αθανασίου. Ιδρύθηκε το 1795 με δαπάνη του περίφημου Πηλιορείτη οπλαρχηγού Στέργιου Μπασδέκη.',
-        'Το μοναστηριακό συγκρότημα χτίστηκε από τον σπουδαίο Ηπειρώτη πρωτομάστορα Δήμο Ζηπανιώτη (Ζουπανιώτη). Διαθέτει φρουριακή διάταξη με ψηλό περίβολο, τοξωτές στοές και διώροφα κελιά. Ο κεντρικός ναός είναι τρίκλιτη βασιλική με θαυμάσιες αναλογίες.',
-        'Στην εξωτερική τοιχοποιία σώζονται τα φημισμένα λιθόγλυφα του Ηπειρώτη γλύπτη Μίλιου Ζηπανιώτη, ανάμεσα στα οποία ξεχωρίζει ο επιβλητικός ακτινωτός ανάγλυφος ήλιος, που αποτελεί αριστούργημα της λαϊκής νεοελληνικής γλυπτικής.',
+        'Η Μονή Αγίου Αθανασίου Λαύκου είναι κτισμένη σε λιβάδι, στο μέσο ρου της ρεματιάς Αξυλίθρα που εκβάλλει στην Πάλτση, στη θέση Κωτίκι. Ιδρύθηκε το 1795 με δαπάνη του οπλαρχηγού Στέργιου Μπασδέκη· η θέση της είναι απομονωμένη και ταυτόχρονα πλούσια σε γεωργικούς πόρους, ενώ στο σημείο αυτό το ρέμα έχει μόνιμη ροή.',
+        'Το συγκρότημα κτίστηκε από τον Ηπειρώτη πρωτομάστορα Δήμο Ζουπανιώτη, τον δημιουργό δεκάδων σημαντικών έργων του Πηλίου και ειδικότερα πολλών εκκλησιών του τέλους του 18ου αιώνα. Ψηλός φρουριακός περίβολος κλείνει με ισχυρή πύλη, προστατευμένη με τουφεκότρυπες πάνω σε διπλά βοτάκια, ενώ περιλαμβάνει τοξωτές στοές και διώροφα κελιά γύρω από τρίκλιτη βασιλική με θαυμάσιες αναλογίες.',
+        'Εξωτερικά διακρίνονται πέτρινα ανάγλυφα και ο επιβλητικός ακτινωτός ήλιος, έργα του λιθοξόου-γλύπτη Σπύρου Μίλιου, συντοπίτη του Ζουπανιώτη — αριστουργήματα της λαϊκής νεοελληνικής γλυπτικής. Ο λαογράφος Κίτσος Μακρής είχε ήδη επισημάνει τα ανάγλυφα από το 1958.',
+        'Σήμερα η μονή είναι έρημη, χωρίς μοναστική αδελφότητα, ωστόσο παραμένει το επίκεντρο του μεγαλύτερου πανηγυριού της περιοχής: κάθε Πρωτομαγιά πλήθος κόσμου συγκεντρώνεται στο λιβάδι της για φαγητό στα παραδοσιακά καζάνια, ζωντανή μουσική και κυκλικούς χορούς. Απέχει περίπου 6,3 χλμ. από τον Λαύκο οδικώς, αν και κυκλοφορεί και η στρογγυλεμένη αναφορά των περίπου 8 χλμ.· η διαφορά πιθανότατα οφείλεται σε διαφορετικό ίχνος ή μέτρηση.',
       ],
       en: [
-        'Nestled in a serene olive valley at "Kotiki", northeast of Lafkos along the Axylithra stream, lies the historic fortified Monastery of Agios Athanasios. It was founded in 1795 under the patronage of celebrated Pelion revolutionary chieftain Stergios Basdekis.',
-        'The complex was constructed by renowned master builder Dimos Zipaniotis from Epirus in defensive monastic fortress architecture, with high perimeter walls, arched porticos, and stone monks’ cells enclosing a fine three-aisled basilica.',
-        'Its exterior walls are adorned with celebrated relief carvings by stone sculptor Milios of Zipani, most notably the majestic radiant sun stone medallion, a masterpiece of 18th-century folk stone sculpture.',
+        'The Monastery of Agios Athanasios of Lafkos stands in a meadow on the middle course of the Axylithra ravine, which flows out at Paltsi, at the locality of Kotiki. It was founded in 1795 at the expense of captain Stergios Basdekis; its setting is isolated yet rich in agricultural resources, and at this point the stream flows permanently.',
+        'The complex was built by the Epirote master builder Dimos Zoupaniotis, creator of dozens of important works across Pelion and in particular of many churches of the late 18th century. A tall fortified perimeter wall closes with a strong gate protected by gun loops set in double mouldings, while arched porticos and two-storey monks’ cells surround a well-proportioned three-aisled basilica.',
+        'On the exterior, stone reliefs and the imposing radiant sun stand out — works of the stonemason-sculptor Spyros Milios, a fellow-townsman of Zoupaniotis, and masterpieces of modern Greek folk sculpture. Folklorist Kitsos Makris had already drawn attention to the reliefs back in 1958.',
+        'Today the monastery stands deserted, without a monastic brotherhood, yet it remains the heart of the region’s largest festival: every May Day a crowd gathers in its meadow for food cooked in traditional cauldrons, live music, and circle dances. It lies about 6.3 km from Lafkos by road, although a rounded figure of about 8 km also circulates; the difference probably reflects a different route or measurement.',
       ],
     },
     category: 'sacred',
     geometry: {
       type: 'Point',
-      coordinates: [23.28037, 39.21299],
+      coordinates: [23.279939, 39.212982],
     },
-    mapAnchor: [23.28037, 39.21299],
+    mapAnchor: [23.279939, 39.212982],
     images: [
       {
-        src: 'https://upload.wikimedia.org/wikipedia/commons/6/6c/%CE%9D%CE%B1%CF%8C%CF%82_%CE%9A%CE%BF%CE%B9%CE%BC%CE%AE%CF%83%CE%B5%CF%89%CF%82_%CE%98%CE%B5%CE%BF%CF%84%CF%8C%CE%BA%CE%BF%CF%85_%CF%83%CF%84%CE%BF_%CE%A0%CF%81%CE%BF%CE%BC%CF%8D%CF%81%CE%B9_9166.jpg',
-        alt: 'Παραδοσιακός πέτρινος ναός και καμπαναριό στο Νότιο Πήλιο',
-        credit: 'Photo by C messier (Wikimedia Commons)',
-        license: 'CC BY-SA 4.0',
+        src: 'https://www.topoguide.gr/mountains/thessaly/advs_pelion/pelion_southern/pois/img/Lafkos_moni_AgAthanasiou3.jpg',
+        alt: 'Η Μονή Αγίου Αθανασίου Λαύκου στο λιβάδι Κωτίκι της ρεματιάς Αξυλίθρα',
+        credit:
+          'Φωτογραφία: Τ. Αδαμακόπουλος — topoguide.gr (πηγή: topoguide.gr/mountains/thessaly/advs_pelion/pelion_southern/pois/pelion_southern_moni_AgAthanasiou.php)',
+        license:
+          '© Τ. Αδαμακόπουλος / topoguide.gr, όλα τα δικαιώματα κατοχυρωμένα — αναπαραγωγή με αναφορά',
       },
       {
-        src: 'https://upload.wikimedia.org/wikipedia/commons/0/0b/%CE%9B%CE%B1%CF%8D%CE%BA%CE%BF%CF%82_DJI_5269.jpg',
-        alt: 'Αεροφωτογραφία του Λαύκου και των γύρω καταπράσινων πλαγιών',
-        credit: 'Photo by C messier (Wikimedia Commons)',
-        license: 'CC BY-SA 4.0',
+        src: 'https://www.topoguide.gr/mountains/thessaly/advs_pelion/pelion_southern/pois/img/Lafkos_moni_AgAthanasiou5.jpg',
+        alt: 'Η οχυρή πύλη της μονής με τουφεκότρυπες πάνω σε διπλά βοτάκια',
+        credit: 'Φωτογραφία: Τ. Αδαμακόπουλος — topoguide.gr',
+        license:
+          '© Τ. Αδαμακόπουλος / topoguide.gr, όλα τα δικαιώματα κατοχυρωμένα — αναπαραγωγή με αναφορά',
+      },
+      {
+        src: 'https://www.topoguide.gr/mountains/thessaly/advs_pelion/pelion_southern/pois/img/Lafkos_moni_AgAthanasiou9.jpg',
+        alt: 'Το καθολικό της Μονής Αγίου Αθανασίου',
+        credit: 'Φωτογραφία: Τ. Αδαμακόπουλος — topoguide.gr',
+        license:
+          '© Τ. Αδαμακόπουλος / topoguide.gr, όλα τα δικαιώματα κατοχυρωμένα — αναπαραγωγή με αναφορά',
       },
     ],
     practical: {
       el: [
-        'Προσβάσιμη μέσω πεζοπορικής διαδρομής (~1,5 ώρα) μέσα από τους ελαιώνες ή μέσω αγροτικού χωματόδρομου.',
-        'Χώρος απόλυτης ησυχίας και πνευματικής περισυλλογής μέσα στη φύση.',
-        'Σεβαστείτε τον ιερό και προστατευόμενο χαρακτήρα του μνημείου.',
+        'Προσβάσιμη με αγροτικό χωματόδρομο (~6,3 χλμ. από τον Λαύκο) ή πεζή μέσω της σηματοδοτημένης διαδρομής Λαύκος – Κοιλάδα Κωτίκι – Μονή (~1,5 ώρα μέσα από ελαιώνες).',
+        'Κάθε 1–2 Μαΐου φιλοξενεί το μεγαλύτερο πανηγύρι της περιοχής, με δωρεάν φαγητό στα καζάνια και παραδοσιακούς χορούς.',
+        'Η μονή είναι σήμερα έρημη· σεβαστείτε τον ιερό και προστατευόμενο χαρακτήρα του μνημείου.',
       ],
       en: [
-        'Accessible via a scenic hiking route (~1.5 hours) through olive groves or via unpaved rural road.',
-        'A sanctuary of profound serenity and natural beauty.',
-        'Visitors are requested to respect the sacred and protected status of the monument.',
+        'Reachable by unpaved road (~6.3 km from Lafkos) or on foot via the waymarked Lafkos – Kotiki Valley – Monastery trail (~1.5 hours through olive groves).',
+        'Every May 1–2 it hosts the region’s largest festival, with free food from the cauldrons and traditional circle dances.',
+        'The monastery is deserted today; please respect the sacred, protected character of the monument.',
       ],
     },
     sources: [
+      {
+        label: 'Topoguide Greece — Μονή Αγίου Αθανασίου Λαύκου (Τ. Αδαμακόπουλος)',
+        url: 'https://www.topoguide.gr/mountains/thessaly/advs_pelion/pelion_southern/pois/pelion_southern_moni_AgAthanasiou.php',
+      },
+      {
+        label: 'Βίντεο: Μονή Αγίου Αθανασίου (Facebook Watch)',
+        url: 'https://www.facebook.com/watch/?v=1168574773837351',
+      },
       {
         label: 'Υπουργείο Πολιτισμού — Μνημεία Νοτίου Πηλίου',
         url: 'http://listedmonuments.culture.gr/',
@@ -1809,10 +1872,6 @@ export const places: Place[] = [
       {
         label: 'Πολιτιστικός Σύλλογος Λαυκιωτών «Η Δράση»',
         url: 'https://lafkos.gr/',
-      },
-      {
-        label: 'Wikimedia Commons — Lafkos, Pelion Collection',
-        url: 'https://commons.wikimedia.org/wiki/Category:Lafkos',
       },
       {
         label: 'OpenStreetMap Contributors',
@@ -2648,6 +2707,7 @@ export const places: Place[] = [
         license: 'CC BY-SA 4.0',
       },
     ],
+    videoUrl: 'https://www.youtube.com/watch?v=8v4WVzmOync',
     practical: {
       el: [
         'Προσβάσιμο με πεζοπορία 40-45 λεπτών από την πλατεία ή μέσω αγροτικού δρόμου.',
@@ -2675,6 +2735,66 @@ export const places: Place[] = [
       },
     ],
     featured: true,
+    isSeed: true,
+  },
+  {
+    kind: 'place',
+    entityKey: 'moni-agios-spiridonas',
+    slug: { el: 'moni-agiou-spiridona-promyriou', en: 'agios-spiridon-monastery-promyri' },
+    title: {
+      el: 'Ιερά Μονή Αγίου Σπυρίδωνα Προμυρίου',
+      en: 'Holy Monastery of Agios Spiridon near Promyri',
+    },
+    eyebrow: {
+      el: 'Γυναικεία μονή στη ρεματιά των Μούσγκων',
+      en: 'Women’s monastery above the Mousges ravine',
+    },
+    summary: {
+      el: 'Μονή του τέλους του 18ου αιώνα σε μικρό πλάτωμα κοντά στον παλιό συνοικισμό Βουδίν, ανακαινισμένη το 1834 και αναγεννημένη ως γυναικεία τη δεκαετία του 1980.',
+      en: 'A late-18th-century monastery on a small plateau near the old hamlet of Voudin, rebuilt in 1834 and reborn as a women’s monastery in the 1980s.',
+    },
+    body: {
+      el: [
+        'Η Μονή Αγίου Σπυρίδωνα είναι κτισμένη σε μικρό πλάτωμα κοντά στον παλιό αγροτικό συνοικισμό Βουδίν, πάνω από τη μεγάλη ρεματιά που εκβάλλει στον Πλατανιά. Οι υπάρχουσες μαρτυρίες τοποθετούν την περίοδο συγκρότησής της στα τέλη του 18ου αιώνα, ενώ η περίοδος ίδρυσής της παραμένει άγνωστη.',
+        'Η μονή ανακαινίστηκε εκ βάθρων το 1834, μετά την πλήρη καταστροφή της από τους Τούρκους. Λειτούργησε φθίνουσα έως την τελευταία δεκαετία του 19ου αιώνα, οπότε και ερήμωσε· αναγεννήθηκε κατά τη δεκαετία του 1980 ως γυναικεία μονή. Σήμερα προσπελάζεται κυρίως πεζή μέσω της σηματοδοτημένης διαδρομής Λαύκος – Μούσγες – Μονή Αγίου Σπυρίδωνα – Προμύρι.',
+      ],
+      en: [
+        'The Monastery of Agios Spiridon stands on a small plateau near the old agricultural hamlet of Voudin, above the great ravine that empties at Platanias. Surviving evidence points to its establishment in the late 18th century, while the exact founding period remains unknown.',
+        'The monastery was fully rebuilt in 1834, after its complete destruction by the Ottomans. It declined until the last decade of the 19th century, when it was abandoned; it was reborn in the 1980s as a women’s monastery. Today it is reached mainly on foot via the waymarked Lafkos – Mousges – Agios Spiridon Monastery – Promyri trail.',
+      ],
+    },
+    category: 'sacred',
+    geometry: { type: 'Point', coordinates: [23.2691694, 39.1636752] },
+    mapAnchor: [23.2691694, 39.1636752],
+    images: [
+      {
+        src: 'https://www.topoguide.gr/mountains/thessaly/advs_pelion/pelion_southern/img/South_Pelion_moni_AgSpyridona.jpg',
+        alt: 'Η Μονή Αγίου Σπυρίδωνα Προμυρίου σε μικρό πλάτωμα πάνω από τη ρεματιά',
+        credit:
+          'Φωτογραφία: Τ. Αδαμακόπουλος — topoguide.gr (πηγή: topoguide.gr/mountains/thessaly/advs_pelion/pelion_southern/pois/pelion_southern_moni_Spyridona.php)',
+        license:
+          '© Τ. Αδαμακόπουλος / topoguide.gr, όλα τα δικαιώματα κατοχυρωμένα — αναπαραγωγή με αναφορά',
+      },
+    ],
+    practical: {
+      el: [
+        'Προσεγγίζεται πεζή μέσω της σηματοδοτημένης διαδρομής Λαύκος – Μούσγες – Μονή Αγ. Σπυρίδωνα (περίπου 3,7 χλμ. από τον Λαύκο). Προσοχή στην αδιάβατη θέση του ρέματος κοντά στο Προμύρι στη συνέχεια του καλντεριμιού (από 1/2025).',
+      ],
+      en: [
+        'Reached on foot via the waymarked Lafkos – Mousges – Ag. Spiridon Monastery trail (about 3.7 km from Lafkos). Mind the impassable stream section near Promyri on the kalderimi continuation (as of 1/2025).',
+      ],
+    },
+    sources: [
+      {
+        label: 'Topoguide Greece — Μονή Αγίου Σπυρίδωνα Προμυρίου (Τ. Αδαμακόπουλος)',
+        url: 'https://www.topoguide.gr/mountains/thessaly/advs_pelion/pelion_southern/pois/pelion_southern_moni_Spyridona.php',
+      },
+      {
+        label: 'Wikiloc — Λαύκος – Μονή Αγίου Σπυρίδωνος – Προμύρι',
+        url: 'https://el.wikiloc.com/oreibasia-diadromes/pelio-laukos-mone-agiou-spuridonos-promuri-pelion-lafkos-agios-spiridon-monastery-promiri-22182865',
+      },
+    ],
+    featured: false,
     isSeed: true,
   },
   {
@@ -2785,12 +2905,12 @@ export const places: Place[] = [
     },
     body: {
       el: [
-        'Εγκαινιασμένο το 2008, το Μουσείο Ραδιοφώνου του Λαύκου αποτελεί ένα από τα ελάχιστα εξειδικευμένα μουσεία του είδους στην Ευρώπη και το πρώτο στην Ελλάδα που σχεδιάστηκε με σύγχρονες μουσειολογικές προδιαγραφές.',
+        'Το Μουσείο Ραδιοφώνου εγκαινιάστηκε στις 26 Οκτωβρίου 2008 από τον Πολιτιστικό Σύλλογο Λαυκιωτών «Η Δράση», που ιδρύθηκε το 1976. Είναι ένα από τα μόλις δύο μουσεία ραδιοφώνου στην Ελλάδα και στεγάζεται σε παραχωρημένο διώροφο πέτρινο κτίριο.',
         'Φιλοξενεί πάνω από 130 σπάνιους, λειτουργικούς ραδιοφωνικούς δέκτες που καλύπτουν την περίοδο 1917–1960: λυχνιακά ραδιόφωνα, κρυστάλλινους δέκτες, στρατιωτικές συσκευές επικοινωνίας και περίτεχνα ξύλινα έπιπλα-ραδιόφωνα της περιόδου του μεσοπολέμου.',
         'Η συλλογή αποτελεί ευγενική δωρεά του Γερμανού καθηγητή Wilfried Schoeps προς τιμήν του αείμνηστου Λαυκιώτη γλύπτη Αντώνη Ταβάνη και του εθελοντή ξεναγού Στάθη Σφονδυλιά.',
       ],
       en: [
-        'Inaugurated in 2008, the Lafkos Radio Museum is one of only three dedicated radio museums in Greece and a rare gem of 20th-century technological heritage in the Mediterranean.',
+        'The Radio Museum was inaugurated on October 26, 2008, by the Lafkos Cultural Association “I Drasi”, founded in 1976. It is one of only two radio museums in Greece and occupies a donated two-storey stone building.',
         'The museum houses over 130 rare, operable historic radio receivers dating from 1917 to 1960: tube radios, crystal sets, wartime communication units, and mastercrafted art-deco timber floor models.',
         'The collection was donated by German professor and philhellene Wilfried Schoeps in memory of the artist Antonis Tavanis and longtime cultural advocate Stathis Sfondylias.',
       ],
@@ -3020,13 +3140,15 @@ export const places: Place[] = [
     body: {
       el: [
         'Ο μητροπολιτικός ναός της Γεννήσεως της Θεοτόκου θεμελιώθηκε στη σημερινή του μορφή το 1888 πάνω σε παλαιότερα βυζαντινά ίχνη, δεσπόζοντας με την επιβλητική του πέτρινη παρουσία στη δυτική πλευρά της πλατείας.',
-        'Αποτελεί κλασικό δείγμα της πηλιορείτικης εκκλησιαστικής αρχιτεκτονικής του ύστερου 19ου αιώνα. Στο εσωτερικό του ξεχωρίζουν το εξαιρετικό ξυλόγλυπτο τέμπλο, ο δεσποτικός θρόνος και σπάνιες φορητές εικόνες της μεταβυζαντινής περιόδου.',
+        'Αποτελεί κλασικό δείγμα της πηλιορείτικης εκκλησιαστικής αρχιτεκτονικής του ύστερου 19ου αιώνα. Το ξυλόγλυπτο τέμπλο είναι έργο του Δ. Φάμπα, οι αυστηρές βυζαντινές εικόνες του Λαυκιώτη Αντωνίου Τσαμασφύρου και ο μαρμάρινος διάκοσμος του Κ. Τσάμη συνθέτουν μια ανθολογία τοπικής τέχνης· ο Τσαμασφύρος μαθήτευσε σε εργαστήρια του Αγίου Όρους.',
         'Το περίτεχνο πέτρινο καμπαναριό με τα λαξευτά αγκωνάρια αποτελεί ένα από τα πιο αναγνωρίσιμα ορόσημα του ορίζοντα του Λαύκου.',
+        'Ο ναός ξαναγεννήθηκε το 1887 μαζί με την πλατεία: άρχισε η ανοικοδόμηση της μεγάλης βασιλικής, φυτεύτηκαν τα μνημειακά πλατάνια και το παλιό νεκροταφείο μετακινήθηκε από τον χώρο της πλατείας. Η τριπλή αυτή αλλαγή έδωσε στον οικισμό τον δημόσιο πυρήνα που γνωρίζουμε σήμερα.',
       ],
       en: [
         'The parish church of the Nativity of the Theotokos was rebuilt in its present form in 1888 over earlier foundations, commanding the western side of the central square with majestic stone masonry.',
-        'It stands as a quintessential exemplar of late 19th-century Pelion ecclesiastical architecture. Inside, it preserves a magnificent hand-carved wooden iconostasis, episcopal throne, and treasured post-Byzantine portable icons.',
+        'It stands as a quintessential exemplar of late 19th-century Pelion ecclesiastical architecture. Its carved iconostasis by D. Fampas, Byzantine-style icons by local painter Antonios Tsamasfyros, and marble work by K. Tsamis form an anthology of local craftsmanship; Tsamasfyros trained in workshops on Mount Athos.',
         'Its finely dressed stone belfry with sculpted architraves forms one of the most recognizable landmarks on the village skyline.',
+        'The church was reborn in 1887 alongside the square: rebuilding began on the spacious basilica, the monumental plane trees were planted, and the old cemetery was moved away from the square. Together, these changes created the civic heart of the settlement we know today.',
       ],
     },
     category: 'sacred',
@@ -3514,6 +3636,216 @@ export const places: Place[] = [
     featured: false,
     isSeed: true,
   },
+  {
+    kind: 'place',
+    entityKey: 'archontiko-parisi',
+    slug: { el: 'archontiko-parisi', en: 'archontiko-parisi' },
+    title: { el: 'Αρχοντικό Παρίση', en: 'Parisi Mansion' },
+    eyebrow: { el: 'Διατηρητέο αρχοντικό του 1834', en: 'Listed mansion from 1834' },
+    summary: {
+      el: 'Τριώροφο αρχοντικό του 1834, περίπου 100 μέτρα από την πλατεία, με οχυρωματικό ισόγειο και πλακόστρωτη αυλή.',
+      en: 'A three-storey 1834 mansion about 100 metres from the square, with a fortified ground floor and paved courtyard.',
+    },
+    body: {
+      el: [
+        'Το διατηρητέο Αρχοντικό Παρίση χτίστηκε το 1834 και διατηρεί τη βαριά, οχυρωματική λογική των πηλιορείτικων κατοικιών της ύστερης Τουρκοκρατίας. Η πλακόστρωτη αυλή και η θέση του, περίπου 100 μέτρα από την πλατεία, το συνδέουν άμεσα με τον ιστορικό πυρήνα του Λαύκου.',
+      ],
+      en: [
+        'Parisi Mansion, a listed building, was built in 1834 and preserves the heavy, defensive logic of late-Ottoman Pelion houses. Its paved courtyard and location about 100 metres from the square tie it closely to Lafkos’s historic core.',
+      ],
+    },
+    category: 'stay',
+    geometry: { type: 'Point', coordinates: [23.2455707, 39.1770408] },
+    mapAnchor: [23.2455707, 39.1770408],
+    images: [lafkosArchiveImage],
+    practical: {
+      el: [
+        'Η ακριβής πρόσβαση και η σημερινή διαθεσιμότητα διαμονής χρειάζονται τοπική επιβεβαίωση.',
+      ],
+      en: ['Exact access and current accommodation availability require local confirmation.'],
+    },
+    sources: compiledResearchSources,
+    featured: false,
+    isSeed: true,
+  },
+  {
+    kind: 'place',
+    entityKey: 'xenonas-xromaton',
+    slug: { el: 'xenonas-xromaton', en: 'xenonas-xromaton' },
+    title: { el: 'Ξενώνας Χρωμάτων', en: 'Xromaton Guesthouse' },
+    eyebrow: { el: 'Τρίπατο αρχοντικό του 1861', en: 'Three-storey mansion from 1861' },
+    summary: {
+      el: 'Αρχοντικό του 1861 που φιλοξενεί περιοδικές εκθέσεις έργων τέχνης στα δωμάτιά του.',
+      en: 'An 1861 mansion whose rooms host rotating exhibitions of art.',
+    },
+    body: {
+      el: [
+        'Ο Ξενώνας Χρωμάτων στεγάζεται σε τρίπατο αρχοντικό του 1861, όπου η ιστορική κατοικία συναντά τη σύγχρονη φιλοξενία. Τα δωμάτια λειτουργούν και ως χώροι περιοδικών εκθέσεων, δίνοντας στη διαμονή έναν ιδιαίτερο καλλιτεχνικό χαρακτήρα.',
+      ],
+      en: [
+        'Xromaton Guesthouse occupies a three-storey mansion dating from 1861, bringing historic domestic architecture into contemporary hospitality. Its rooms also host rotating exhibitions, giving a stay here a distinctly artistic character.',
+      ],
+    },
+    category: 'stay',
+    geometry: { type: 'Point', coordinates: [23.2457966, 39.1782049] },
+    mapAnchor: [23.2457966, 39.1782049],
+    images: [lafkosArchiveImage],
+    practical: {
+      el: [
+        'Η λειτουργία και οι ώρες υποδοχής είναι εποχικές· ελέγξτε τις τρέχουσες πληροφορίες πριν από την επίσκεψη.',
+      ],
+      en: [
+        'Operations and reception hours are seasonal; check current information before visiting.',
+      ],
+    },
+    sources: compiledResearchSources,
+    featured: false,
+    isSeed: true,
+  },
+  {
+    kind: 'place',
+    entityKey: 'esperos-suites',
+    slug: { el: 'esperos-suites', en: 'esperos-suites' },
+    title: { el: 'Έσπερος Suites', en: 'Esperos Suites' },
+    eyebrow: {
+      el: 'Σύγχρονη φιλοξενία με πηλιορείτικα υλικά',
+      en: 'Contemporary hospitality in Pelion materials',
+    },
+    summary: {
+      el: 'Σύγχρονο κατάλυμα από ντόπια πέτρα και ξύλο, σχεδιασμένο με σεβασμό στην κλίμακα και τη μορφολογία του οικισμού.',
+      en: 'A contemporary property built with local stone and timber, respecting the settlement’s scale and morphology.',
+    },
+    body: {
+      el: [
+        'Το Esperos Suites εντάσσεται στον οικισμό με σύγχρονη κατασκευή από ντόπια πέτρα και ξύλο. Η χαμηλή κλίμακα και η μορφολογία του επιδιώκουν να συνομιλούν με το παραδοσιακό αρχιτεκτονικό τοπίο, χωρίς μίμηση.',
+      ],
+      en: [
+        'Esperos Suites fits into the village with a contemporary build in local stone and timber. Its modest scale and form aim to converse with the traditional architectural landscape without imitation.',
+      ],
+    },
+    category: 'stay',
+    geometry: { type: 'Point', coordinates: [23.241641, 39.1775876] },
+    mapAnchor: [23.241641, 39.1775876],
+    images: [lafkosArchiveImage],
+    practical: {
+      el: ['Η ακριβής διαθεσιμότητα και πρόσβαση χρειάζονται έλεγχο από τον επισκέπτη.'],
+      en: ['Visitors should check current availability and access details.'],
+    },
+    sources: compiledResearchSources,
+    featured: false,
+    isSeed: true,
+  },
+  {
+    kind: 'place',
+    entityKey: 'archontiko-ktenas',
+    slug: { el: 'archontiko-ktenas', en: 'archontiko-ktenas' },
+    title: { el: 'Αρχοντικό Κτένα', en: 'Ktenas Mansion' },
+    eyebrow: { el: 'Ξενώνας σε πέτρινο κτίριο του 1900', en: 'Guesthouse in a 1900 stone mansion' },
+    summary: {
+      el: 'Διώροφο πέτρινο αρχοντικό του 1900, μόλις 30 μέτρα από την κεντρική πλατεία, με πλακόστρωτη αυλή και θέα προς το χωριό και τον Παγασητικό.',
+      en: 'A two-storey 1900 stone mansion just 30 metres from the central square, with a paved courtyard and views over the village and the Pagasetic Gulf.',
+    },
+    body: {
+      el: [
+        'Ο ξενώνας «Αρχοντικό Κτένα» στεγάζεται σε διώροφο πέτρινο κτίριο του 1900, στο κέντρο του Λαύκου και σε απόσταση μόλις 30 μέτρων από την κεντρική πλατεία. Λειτουργεί όλο τον χρόνο με πέντε δωμάτια (τέσσερα δίκλινα και ένα τρίκλινο), όλα με εξωτερική και εσωτερική τοιχοποιία από πηλιορείτικη πέτρα, ιδιωτικό μπάνιο και ανεμπόδιστη θέα προς το χωριό ή τον Παγασητικό Κόλπο. Οι επισκέπτες μοιράζονται μια πλακόστρωτη αυλή 75 τ.μ., στολισμένη με πηλιορείτικα λουλούδια, ενώ το αρχοντικό είναι άμεσα προσβάσιμο με αυτοκίνητο — το δημοτικό πάρκινγκ των 40 θέσεων βρίσκεται στα 20 μέτρα.',
+      ],
+      en: [
+        'The Ktenas Mansion guesthouse occupies a two-storey stone building of 1900 in the centre of Lafkos, just 30 metres from the central square. Operating year-round, it offers five rooms (four doubles and one triple) with interior and exterior walls of traditional Pelion stone, private bathrooms, and unobstructed views towards the village or the Pagasetic Gulf. Guests share a 75 m² paved courtyard adorned with Pelion flowers, while the mansion is directly accessible by car — the 40-space municipal parking lies only 20 metres away.',
+      ],
+    },
+    category: 'stay',
+    geometry: { type: 'Point', coordinates: [23.2463992, 39.1782006] },
+    mapAnchor: [23.2463992, 39.1782006],
+    images: [lafkosArchiveImage],
+    practical: {
+      el: [
+        'Λειτουργεί όλο τον χρόνο. Το πάρκινγκ βρίσκεται 20 μέτρα μακριά· η πρόσβαση με αυτοκίνητο είναι άμεση.',
+      ],
+      en: ['Open all year round. Municipal parking is 20 metres away; car access is direct.'],
+    },
+    sources: [
+      {
+        label: 'Visit Pilio — Ξενώνας «Αρχοντικό Κτένα» Λαύκου',
+        url: 'https://www.visit-pilio.gr/pilio/arxontiko-ktena-laukos/',
+      },
+      ...compiledResearchSources,
+    ],
+    featured: false,
+    isSeed: true,
+  },
+  {
+    kind: 'place',
+    entityKey: 'xenonas-lafkos',
+    slug: { el: 'xenonas-lafkos', en: 'lafkos-guesthouse' },
+    title: { el: 'Ξενώνας Λαύκος', en: 'Lafkos Guesthouse' },
+    eyebrow: { el: 'Παραδοσιακή φιλοξενία από το 1984', en: 'Traditional hospitality since 1984' },
+    summary: {
+      el: 'Ξενώνας που λειτουργεί από το 1984, με ζεστή παραδοσιακή ατμόσφαιρα κοντά στην καρδιά του χωριού.',
+      en: 'A guesthouse operating since 1984, with a warm traditional atmosphere near the village heart.',
+    },
+    body: {
+      el: [
+        'Ο Ξενώνας Λαύκος λειτουργεί από το 1984 και υποδέχεται τους επισκέπτες σε ζεστή ατμόσφαιρα που κρατά ζωντανή την οικειότητα του παραδοσιακού σπιτιού. Η φιλοξενία του συνδέει την παραμονή με τον ήρεμο ρυθμό και την καθημερινότητα του οικισμού.',
+      ],
+      en: [
+        'Lafkos Guesthouse has welcomed visitors since 1984 in a warm atmosphere that preserves the intimacy of a traditional home. Its hospitality connects a stay with the settlement’s unhurried rhythm and everyday life.',
+      ],
+    },
+    category: 'stay',
+    geometry: { type: 'Point', coordinates: [23.2456749, 39.1785728] },
+    mapAnchor: [23.2456749, 39.1785728],
+    images: [lafkosArchiveImage],
+    practical: {
+      el: ['Για κράτηση και τρέχουσες παροχές ελέγξτε τις διαθέσιμες τοπικές πληροφορίες.'],
+      en: ['Check current local information for bookings and available facilities.'],
+    },
+    sources: compiledResearchSources,
+    featured: false,
+    isSeed: true,
+  },
+  {
+    kind: 'place',
+    entityKey: 'kainourgia-vrysi',
+    slug: { el: 'kainourgia-vrysi', en: 'kainourgia-vrysi-fountain' },
+    title: { el: 'Καινούργια Βρύση (1903–1904)', en: 'Kainourgia Vrysi (1903–1904)' },
+    eyebrow: {
+      el: 'Ιστορική κρήνη και τόπος πλυσίματος',
+      en: 'Historic fountain and washing place',
+    },
+    summary: {
+      el: 'Κρήνη υψηλής παροχής, κατασκευασμένη το 1903–1904, που υπήρξε ο κύριος χώρος πλυσίματος των γυναικών.',
+      en: 'A high-flow fountain built in 1903–1904 that served as the village women’s principal washing place.',
+    },
+    body: {
+      el: [
+        'Η Καινούργια Βρύση κατασκευάστηκε το 1903–1904 σε σημείο με άφθονο νερό, εξυπηρετώντας την ύδρευση και τις καθημερινές ανάγκες του οικισμού. Για τις γυναίκες του Λαύκου υπήρξε ιδιαίτερα τόπος πλυσίματος, εργασίας και κοινωνικής συνάντησης.',
+      ],
+      en: [
+        'Kainourgia Vrysi was built in 1903–1904 at a place with a generous flow, serving the settlement’s water supply and daily needs. For Lafkos women it was especially a place for washing, work, and social exchange.',
+      ],
+    },
+    category: 'nature',
+    geometry: { type: 'Point', coordinates: [23.247, 39.176] },
+    mapAnchor: [23.247, 39.176],
+    images: [lafkosArchiveImage],
+    practical: {
+      el: [
+        'Η δημόσια τεκμηρίωση προειδοποιεί ότι το νερό δεν πρέπει να θεωρείται πόσιμο χωρίς έλεγχο.',
+      ],
+      en: [
+        'Public documentation cautions that the water should not be assumed potable without testing.',
+      ],
+    },
+    sources: [
+      {
+        label: 'Greece Destination — αξιοθέατα Μαγνησίας',
+        url: 'https://greecedestination.gr/%CE%B1%CE%BE%CE%B9%CE%BF%CE%B8%CE%AD%CE%B1%CF%84%CE%B1-%CF%83%CF%84%CE%BF-%CE%BD%CE%BF%CE%BC%CF%8C-%CE%BC%CE%B1%CE%B3%CE%BD%CE%B7%CF%83%CE%AF%CE%B1%CF%82/',
+      },
+      ...compiledResearchSources,
+    ],
+    featured: false,
+    isSeed: true,
+  },
 ];
 
 export const trails: Trail[] = [
@@ -3738,29 +4070,31 @@ export const trails: Trail[] = [
     kind: 'trail',
     entityKey: 'lafkos-chondri-ammos-trail',
     slug: {
-      el: 'lafkos-mousges-chondri-ammos',
-      en: 'lafkos-mousges-chondri-ammos-trail',
+      el: 'lafkos-mousges-agios-spiridona',
+      en: 'lafkos-agios-spiridon-monastery',
     },
     title: {
-      el: 'Διαδρομή Λαύκος – Μούσγες – Χονδρή Άμμος',
-      en: 'Lafkos to Chondri Ammos Aegean Trail',
+      el: 'Διαδρομή Λαύκος – Μούσγες – Μονή Αγίου Σπυρίδωνα',
+      en: 'Lafkos – Mousges – Agios Spiridon Monastery Trail',
     },
     eyebrow: {
-      el: 'Προς την άγρια ακτή του Αιγαίου',
-      en: 'Toward the wild Aegean coast',
+      el: 'Το ομορφότερο μονοπάτι προς τη μονή της ρεματιάς',
+      en: 'The most beautiful path to the ravine monastery',
     },
     summary: {
-      el: 'Πεζοπορία που διασχίζει τους ανατολικούς ελαιώνες και κατηφορίζει μέσα από μεσογειακή βλάστηση προς τις απόμερες παραλίες.',
-      en: 'A scenic hike traversing eastern olive slopes and Mediterranean scrub toward secluded coastal coves.',
+      el: 'Σηματοδοτημένη πορεία από τον Λαύκο μέσα από τους ελαιώνες των Μούσγκων έως τη Μονή Αγίου Σπυρίδωνα, με δημοφιλή συνέχεια επί του καλντεριμιού προς το Προμύρι.',
+      en: 'A waymarked route from Lafkos through the Mousges olive groves to the Agios Spiridon Monastery, with a popular continuation along the kalderimi towards Promyri.',
     },
     body: {
       el: [
-        'Μια συναρπαστική διαδρομή που αναδεικνύει τη διπλή φύση του Λαύκου, ο οποίος αγναντεύει τόσο τον ήρεμο Παγασητικό όσο και το ανοιχτό Αιγαίο Πέλαγος.',
-        'Η πορεία ξεκινά από το ανατολικό άκρο του χωριού, περνά από την περιοχή Μούσγες και ακολουθεί παλιά αγροτικά μονοπάτια μέσα από πυκνούς ελαιώνες, σχίνους και κουμαριές, καταλήγοντας στην παρθένα παραλία Χονδρή Άμμος.',
+        'Η καταγεγραμμένη διαδρομή ξεκινά από την πλατεία του Λαύκου με αρχική κατεύθυνση προς τον Πλατανιά, στρέφεται ανατολικά μέσα από την περιοχή Μούσγες και ακολουθεί παλιά αγροτικά μονοπάτια ανάμεσα σε ελαιώνες, σχίνους και κουμαριές, έως τη ρεματιά που εκβάλλει στον Πλατανιά και τη μονή στο τέλος της πορείας.',
+        'Εκεί, σε μικρό πλάτωμα κοντά στον παλιό αγροτικό συνοικισμό Βουδίν, βρίσκεται η Μονή Αγίου Σπυρίδωνα: ιδρύθηκε στα τέλη του 18ου αιώνα, ανακαινίστηκε εκ βάθρων το 1834 μετά την καταστροφή της από τους Τούρκους, ερήμωσε στα τέλη του 19ου αιώνα και αναγεννήθηκε τη δεκαετία του 1980 ως γυναικεία μονή.',
+        'Η πεζοπορική συνέχεια είναι δημοφιλής: από τη μονή το κύριο καλντερίμι Προμυρίου – Πλατανιά οδηγεί βόρεια έως την πλατεία του Προμυρίου, σύμφωνα με το καταγεγραμμένο ίχνος «Λαύκος – Μονή Αγίου Σπυρίδωνος – Προμύρι» (7,8 χλμ. μία κατεύθυνση, εύκολη, περίπου 2,5 ώρες συνολικά). Η διαδρομή είναι σηματοδοτημένη με στρογγυλά πινακιδάκια και κάποια κόκκινα σημάδια· η επιστροφή μπορεί να γίνει με λεωφορείο ΚΤΕΛ από Πλατανιά ή Κατηγιώργη.',
       ],
       en: [
-        'A captivating route illustrating the unique geographic position of Lafkos, poised between the sheltered waters of the Pagasetic Gulf and the open horizon of the Aegean Sea.',
-        'Beginning at the village’s eastern edge, the path moves past Mousges and follows pastoral paths through olive groves, wild arbutus, and fragrant macchia before descending to the pristine shores of Chondri Ammos.',
+        'The recorded route starts at the Lafkos square heading initially towards Platanias, turns east through the Mousges area, and follows old rural paths between olive groves, mastic trees, and arbutus down to the ravine that flows out at Platanias, ending at the monastery.',
+        'There, on a small plateau near the old agricultural hamlet of Voudin, stands the Monastery of Agios Spiridon: founded in the late 18th century, fully rebuilt in 1834 after its destruction by the Ottomans, deserted by the end of the 19th century, and reborn in the 1980s as a women’s monastery.',
+        'The popular continuation continues on foot: from the monastery, the main Promyri–Platanias kalderimi leads north to the square of Promyri, as documented by the recorded track “Lafkos – Agios Spiridon Monastery – Promyri” (7.8 km one way, easy, about 2.5 hours in total). The route is waymarked with round plaques and some red blazes; the return can be made by KTEL bus from Platanias or Katigiorgis.',
       ],
     },
     geometry: {
@@ -3924,22 +4258,22 @@ export const trails: Trail[] = [
       ],
     },
     routeType: 'hiking',
-    distanceMeters: 3720,
-    durationMinutes: 75,
+    distanceMeters: 3730,
+    durationMinutes: 65,
     elevationGainMeters: 45,
-    difficulty: 'moderate',
+    difficulty: 'easy',
     surface: {
-      el: 'Μονοπάτι, καλντερίμι και αγροτικός χωματόδρομος',
-      en: 'Footpath, stone trail, and unpaved track',
+      el: 'Μονοπάτι, καλντερίμι και αγροτικός χωματόδρος· σήμανση με πινακιδάκια και κόκκινα σημάδια',
+      en: 'Footpath, stone kalderimi, and unpaved track; waymarked with plaques and red blazes',
     },
     safety: {
       el: [
-        'Μεγαλύτερη διαδρομή — φροντίστε για επαρκή ποσότητα νερού και σνακ.',
-        'Στην παραλία δεν υπάρχουν καταστήματα ή ομπρέλες.',
+        'Προσοχή: από τον Ιανουάριο του 2025 η συνέχεια προς το Προμύρι είναι αδιάβατη στο ρέμα κοντά στο Προμύρι· οι συντάκτες του ίχνους εργάζονται για παράκαμψη.',
+        'Φροντίστε για επαρκή ποσότητα νερού και σνακ· η διαδρομή δεν έχει ενδιάμεσες προμήθειες.',
       ],
       en: [
-        'Longer hike — ensure sufficient water supply and snacks.',
-        'The destination beach is unorganized with no commercial facilities.',
+        'Caution: as of January 2025 the continuation towards Promyri is impassable at the stream near Promyri; the route authors are working on a bypass.',
+        'Carry sufficient water and snacks — there are no resupply points along the way.',
       ],
     },
     videoUrl: 'https://www.youtube.com/watch?v=RH7zxUEjgjU',
@@ -3972,26 +4306,34 @@ export const trails: Trail[] = [
       },
       {
         title: {
-          el: 'Μονή Αγίου Σπυρίδωνα',
-          en: 'Agios Spyridon Monastery',
+          el: 'Ιερά Μονή Αγίου Σπυρίδωνα',
+          en: 'Holy Monastery of Agios Spiridon',
         },
-        coordinate: [23.26929, 39.16367],
+        coordinate: [23.2691694, 39.1636752],
+        placeKey: 'moni-agios-spiridonas',
         image: {
-          src: 'https://upload.wikimedia.org/wikipedia/commons/6/6c/%CE%9D%CE%B1%CF%8C%CF%82_%CE%9A%CE%BF%CE%B9%CE%BC%CE%AE%CF%83%CE%B5%CF%89%CF%82_%CE%98%CE%B5%CE%BF%CF%84%CF%8C%CE%BA%CE%BF%CF%85_%CF%83%CF%84%CE%BF_%CE%A0%CF%81%CE%BF%CE%BC%CF%8D%CF%81%CE%B9_9166.jpg',
-          alt: 'Παραδοσιακός πέτρινος ναός και καμπαναριό στο Νότιο Πήλιο',
-          credit: 'Photo by C messier (Wikimedia Commons)',
-          license: 'CC BY-SA 4.0',
+          src: 'https://www.topoguide.gr/mountains/thessaly/advs_pelion/pelion_southern/img/South_Pelion_moni_AgSpyridona.jpg',
+          alt: 'Η Μονή Αγίου Σπυρίδωνα Προμυρίου σε μικρό πλάτωμα πάνω από τη ρεματιά',
+          credit:
+            'Φωτογραφία: Τ. Αδαμακόπουλος — topoguide.gr (πηγή: topoguide.gr/mountains/thessaly/advs_pelion/pelion_southern/pois/pelion_southern_moni_Spyridona.php)',
+          license:
+            '© Τ. Αδαμακόπουλος / topoguide.gr, όλα τα δικαιώματα κατοχυρωμένα — αναπαραγωγή με αναφορά',
         },
       },
     ],
     sources: [
       {
-        label: 'Pelion Routes & Topoguide South Pelion',
-        url: 'https://pelionroutes.com/',
+        label:
+          'Wikiloc — Λαύκος – Μονή Αγίου Σπυρίδωνος – Προμύρι (eosvolou / friends of the kalderimi)',
+        url: 'https://el.wikiloc.com/oreibasia-diadromes/pelio-laukos-mone-agiou-spuridonos-promuri-pelion-lafkos-agios-spiridon-monastery-promiri-22182865',
       },
       {
-        label: 'Wikimedia Commons — Lafkos, Pelion Collection',
-        url: 'https://commons.wikimedia.org/wiki/Category:Lafkos',
+        label: 'Topoguide Greece — Μονή Αγίου Σπυρίδωνα Προμυρίου',
+        url: 'https://www.topoguide.gr/mountains/thessaly/advs_pelion/pelion_southern/pois/pelion_southern_moni_Spyridona.php',
+      },
+      {
+        label: 'Pelion Routes & Topoguide South Pelion',
+        url: 'https://pelionroutes.com/',
       },
       {
         label: 'OpenStreetMap Contributors',
@@ -6404,6 +6746,7 @@ export const trails: Trail[] = [
         },
       },
     ],
+    videoUrl: 'https://www.youtube.com/watch?v=pWdDCd22iw4',
     sources: [
       {
         label: 'Pelion Routes & Topoguide South Pelion',
@@ -11192,12 +11535,14 @@ export const trails: Trail[] = [
           el: 'Μονή Αγίου Αθανασίου (1795)',
           en: 'Monastery of Agios Athanasios',
         },
-        coordinate: [23.28037, 39.21299],
+        coordinate: [23.279939, 39.212982],
         image: {
-          src: 'https://upload.wikimedia.org/wikipedia/commons/6/6c/%CE%9D%CE%B1%CF%8C%CF%82_%CE%9A%CE%BF%CE%B9%CE%BC%CE%AE%CF%83%CE%B5%CF%89%CF%82_%CE%98%CE%B5%CE%BF%CF%84%CF%8C%CE%BA%CE%BF%CF%85_%CF%83%CF%84%CE%BF_%CE%A0%CF%81%CE%BF%CE%BC%CF%8D%CF%81%CE%B9_9166.jpg',
-          alt: 'Παραδοσιακός πέτρινος ναός και καμπαναριό στο Νότιο Πήλιο',
-          credit: 'Photo by C messier (Wikimedia Commons)',
-          license: 'CC BY-SA 4.0',
+          src: 'https://www.topoguide.gr/mountains/thessaly/advs_pelion/pelion_southern/pois/img/Lafkos_moni_AgAthanasiou3.jpg',
+          alt: 'Η Μονή Αγίου Αθανασίου Λαύκου στο λιβάδι Κωτίκι της ρεματιάς Αξυλίθρα',
+          credit:
+            'Φωτογραφία: Τ. Αδαμακόπουλος — topoguide.gr (πηγή: topoguide.gr/mountains/thessaly/advs_pelion/pelion_southern/pois/pelion_southern_moni_AgAthanasiou.php)',
+          license:
+            '© Τ. Αδαμακόπουλος / topoguide.gr, όλα τα δικαιώματα κατοχυρωμένα — αναπαραγωγή με αναφορά',
         },
       },
     ],
@@ -11949,7 +12294,7 @@ export const stories: Story[] = [
       'old-lanes',
       'chatzi-spring',
       'theotokos-church',
-      'monastery-thanasios',
+      'monastery-athanasios',
       'forlidas-cafe',
       'fampas-museum',
       'radio-museum',
@@ -12097,6 +12442,293 @@ export const stories: Story[] = [
         url: 'https://www.openstreetmap.org/',
       },
     ],
+    featured: true,
+    isSeed: true,
+  },
+  /* Seasonal and narrative records stay in the same bilingual seed collection
+   * so event pages can reuse the existing place and museum relationships. */
+  {
+    kind: 'story',
+    entityKey: 'may-day-monastery-panigyri',
+    slug: { el: 'panigyri-protomagias-monis', en: 'may-day-monastery-festival' },
+    title: {
+      el: 'Η Πρωτομαγιά στη Μονή Αγίου Αθανασίου',
+      en: 'May Day at Agios Athanasios Monastery',
+    },
+    eyebrow: { el: 'Ετήσιο πανηγύρι', en: 'Annual festival' },
+    summary: {
+      el: 'Το μεγαλύτερο πανηγύρι του Λαύκου μεταφέρει την κοινότητα στο λιβάδι της μονής με καζάνια, μουσική και κυκλικούς χορούς.',
+      en: 'Lafkos’s biggest festival carries the community out to the monastery meadow for cauldrons, music, and circle dances.',
+    },
+    body: {
+      el: [
+        'Την 1η και 2η Μαΐου ο Λαύκος κατευθύνεται στη Μονή Αγίου Αθανασίου, όπου στήνεται το μεγαλύτερο πανηγύρι της περιοχής. Το φαγητό μαγειρεύεται και προσφέρεται δωρεάν σε παραδοσιακά καζάνια, ενώ η μουσική και οι κυκλικοί χοροί μετατρέπουν το λιβάδι σε κοινό τραπέζι.',
+        'Η γιορτή είναι ανοιξιάτικη τελετουργία εξόδου: η κοινότητα αφήνει προσωρινά την πλατεία και συναντιέται έξω, στη φύση, σηματοδοτώντας την έναρξη του νέου αγροτικού κύκλου.',
+      ],
+      en: [
+        'On May 1 and 2, Lafkos heads to Agios Athanasios Monastery for the area’s largest festival. Food is cooked in traditional cauldrons and shared free of charge, while music and circle dances turn the meadow into a shared table.',
+        'The celebration is a spring rite of going out: the community temporarily leaves the square to meet in nature, marking the beginning of the new agricultural cycle.',
+      ],
+    },
+    event: { month: 5, dayStart: 1, dayEnd: 2, whenLabel: { el: '1–2 Μαΐου', en: 'May 1–2' } },
+    image: lafkosArchiveImage,
+    relatedKeys: ['monastery-athanasios'],
+    sources: compiledResearchSources,
+    featured: true,
+    isSeed: true,
+  },
+  {
+    kind: 'story',
+    entityKey: 'agios-nikolaos-panigyri',
+    slug: { el: 'panigyri-agiou-nikolaou-vounainois', en: 'agios-nikolaos-chapel-festival' },
+    title: {
+      el: 'Το πανηγύρι του Αγίου Νικολάου του εν Βουνένοις',
+      en: 'The Agios Nikolaos en Vounainois Feast',
+    },
+    eyebrow: { el: 'Μικρό τοπικό πανηγύρι', en: 'A small local feast' },
+    summary: {
+      el: 'Στις 9 Μαΐου, ένα μικρότερο πανηγύρι συγκεντρώνει τους Λαυκιώτες στο εξωκλήσι του Αγίου Νικολάου.',
+      en: 'On May 9, a smaller local feast gathers Lafkos residents at the chapel of Agios Nikolaos.',
+    },
+    body: {
+      el: [
+        'Στις 9 Μαΐου οι κάτοικοι τιμούν τον Άγιο Νικόλαο τον εν Βουνένοις με ένα σεμνότερο, τοπικό πανηγύρι. Σε αντίθεση με τις μεγάλες συνάξεις της πλατείας και της μονής, η γιορτή αυτή παραμένει προσανατολισμένη κυρίως στους ντόπιους, με έντονο στοιχείο κατάνυξης και αυθεντικό τοπικό χρώμα. Είναι η μέρα που η κοινότητα γιορτάζει χωρίς θέατρο — απλώς μαζεμένη γύρω από το εξωκλήσι.',
+      ],
+      en: [
+        'On May 9, residents honour Agios Nikolaos en Vounainois with a quieter local feast. Unlike the great gatherings of the square and the monastery, this celebration remains oriented mainly towards locals, marked by deep devotion and authentic village character. It is the day the community celebrates without spectacle — simply gathered around its countryside chapel.',
+      ],
+    },
+    event: { month: 5, dayStart: 9, whenLabel: { el: '9 Μαΐου', en: 'May 9' } },
+    image: lafkosArchiveImage,
+    relatedKeys: ['agia-paraskevi-view', 'lafkos-square'],
+    sources: compiledResearchSources,
+    featured: false,
+    isSeed: true,
+  },
+  {
+    kind: 'story',
+    entityKey: 'agia-paraskevi-summer-festival',
+    slug: { el: 'kalokairino-panigyri-agias-paraskevis', en: 'agia-paraskevi-summer-festival' },
+    title: {
+      el: 'Το καλοκαιρινό πανηγύρι της Αγίας Παρασκευής',
+      en: 'The Agia Paraskevi Summer Festival',
+    },
+    eyebrow: { el: 'Γιορτή κάτω από τα πλατάνια', en: 'A festival under the plane trees' },
+    summary: {
+      el: 'Στις 25 και 26 Ιουλίου η πλατεία γεμίζει μουσικούς, χορό και επισκέπτες από όλο τον τόπο.',
+      en: 'On July 25 and 26, the square fills with musicians, dancing, and visitors from near and far.',
+    },
+    body: {
+      el: [
+        'Στις 25 και 26 Ιουλίου το καλοκαιρινό πανηγύρι απλώνεται στην πλατεία, κάτω από τα μεγάλα πλατάνια. Οι μουσικοί, οι χορευτές και οι επισκέπτες από όλη την περιοχή κάνουν τον δημόσιο χώρο μια ανοιχτή σκηνή φιλοξενίας.',
+      ],
+      en: [
+        'On July 25 and 26, the summer festival spreads across the square beneath the great plane trees. Musicians, dancers, and visitors from across the region turn the public space into an open stage of hospitality.',
+      ],
+    },
+    event: {
+      month: 7,
+      dayStart: 25,
+      dayEnd: 26,
+      whenLabel: { el: '25–26 Ιουλίου', en: 'July 25–26' },
+    },
+    image: lafkosArchiveImage,
+    relatedKeys: ['agia-paraskevi-view', 'lafkos-square'],
+    sources: compiledResearchSources,
+    featured: false,
+    isSeed: true,
+  },
+  {
+    kind: 'story',
+    entityKey: 'genethlion-theotokou-feast',
+    slug: { el: 'genethlion-theotokou-panigyri', en: 'nativity-of-theotokos-patron-feast' },
+    title: { el: 'Το Γενέθλιο της Θεοτόκου', en: 'The Nativity of the Theotokos' },
+    eyebrow: { el: 'Το τριήμερο του πολιούχου', en: 'The patron’s three-day feast' },
+    summary: {
+      el: 'Από τις 8 έως τις 10 Σεπτεμβρίου, ο πολιούχος εορτασμός επιστρέφει στην πλατεία και κλείνει τον θερινό κύκλο.',
+      en: 'From September 8 to 10, the patronal celebration returns to the square and closes the summer cycle.',
+    },
+    body: {
+      el: [
+        'Το Γενέθλιο της Θεοτόκου γιορτάζεται επί τρεις ημέρες, από τις 8 έως τις 10 Σεπτεμβρίου, γύρω από τον κεντρικό ναό και την πλατεία. Είναι ο εορτασμός που σηματοδοτεί το τέλος του καλοκαιριού και την επιστροφή των ανθρώπων στον οικισμό.',
+        'Μετά τα πανηγύρια που ανοίγουν την άνοιξη και κορυφώνονται το καλοκαίρι έξω από το χωριό, η γιορτή επιστρέφει στην πλατεία και κλείνει συμβολικά τον κύκλο της συγκομιδής.',
+      ],
+      en: [
+        'The Nativity of the Theotokos is celebrated for three days, from September 8 to 10, around the parish church and square. It marks summer’s end and the return of people to the settlement.',
+        'After the festivals that begin in spring and reach their height beyond the village, this celebration returns to the square and symbolically closes the harvest cycle.',
+      ],
+    },
+    event: {
+      month: 9,
+      dayStart: 8,
+      dayEnd: 10,
+      whenLabel: { el: '8–10 Σεπτεμβρίου', en: 'September 8–10' },
+    },
+    image: lafkosArchiveImage,
+    relatedKeys: ['theotokos-church', 'lafkos-square'],
+    sources: compiledResearchSources,
+    featured: true,
+    isSeed: true,
+  },
+  {
+    kind: 'story',
+    entityKey: 'international-guitar-days',
+    slug: { el: 'diethneis-imeres-kitharas-lafkou', en: 'international-guitar-days-of-lafkos' },
+    title: {
+      el: 'Οι Διεθνείς Ημέρες Κιθάρας του Λαύκου',
+      en: 'The International Guitar Days of Lafkos',
+    },
+    eyebrow: { el: 'Μουσικό καλοκαίρι', en: 'A summer of music' },
+    summary: {
+      el: 'Το φεστιβάλ κλασικής κιθάρας της Δράσης τιμά τη μνήμη του Δημήτρη Φάμπα και απλώνεται στους θερινούς μήνες.',
+      en: 'Drasi’s classical-guitar festival honours Dimitris Fampas and unfolds across the summer months.',
+    },
+    body: {
+      el: [
+        'Οι Διεθνείς Ημέρες Κιθάρας, που οργανώνει η Δράση στη μνήμη του Δημήτρη Φάμπα, φέρνουν στον Λαύκο τη συγκέντρωση και τη λεπτότητα της κλασικής κιθάρας. Οι συναυλίες και οι δράσεις απλώνονται στους θερινούς μήνες, ανάμεσα στην πλατεία και τους πολιτιστικούς χώρους του χωριού.',
+      ],
+      en: [
+        'The International Guitar Days, organised by Drasi in memory of Dimitris Fampas, bring the concentration and nuance of classical guitar to Lafkos. Concerts and related activities unfold through the summer months between the square and the village’s cultural spaces.',
+      ],
+    },
+    event: { month: 7, whenLabel: { el: 'Θερινοί μήνες', en: 'Summer months' } },
+    image: lafkosArchiveImage,
+    relatedKeys: ['fampas-museum', 'lafkos-square'],
+    sources: compiledResearchSources,
+    featured: false,
+    isSeed: true,
+  },
+  {
+    kind: 'story',
+    entityKey: 'new-years-eve-school-tradition',
+    slug: { el: 'paramoni-protochronias-sto-scholeio', en: 'new-years-eve-school-tradition' },
+    title: { el: 'Η Παραμονή της Πρωτοχρονιάς στο σχολείο', en: 'New Year’s Eve at the School' },
+    eyebrow: { el: 'Μαθητική παράδοση', en: 'A school tradition' },
+    summary: {
+      el: 'Στις 31 Δεκεμβρίου οι μαθητές ανεβάζουν θέατρο, κόβουν την πίτα και οργανώνουν λαχειοφόρο για όλη την κοινότητα.',
+      en: 'On December 31, pupils perform theatre, cut the New Year’s pie, and hold a community lottery.',
+    },
+    body: {
+      el: [
+        'Κάθε Παραμονή Πρωτοχρονιάς οι μαθητές του Λαύκου παρουσιάζουν θεατρική παράσταση στο Δημοτικό Σχολείο. Η βραδιά συνεχίζεται με την κοπή της πίτας και λαχειοφόρο, ώστε η σχολική γιορτή να γίνεται συνάντηση ολόκληρης της κοινότητας.',
+      ],
+      en: [
+        'Every New Year’s Eve, Lafkos pupils perform a play at the primary school. The evening continues with the cutting of the New Year’s pie and a community lottery, turning a school celebration into a village gathering.',
+      ],
+    },
+    event: { month: 12, dayStart: 31, whenLabel: { el: '31 Δεκεμβρίου', en: 'December 31' } },
+    image: lafkosArchiveImage,
+    relatedKeys: ['old-school'],
+    sources: compiledResearchSources,
+    featured: false,
+    isSeed: true,
+  },
+  {
+    kind: 'story',
+    entityKey: 'landscape-of-water',
+    slug: { el: 'topio-tou-nerou', en: 'the-landscape-of-water' },
+    title: { el: 'Το τοπίο του νερού', en: 'The Landscape of Water' },
+    eyebrow: { el: 'Μικροτοπία της δυτικής πλευράς', en: 'A western micro-landscape' },
+    summary: {
+      el: 'Παλιόβρυση, πλάτανος και καλντερίμι προς τη Μηλίνα αφηγούνται μαζί την ίδρυση του οικισμού.',
+      en: 'Palaiovrysi, its plane tree, and the kalderimi to Milina together tell the story of the settlement’s founding.',
+    },
+    body: {
+      el: [
+        'Στη δυτική, ψηλότερη πλευρά του Λαύκου, η Παλιόβρυση, ο αιωνόβιος πλάτανός της και το καλντερίμι της Αγίας Παρασκευής προς τη Μηλίνα σχηματίζουν ένα ενιαίο ζωντανό σύστημα. Σε αυτή τη ρεματιά, κρυμμένη από τα πειρατικά πλοία, εγκαταστάθηκαν στα τέλη του 15ου αιώνα οι πρώτοι οικιστές· το νερό δεν ήταν απλώς υποδομή, ήταν ο λόγος της επιλογής και ο άξονας που έδωσε μορφή στη γειτονιά.',
+      ],
+      en: [
+        'On Lafkos’s higher western side, Palaiovrysi, its age-old plane tree, and the Agia Paraskevi kalderimi descending towards Milina form one living system. In this ravine, hidden from pirate ships, the first settlers arrived in the late 15th century; water was not merely infrastructure but the reason for their choice and the axis that shaped the quarter.',
+      ],
+    },
+    image: lafkosArchiveImage,
+    relatedKeys: ['palaiovrysi', 'agia-paraskevi-view', 'lafkos-milina-trail'],
+    sources: compiledResearchSources,
+    featured: true,
+    isSeed: true,
+  },
+  {
+    kind: 'story',
+    entityKey: 'entrance-from-argalasti',
+    slug: { el: 'i-eisodos-tis-argalastis', en: 'the-entrance-from-argalasti' },
+    title: { el: 'Η είσοδος της Αργαλαστής', en: 'The Entrance from Argalasti' },
+    eyebrow: { el: 'Νερό στον δρόμο των πεζοπόρων', en: 'Water on the hikers’ road' },
+    summary: {
+      el: 'Η Χατζόβρυση, ο πλάτανος και το καλντερίμι της Αργαλαστής συγκροτούν τη βόρεια είσοδο του Λαύκου.',
+      en: 'Chatzi Spring, its plane tree, and the Argalasti kalderimi form Lafkos’s northern entrance.',
+    },
+    body: {
+      el: [
+        'Η Χατζόβρυση, χτισμένη περίπου το 1800 από ευεργέτη που έφερε τον τίτλο του Χατζή, υποδέχεται τον πεζοπόρο στη βορειοδυτική είσοδο. Ο πλάτανός της και το φαρδύ καλντερίμι προς την Αργαλαστή κάνουν την πηγή πρακτικό σημείο προσανατολισμού και ανάπαυσης.',
+        'Για όποιον ακολουθεί τη διαδρομή, το νερό είναι πολύτιμη στάση, αλλά η πόσιμη καταλληλότητα πρέπει να επιβεβαιώνεται επιτόπου πριν από κάθε χρήση.',
+      ],
+      en: [
+        'Chatzi Spring, built around 1800 by a benefactor who had earned the title of Hadji, welcomes walkers at the north-western entrance. Its plane tree and broad kalderimi towards Argalasti make the spring both a practical landmark and a place to rest.',
+        'For anyone following the route, water is a valuable stop, but its potability should be confirmed locally before use.',
+      ],
+    },
+    image: lafkosArchiveImage,
+    relatedKeys: ['chatzi-spring', 'lafkos-square', 'old-lanes'],
+    sources: compiledResearchSources,
+    featured: false,
+    isSeed: true,
+  },
+  {
+    kind: 'story',
+    entityKey: 'touloumba-and-leivadakia',
+    slug: { el: 'touloumba-kai-leivadakia', en: 'touloumba-and-leivadakia' },
+    title: { el: 'Τουλούμπα και Λειβαδάκια', en: 'Touloumba and Livadakia' },
+    eyebrow: { el: 'Τοπίο εργασίας και νερού', en: 'A working water landscape' },
+    summary: {
+      el: 'Η Τουλούμπα του 1910, οι πηγές Στάκι και Σκούρα, ο πλάτανος του 1913 και η Καινούργια Βρύση κρατούν τη μνήμη της καθημερινής υδροδότησης.',
+      en: 'The 1910 Touloumba, Staki and Skoura springs, the 1913 plane tree, and Kainourgia Vrysi preserve the memory of everyday water work.',
+    },
+    body: {
+      el: [
+        'Στα Λειβαδάκια, η Τουλούμπα του 1910 έφερνε στο χωριό νερό από τις πηγές Στάκι και Σκούρα, ενώ ο πλάτανος του 1913 σημάδευε τον κοινόχρηστο χώρο. Λίγο πιο πέρα, η Καινούργια Βρύση με την υψηλή παροχή εξυπηρετούσε κυρίως το πλύσιμο των γυναικών.',
+        'Μαζί, αυτά τα σημεία δείχνουν πως η υδροδότηση ήταν εργασία, ρυθμός και κοινωνική ζωή — όχι αόρατη υπηρεσία πίσω από έναν σωλήνα.',
+      ],
+      en: [
+        'In Livadakia, the 1910 Touloumba brought water from the Staki and Skoura springs, while the 1913 plane tree marked the communal space. Nearby, high-flow Kainourgia Vrysi served especially as a place where women washed clothes.',
+        'Together, these sites show that water supply was labour, rhythm, and social life—not an invisible service behind a pipe.',
+      ],
+    },
+    image: lafkosArchiveImage,
+    relatedKeys: ['touloumba-spring', 'kainourgia-vrysi', 'palaiovrysi'],
+    sources: compiledResearchSources,
+    featured: false,
+    isSeed: true,
+  },
+  {
+    kind: 'story',
+    entityKey: 'hands-of-lafkos',
+    slug: { el: 'ta-cheria-tou-lavkou', en: 'the-hands-of-lafkos' },
+    title: { el: 'Τα χέρια του Λαύκου', en: 'The Hands of Lafkos' },
+    eyebrow: { el: 'Δίκτυο τεχνιτών και μνήμης', en: 'A network of makers and memory' },
+    summary: {
+      el: 'Από το τέμπλο και τα λιθανάγλυφα ως τα μουσεία, την κιθάρα και το ραδιόφωνο, ο Λαύκος αφηγείται την ιστορία του μέσα από ανθρώπινα χέρια.',
+      en: 'From iconostasis and stone reliefs to museums, guitar, and radio, Lafkos tells its story through human hands.',
+    },
+    body: {
+      el: [
+        'Στον ναό, το ξυλόγλυπτο τέμπλο του Φάμπα, οι εικόνες του Τσαμασφύρου και τα μάρμαρα του Τσάμη κάνουν την τέχνη απτή. Η διαδρομή συνεχίζεται στο Φάμπειο Μουσείο και στις Διεθνείς Ημέρες Κιθάρας, όπου η μνήμη του Δημήτρη Φάμπα περνά από το γλυπτό στη μουσική.',
+        'Έξω από τον οικισμό, ο πρωτομάστορας Ζουπανιώτης και ο Σπύρος Μίλιος άφησαν στη Μονή Αγίου Αθανασίου την τέχνη της πέτρας και τον ακτινωτό ήλιο τους. Στο Μουσείο Ραδιοφώνου «Αντώνης Ταβάνης» και στην προτομή του Αριστείδη Πολίτη, η ίδια ανθρώπινη αλυσίδα συνεχίζεται ως τεχνική, προσφορά και συλλογική μνήμη.',
+      ],
+      en: [
+        'In the church, Fampas’s carved iconostasis, Tsamasfyros’s icons, and Tsamis’s marble work make art tangible. The path continues at the Fampas Museum and the International Guitar Days, where the memory of Dimitris Fampas moves from sculpture into music.',
+        'Beyond the village, master builder Zoupaniotis and Spyros Milios left their stonework and radiant sun at Agios Athanasios Monastery. At the Antonis Tavanis Radio Museum and the bust of Aristidis Politis, the same human chain continues as craft, generosity, and shared memory.',
+      ],
+    },
+    image: lafkosArchiveImage,
+    relatedKeys: [
+      'theotokos-church',
+      'fampas-museum',
+      'international-guitar-days',
+      'monastery-athanasios',
+      'radio-museum',
+      'folklore-museum',
+    ],
+    sources: compiledResearchSources,
     featured: true,
     isSeed: true,
   },

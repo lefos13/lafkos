@@ -20,6 +20,7 @@ import {
   pointSchema,
   routeTypeSchema,
   sourceSchema,
+  storyEventSchema,
   youTubeUrlSchema,
   type ImageAsset,
   type Place,
@@ -117,6 +118,7 @@ const storyInputSchema = z.object({
   summary: localizedStringSchema,
   body: localizedStringArraySchema,
   image: imageSchema,
+  event: storyEventSchema.optional(),
   relatedKeys: z.array(z.string()).optional().default([]),
   sources: z.array(sourceSchema).min(1),
   featured: z.boolean().optional().default(false),
@@ -137,6 +139,16 @@ function toSanityImage(image?: ImageAsset) {
     alt: image.alt,
     credit: image.credit,
     license: image.license,
+  };
+}
+
+function toSanityStoryEvent(event: Story['event'], language: 'el' | 'en') {
+  if (!event) return undefined;
+  return {
+    month: event.month,
+    ...(event.dayStart === undefined ? {} : { dayStart: event.dayStart }),
+    ...(event.dayEnd === undefined ? {} : { dayEnd: event.dayEnd }),
+    whenLabel: event.whenLabel[language],
   };
 }
 
@@ -330,6 +342,7 @@ export function formatEntryDocuments(
       summary: entry.summary.el,
       body: entry.body.el,
       hero,
+      event: toSanityStoryEvent(entry.event, 'el'),
       relatedKeys: entry.relatedKeys || [],
       sources,
       featured: entry.featured,
@@ -349,6 +362,7 @@ export function formatEntryDocuments(
       summary: entry.summary.en,
       body: entry.body.en,
       hero,
+      event: toSanityStoryEvent(entry.event, 'en'),
       relatedKeys: entry.relatedKeys || [],
       sources,
       featured: entry.featured,

@@ -1,0 +1,576 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { locales, otherLocale, type Locale } from '../../lib/locales';
+import { timelineEvents } from '../../data/timeline';
+
+export function getStaticPaths() {
+  return locales.map((locale) => ({ params: { locale }, props: { locale } }));
+}
+
+const { locale } = Astro.props as { locale: Locale };
+const other = otherLocale(locale);
+
+const pageTitle =
+  locale === 'el'
+    ? 'Ο Λαύκος μέσα στον χρόνο — 1490 έως σήμερα'
+    : 'Lafkos Through Time — 1490 to Present';
+
+const pageDescription =
+  locale === 'el'
+    ? 'Μια ιστορική διαδρομή πέντε αιώνων στον οικισμό του Νοτίου Πηλίου: από τον αρχικό αθέατο πυρήνα παθητικής άμυνας στην Αγία Παρασκευή και τα 500 πέτρινα σπίτια, μέχρι τη μεγάλη αναμόρφωση της πλατείας το 1887, τα μουσεία και τη σύγχρονη διαφύλαξη της αρχιτεκτονικής του κληρονομιάς.'
+    : 'A five-century chronicle through the South Pelion settlement: from the secluded initial haven of passive defense at Agia Paraskevi and the era of 500 stone mansions, to the transformative redesign of the square in 1887, living museums, and modern architectural preservation.';
+
+const eyebrowLabel = locale === 'el' ? 'Ιστορικό Χρονολόγιο' : 'Historical Timeline';
+const milestonesLabel = locale === 'el' ? 'Ιστορικά Ορόσημα' : 'Historical Milestones';
+const erasHeading = locale === 'el' ? 'Εποχές & Σταθμοί' : 'Eras & Epochs';
+const highlightsHeading = locale === 'el' ? 'Ιστορικά Στοιχεία' : 'Key Highlights';
+const lossBadgeLabel = locale === 'el' ? 'Απώλεια' : 'Loss';
+const pivotalBadgeLabel = locale === 'el' ? 'Έτος-Ορόσημο' : 'Pivotal Milestone';
+const exploreMapLabel = locale === 'el' ? 'Εξερεύνηση στον Χάρτη' : 'Explore on Map';
+const backToHomeLabel = locale === 'el' ? '← Αρχική' : '← Home';
+---
+
+<BaseLayout
+  locale={locale}
+  title={pageTitle}
+  description={pageDescription}
+  alternateHref={`/${other}/timeline`}
+>
+  <section class="prose-section container timeline-page">
+    <nav
+      class="timeline-breadcrumb"
+      aria-label={locale === 'el' ? 'Πλοήγηση διαδρομής' : 'Breadcrumb'}
+    >
+      <a href={`/${locale}/`} class="timeline-back-link">{backToHomeLabel}</a>
+      <span class="breadcrumb-separator" aria-hidden="true">/</span>
+      <span class="breadcrumb-current">{eyebrowLabel}</span>
+    </nav>
+
+    <header class="timeline-hero">
+      <p class="eyebrow">{eyebrowLabel}</p>
+      <h1 class="page-title">{pageTitle}</h1>
+      <p class="lede">{pageDescription}</p>
+    </header>
+
+    <div class="timeline-layout">
+      <aside class="timeline-sidebar">
+        <div class="sidebar-card">
+          <h2 class="sidebar-title">{erasHeading}</h2>
+          <div class="sidebar-pills">
+            <div class="meta-pill meta-pill--stacked">
+              <strong>~1500–1785</strong>
+              <span
+                >{
+                  locale === 'el' ? 'Πρώτος Πυρήνας & Αυτάρκεια' : 'First Settlement & Refuge'
+                }</span
+              >
+            </div>
+            <div class="meta-pill meta-pill--stacked">
+              <strong>1815–1861</strong>
+              <span>{locale === 'el' ? 'Χρυσή Ακμή & Αρχοντικά' : 'Golden Age & Mansions'}</span>
+            </div>
+            <div class="meta-pill meta-pill--stacked">
+              <strong>1887</strong>
+              <span
+                >{
+                  locale === 'el' ? 'Διαμόρφωση Κεντρικής Πλατείας' : 'Birth of the Central Square'
+                }</span
+              >
+            </div>
+            <div class="meta-pill meta-pill--stacked">
+              <strong>1904–1957</strong>
+              <span
+                >{
+                  locale === 'el' ? 'Παρθεναγωγείο & Μεταπολεμικά' : 'Girls’ School & Modern Era'
+                }</span
+              >
+            </div>
+            <div class="meta-pill meta-pill--stacked">
+              <strong>1976–2008</strong>
+              <span
+                >{
+                  locale === 'el' ? 'Σύλλογος «Η Δράση» & Μουσεία' : 'Cultural Revival & Museums'
+                }</span
+              >
+            </div>
+            <div class="meta-pill meta-pill--stacked">
+              <strong>{locale === 'el' ? 'Σήμερα' : 'Present'}</strong>
+              <span
+                >{locale === 'el' ? 'Αρχιτεκτονική Διατήρηση' : 'Architectural Preservation'}</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <h2 class="sidebar-title">{highlightsHeading}</h2>
+          <ul class="summary-list">
+            <li>
+              <span class="summary-label"
+                >{locale === 'el' ? 'Πρώτη εγκατάσταση' : 'First settlement'}</span
+              >
+              <span class="summary-value"
+                >~1500 ({locale === 'el' ? 'Αγία Παρασκευή' : 'Agia Paraskevi'})</span
+              >
+            </li>
+            <li>
+              <span class="summary-label"
+                >{locale === 'el' ? 'Ιστορικό καφενείο' : 'Historic café'}</span
+              >
+              <span class="summary-value"
+                >{locale === 'el' ? '1785 (Φορλίδας)' : '1785 (Forlidas)'}</span
+              >
+            </li>
+            <li>
+              <span class="summary-label"
+                >{locale === 'el' ? 'Μέγιστος πληθυσμός' : 'Peak population'}</span
+              >
+              <span class="summary-value"
+                >~2.500 ({locale === 'el' ? '500 σπίτια, 1815' : '500 houses, 1815'})</span
+              >
+            </li>
+            <li>
+              <span class="summary-label"
+                >{locale === 'el' ? 'Διαμόρφωση πλατείας' : 'Village square'}</span
+              >
+              <span class="summary-value"
+                >1887 ({locale === 'el' ? 'Ναός & Πλάτανοι' : 'Church & Planes'})</span
+              >
+            </li>
+            <li>
+              <span class="summary-label"
+                >{locale === 'el' ? 'Μουσεία χωριού' : 'Village museums'}</span
+              >
+              <span class="summary-value"
+                >3 ({
+                  locale === 'el' ? 'Φάμπειο, Ραδιοφώνου, Φάμπρικα' : 'Fampa, Radio, Olive Mill'
+                })</span
+              >
+            </li>
+          </ul>
+          <a class="button button-secondary map-sidebar-cta" href={`/${locale}/map`}>
+            {exploreMapLabel}
+            <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </aside>
+
+      <div class="timeline-main-wrap">
+        <ol class="timeline-list" aria-label={milestonesLabel}>
+          {
+            timelineEvents.map((event) => {
+              const isLoss = event.kind === 'loss';
+              const isPivotal = event.year === 1887 || event.year === '1887';
+              return (
+                <li
+                  class:list={[
+                    'timeline-item',
+                    {
+                      'timeline-item--loss': isLoss,
+                      'timeline-item--pivotal': isPivotal,
+                    },
+                  ]}
+                >
+                  <div class="timeline-marker" aria-hidden="true" />
+                  <article class="timeline-card">
+                    <header class="timeline-card-header">
+                      <div class="timeline-meta-group">
+                        <time class="timeline-year">{event.year}</time>
+                        {isLoss && (
+                          <span class="timeline-badge timeline-badge--loss">{lossBadgeLabel}</span>
+                        )}
+                        {isPivotal && (
+                          <span class="timeline-badge timeline-badge--pivotal">
+                            {pivotalBadgeLabel}
+                          </span>
+                        )}
+                      </div>
+                      {event.stat && <span class="timeline-stat-pill">{event.stat}</span>}
+                    </header>
+                    <h2 class="timeline-title">{event.title[locale]}</h2>
+                    <p class="timeline-body">{event.body[locale]}</p>
+                  </article>
+                </li>
+              );
+            })
+          }
+        </ol>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .timeline-page {
+    padding-top: 2rem;
+    padding-bottom: 6rem;
+  }
+
+  .timeline-breadcrumb {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .timeline-back-link {
+    font-weight: 600;
+    color: var(--olive);
+    transition: color 150ms ease;
+  }
+
+  .timeline-back-link:hover {
+    color: var(--deep-olive);
+    text-decoration: underline;
+  }
+
+  .timeline-hero {
+    max-width: 50rem;
+    margin-bottom: 3.5rem;
+  }
+
+  .timeline-layout {
+    display: grid;
+    gap: 2.5rem;
+  }
+
+  @media (min-width: 900px) {
+    .timeline-layout {
+      grid-template-columns: minmax(16rem, 20rem) minmax(0, 1fr);
+      align-items: start;
+      gap: 3.5rem;
+    }
+
+    .timeline-sidebar {
+      position: sticky;
+      top: 2rem;
+    }
+  }
+
+  .timeline-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+
+  .sidebar-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(26, 43, 38, 0.03);
+  }
+
+  .sidebar-title {
+    font-family: Newsreader, Georgia, serif;
+    font-size: 1.35rem;
+    font-weight: 500;
+    color: var(--deep-olive);
+    margin: 0 0 1rem;
+    line-height: 1.15;
+  }
+
+  .sidebar-pills {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .meta-pill--stacked {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+    padding: 0.65rem 0.85rem;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.65);
+    border: 1px solid var(--line);
+  }
+
+  .meta-pill--stacked strong {
+    color: var(--deep-olive);
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  .meta-pill--stacked span {
+    color: var(--muted);
+    font-size: 0.78rem;
+    line-height: 1.35;
+  }
+
+  .summary-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .summary-list li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    border-bottom: 1px solid rgba(36, 67, 63, 0.08);
+    padding-bottom: 0.6rem;
+  }
+
+  .summary-list li:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .summary-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+    font-weight: 700;
+  }
+
+  .summary-value {
+    font-size: 0.88rem;
+    color: var(--ink);
+    font-weight: 500;
+    line-height: 1.35;
+  }
+
+  .map-sidebar-cta {
+    width: 100%;
+    justify-content: center;
+    font-size: 0.85rem;
+  }
+
+  .map-sidebar-cta:hover {
+    background: var(--deep-olive);
+    color: var(--paper);
+    border-color: var(--deep-olive);
+  }
+
+  .timeline-main-wrap {
+    position: relative;
+  }
+
+  .timeline-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: relative;
+  }
+
+  .timeline-list::before {
+    content: '';
+    position: absolute;
+    top: 1.75rem;
+    bottom: 2rem;
+    left: 1.1rem;
+    width: 2px;
+    background: var(--line);
+  }
+
+  .timeline-item {
+    position: relative;
+    padding-left: 3.25rem;
+    padding-bottom: 2.75rem;
+  }
+
+  .timeline-item:last-child {
+    padding-bottom: 0;
+  }
+
+  .timeline-marker {
+    position: absolute;
+    top: 1.75rem;
+    left: 1.1rem;
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 50%;
+    background: var(--limestone);
+    border: 2.5px solid var(--deep-olive);
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    transition:
+      transform 180ms ease,
+      border-color 180ms ease,
+      box-shadow 180ms ease;
+  }
+
+  .timeline-item:hover .timeline-marker {
+    transform: translate(-50%, -50%) scale(1.25);
+    border-color: var(--terracotta);
+  }
+
+  .timeline-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 1.75rem 2rem;
+    box-shadow: 0 4px 20px rgba(26, 43, 38, 0.04);
+    transition:
+      transform 180ms ease,
+      box-shadow 180ms ease,
+      border-color 180ms ease;
+  }
+
+  .timeline-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(26, 43, 38, 0.08);
+    border-color: rgba(36, 67, 63, 0.25);
+  }
+
+  .timeline-card-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .timeline-meta-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .timeline-year {
+    font-family: Newsreader, Georgia, serif;
+    font-size: 1.95rem;
+    font-weight: 600;
+    color: var(--deep-olive);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .timeline-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.22rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    line-height: 1.2;
+  }
+
+  .timeline-badge--loss {
+    background: rgba(185, 101, 74, 0.12);
+    color: var(--terracotta);
+    border: 1px dashed var(--terracotta);
+  }
+
+  .timeline-badge--pivotal {
+    background: rgba(209, 167, 88, 0.2);
+    color: #8a6414;
+    border: 1px solid var(--gold);
+  }
+
+  .timeline-stat-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(36, 67, 63, 0.07);
+    color: var(--deep-olive);
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+
+  .timeline-title {
+    font-family: Newsreader, Georgia, serif;
+    font-size: 1.45rem;
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--ink);
+    margin: 0.4rem 0 0.85rem;
+  }
+
+  .timeline-body {
+    color: #455650;
+    font-size: 1.02rem;
+    line-height: 1.75;
+    margin: 0;
+  }
+
+  /* Pivotal Year (1887) Accent */
+  .timeline-item--pivotal .timeline-marker {
+    width: 1.45rem;
+    height: 1.45rem;
+    background: var(--gold);
+    border: 3px solid var(--deep-olive);
+    box-shadow: 0 0 0 4px rgba(209, 167, 88, 0.3);
+  }
+
+  .timeline-item--pivotal .timeline-card {
+    border: 2px solid var(--gold);
+    background: linear-gradient(180deg, #fffdf8 0%, var(--paper) 100%);
+    box-shadow: 0 10px 30px rgba(209, 167, 88, 0.15);
+  }
+
+  .timeline-item--pivotal .timeline-year {
+    font-size: 2.2rem;
+    color: var(--deep-olive);
+  }
+
+  /* Loss Row Styling */
+  .timeline-item--loss .timeline-marker {
+    border: 2.5px dashed var(--terracotta);
+    background: var(--limestone);
+  }
+
+  .timeline-item--loss .timeline-card {
+    border: 1.5px dashed rgba(185, 101, 74, 0.45);
+    background: rgba(251, 249, 244, 0.7);
+    opacity: 0.95;
+  }
+
+  .timeline-item--loss .timeline-year {
+    color: var(--terracotta);
+  }
+
+  .timeline-item--loss .timeline-title {
+    color: #523730;
+  }
+
+  @media (max-width: 640px) {
+    .timeline-item {
+      padding-left: 2.75rem;
+      padding-bottom: 2rem;
+    }
+
+    .timeline-list::before {
+      left: 0.85rem;
+    }
+
+    .timeline-marker {
+      left: 0.85rem;
+    }
+
+    .timeline-card {
+      padding: 1.25rem 1.25rem;
+    }
+
+    .timeline-year {
+      font-size: 1.6rem;
+    }
+
+    .timeline-item--pivotal .timeline-year {
+      font-size: 1.8rem;
+    }
+
+    .timeline-title {
+      font-size: 1.25rem;
+    }
+
+    .timeline-body {
+      font-size: 0.96rem;
+    }
+  }
+</style>

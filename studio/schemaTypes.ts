@@ -149,11 +149,13 @@ const videoUrlField = defineField({
   title: 'YouTube video URL (optional)',
   type: 'url',
   validation: (rule) =>
-    rule.uri({ scheme: ['https'] }).custom((value) =>
-      !value || YOUTUBE_URL_PATTERN.test(value)
-        ? true
-        : 'Must be a valid YouTube video URL (youtube.com/watch, youtu.be, shorts, or embed link)',
-    ),
+    rule
+      .uri({ scheme: ['https'] })
+      .custom((value) =>
+        !value || YOUTUBE_URL_PATTERN.test(value)
+          ? true
+          : 'Must be a valid YouTube video URL (youtube.com/watch, youtu.be, shorts, or embed link)',
+      ),
 });
 const place = defineType({
   name: 'place',
@@ -184,6 +186,7 @@ const place = defineType({
           { title: 'Nature / Φύση', value: 'nature' },
           { title: 'Viewpoint / Θέα', value: 'viewpoint' },
           { title: 'Community / Καθημερινή ζωή', value: 'community' },
+          { title: 'Stay / Φιλοξενία', value: 'stay' },
         ],
       },
       validation: (rule) => rule.required(),
@@ -423,6 +426,48 @@ const trail = defineType({
   },
 });
 
+const storyEventField = defineField({
+  name: 'event',
+  title: 'Event metadata (optional)',
+  type: 'object',
+  fields: [
+    defineField({
+      name: 'month',
+      title: 'Month',
+      type: 'number',
+      validation: (rule) => rule.required().integer().min(1).max(12),
+    }),
+    defineField({
+      name: 'dayStart',
+      title: 'Starting day (optional)',
+      type: 'number',
+      validation: (rule) => rule.integer().min(1).max(31),
+    }),
+    defineField({
+      name: 'dayEnd',
+      title: 'Ending day (optional)',
+      type: 'number',
+      validation: (rule) => rule.integer().min(1).max(31),
+    }),
+    defineField({
+      name: 'whenLabel',
+      title: 'When label / Πότε',
+      type: 'string',
+      validation: (rule) => rule.required(),
+    }),
+  ],
+  validation: (rule) =>
+    rule.custom((value) => {
+      if (!value || typeof value !== 'object') return true;
+      const event = value as { dayStart?: number; dayEnd?: number };
+      return event.dayStart === undefined ||
+        event.dayEnd === undefined ||
+        event.dayEnd >= event.dayStart
+        ? true
+        : 'Ending day must be greater than or equal to starting day';
+    }),
+});
+
 const story = defineType({
   name: 'story',
   title: 'Story',
@@ -441,6 +486,7 @@ const story = defineType({
     localizedText('summary', 'Summary', 3),
     paragraphList('body', 'Body paragraphs'),
     imageField('hero', 'Hero image', true),
+    storyEventField,
     defineField({
       name: 'relatedKeys',
       title: 'Related place or trail entity keys',
@@ -493,7 +539,16 @@ const category = defineType({
       title: 'Category ID',
       type: 'string',
       options: {
-        list: ['heritage', 'architecture', 'sacred', 'nature', 'viewpoint', 'community', 'trail'],
+        list: [
+          'heritage',
+          'architecture',
+          'sacred',
+          'nature',
+          'viewpoint',
+          'community',
+          'stay',
+          'trail',
+        ],
       },
       validation: (rule) => rule.required(),
     }),

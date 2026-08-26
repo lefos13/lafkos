@@ -25,6 +25,50 @@ const places = featuredPlaces(dataset.places);
 const trails = featuredTrails(dataset.trails);
 const stories = featuredStories(dataset.stories);
 const categories = dataset.categories;
+
+const statsEyebrow = locale === 'el' ? 'Λαύκος σε αριθμούς' : 'Lafkos in numbers';
+const statsTitle = locale === 'el' ? 'Ο τόπος με μια ματιά.' : 'The village at a glance.';
+const ctaEventsLabel = locale === 'el' ? 'Ο ετήσιος κύκλος' : 'The Annual Cycle';
+const ctaTimelineLabel = locale === 'el' ? 'Ιστορικό χρονολόγιο' : 'Historical Timeline';
+
+const statsItems = [
+  {
+    value: '1785',
+    label: locale === 'el' ? 'Καφενείο Φορλίδα' : 'Forlidas Café',
+    caption: locale === 'el' ? 'το αρχαιότερο καφενείο της Ελλάδας' : "Greece's oldest café",
+  },
+  {
+    value: locale === 'el' ? '3 μουσεία' : '3 museums',
+    label: locale === 'el' ? 'Πολιτισμός' : 'Culture',
+    caption: locale === 'el' ? 'για 378 κατοίκους' : 'museums for 378 residents',
+  },
+  {
+    value: locale === 'el' ? '168 χλμ.' : '168 km',
+    label: 'Long Pelion Trail',
+    caption:
+      locale === 'el'
+        ? 'το εμβληματικό δίκτυο πεζοπορίας του Πηλίου'
+        : 'flagship long-distance trail at our doorstep',
+  },
+  {
+    value: locale === 'el' ? '16 διαδρομές' : '16 routes',
+    label: locale === 'el' ? 'Αναρρίχηση' : 'Climbing',
+    caption: locale === 'el' ? 'αναρριχητικό πεδίο του Μικρού' : 'climbing routes at Mikro',
+  },
+  {
+    value: locale === 'el' ? '5 καταλύματα' : '5 guesthouses',
+    label: locale === 'el' ? 'Φιλοξενία' : 'Hospitality',
+    caption:
+      locale === 'el'
+        ? 'παραδοσιακή διαμονή σε ιστορικά αρχοντικά'
+        : 'traditional stays in historic mansions',
+  },
+  {
+    value: locale === 'el' ? 'Πεζοδρομημένο' : 'Car-free',
+    label: locale === 'el' ? 'Ήπιος Ρυθμός' : 'Pace of Life',
+    caption: locale === 'el' ? 'η καρδιά του χωριού χωρίς αυτοκίνητα' : 'car-free village heart',
+  },
+];
 ---
 
 <BaseLayout locale={locale} title={ui.explore} description={ui.introLong} darkHeader>
@@ -39,6 +83,37 @@ const categories = dataset.categories;
         >
         <a class="button button-ghost" href={`/${locale}/stories/reading-lafkos`}>{ui.readStory}</a>
       </div>
+    </div>
+  </section>
+
+  <section class="stats-band container" aria-labelledby="stats-title">
+    <div class="stats-header">
+      <div>
+        <p class="eyebrow">{statsEyebrow}</p>
+        <h2 id="stats-title" class="section-title">{statsTitle}</h2>
+      </div>
+      <div class="stats-ctas">
+        <a class="button button-secondary stats-cta-btn" href={`/${locale}/events`}>
+          <span>{ctaEventsLabel}</span>
+          <span class="cta-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="button button-secondary stats-cta-btn" href={`/${locale}/timeline`}>
+          <span>{ctaTimelineLabel}</span>
+          <span class="cta-arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      {
+        statsItems.map((stat) => (
+          <div class="stat-card">
+            <p class="stat-label">{stat.label}</p>
+            <div class="stat-value">{stat.value}</div>
+            <p class="stat-caption">{stat.caption}</p>
+          </div>
+        ))
+      }
     </div>
   </section>
 
@@ -106,3 +181,101 @@ const categories = dataset.categories;
     <SeedNotice locale={locale} />
   </section>
 </BaseLayout>
+
+<style>
+  .stats-band {
+    padding: 4.5rem 0 2.5rem;
+  }
+
+  .stats-header {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .stats-header {
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+  }
+
+  .stats-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .stats-cta-btn {
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .cta-arrow {
+    transition: transform 150ms ease;
+  }
+
+  .stats-cta-btn:hover .cta-arrow {
+    transform: translateX(3px);
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  @media (min-width: 900px) {
+    .stats-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+    }
+  }
+
+  .stat-card {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 1.4rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--paper);
+    box-shadow: 0 4px 20px rgba(26, 43, 38, 0.04);
+    transition:
+      transform 180ms ease,
+      box-shadow 180ms ease;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(26, 43, 38, 0.08);
+  }
+
+  .stat-label {
+    margin: 0 0 0.35rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+  }
+
+  .stat-value {
+    font-family: Newsreader, Georgia, serif;
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--deep-olive);
+    margin-bottom: 0.35rem;
+  }
+
+  .stat-caption {
+    margin: 0;
+    font-size: 0.88rem;
+    line-height: 1.45;
+    color: var(--muted);
+  }
+</style>

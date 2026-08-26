@@ -1,13 +1,14 @@
-import type {
-  Category,
-  CategoryId,
-  Coordinate,
-  ImageAsset,
-  Place,
-  Source,
-  Story,
-  Trail,
-  RouteType,
+import {
+  storyEventSchema,
+  type Category,
+  type CategoryId,
+  type Coordinate,
+  type ImageAsset,
+  type Place,
+  type Source,
+  type Story,
+  type Trail,
+  type RouteType,
 } from './content';
 import { urlForImage } from './sanity-client';
 
@@ -85,6 +86,12 @@ export const STORIES_QUERY = `*[_type == "story" && !(_id in path("drafts.**"))]
   hero {
     ...,
     asset-> { _id, url }
+  },
+  event {
+    month,
+    dayStart,
+    dayEnd,
+    whenLabel
   },
   relatedKeys,
   sources,
@@ -438,10 +445,39 @@ export interface SanityStoryDoc {
   summary?: string;
   body?: string[];
   hero?: SanityImageRaw;
+  event?: {
+    month?: number;
+    dayStart?: number;
+    dayEnd?: number;
+    whenLabel?: string;
+  };
   relatedKeys?: string[];
   sources?: Array<{ label: string; url: string }>;
   featured?: boolean;
   isSeed?: boolean;
+}
+
+function transformSanityStoryEvent(
+  elEvent: SanityStoryDoc['event'],
+  enEvent: SanityStoryDoc['event'],
+): Story['event'] {
+  if (!elEvent && !enEvent) return undefined;
+
+  const parsed = storyEventSchema.safeParse({
+    month: elEvent?.month ?? enEvent?.month,
+    ...(elEvent?.dayStart !== undefined || enEvent?.dayStart !== undefined
+      ? { dayStart: elEvent?.dayStart ?? enEvent?.dayStart }
+      : {}),
+    ...(elEvent?.dayEnd !== undefined || enEvent?.dayEnd !== undefined
+      ? { dayEnd: elEvent?.dayEnd ?? enEvent?.dayEnd }
+      : {}),
+    whenLabel: {
+      el: elEvent?.whenLabel ?? enEvent?.whenLabel ?? '',
+      en: enEvent?.whenLabel ?? elEvent?.whenLabel ?? '',
+    },
+  });
+
+  return parsed.success ? parsed.data : undefined;
 }
 
 export function transformSanityStories(docs: SanityStoryDoc[]): Story[] {
@@ -476,6 +512,8 @@ export function transformSanityStories(docs: SanityStoryDoc[]): Story[] {
       url: s.url || 'https://lafkos.gr/',
     }));
 
+    const event = transformSanityStoryEvent(el.event, en.event);
+
     stories.push({
       kind: 'story',
       entityKey,
@@ -500,6 +538,7 @@ export function transformSanityStories(docs: SanityStoryDoc[]): Story[] {
         en: en.body || [],
       },
       image: hero,
+      ...(event ? { event } : {}),
       relatedKeys: el.relatedKeys || en.relatedKeys || [],
       sources:
         sources.length > 0 ? sources : [{ label: 'Lafkos Archive', url: 'https://lafkos.gr/' }],

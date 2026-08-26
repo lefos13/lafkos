@@ -20,7 +20,7 @@ import {
   type SanityStoryDoc,
   type SanityTrailDoc,
 } from '../src/lib/sanity-transform';
-import { lineStringSchema, pointSchema } from '../src/lib/content';
+import { lineStringSchema, pointSchema, storyEventSchema } from '../src/lib/content';
 import { formatEntryDocuments } from '../scripts/import-entry';
 describe('Sanity Client Config', () => {
   it('detects unconfigured or placeholder project IDs', () => {
@@ -52,6 +52,31 @@ describe('Sanity Client Config', () => {
 });
 
 describe('Sanity Document Transformers', () => {
+  it('validates optional story event metadata', () => {
+    expect(
+      storyEventSchema.safeParse({
+        month: 8,
+        dayStart: 14,
+        dayEnd: 16,
+        whenLabel: { el: '14–16 Αυγούστου', en: '14–16 August' },
+      }).success,
+    ).toBe(true);
+    expect(
+      storyEventSchema.safeParse({
+        month: 13,
+        whenLabel: { el: 'Αύγουστος', en: 'August' },
+      }).success,
+    ).toBe(false);
+    expect(
+      storyEventSchema.safeParse({
+        month: 8,
+        dayStart: 16,
+        dayEnd: 14,
+        whenLabel: { el: '14–16 Αυγούστου', en: '14–16 August' },
+      }).success,
+    ).toBe(false);
+  });
+
   it('transforms paired bilingual Place documents into unified Place objects', () => {
     const rawPlaces: SanityPlaceDoc[] = [
       {
@@ -278,6 +303,12 @@ describe('Sanity Document Transformers', () => {
           credit: 'Photo',
           license: 'CC BY-SA 4.0',
         },
+        event: {
+          month: 8,
+          dayStart: 14,
+          dayEnd: 16,
+          whenLabel: '14–16 Αυγούστου',
+        },
         relatedKeys: ['lafkos-square'],
         sources: [{ label: 'Source', url: 'https://example.com' }],
         featured: true,
@@ -300,6 +331,12 @@ describe('Sanity Document Transformers', () => {
           credit: 'Photo',
           license: 'CC BY-SA 4.0',
         },
+        event: {
+          month: 8,
+          dayStart: 14,
+          dayEnd: 16,
+          whenLabel: '14–16 August',
+        },
         relatedKeys: ['lafkos-square'],
         sources: [{ label: 'Source', url: 'https://example.com' }],
         featured: true,
@@ -312,6 +349,12 @@ describe('Sanity Document Transformers', () => {
     expect(stories[0].title.el).toBe('Ιστορία');
     expect(stories[0].title.en).toBe('Story');
     expect(stories[0].relatedKeys).toContain('lafkos-square');
+    expect(stories[0].event).toEqual({
+      month: 8,
+      dayStart: 14,
+      dayEnd: 16,
+      whenLabel: { el: '14–16 Αυγούστου', en: '14–16 August' },
+    });
 
     const rawCategories: SanityCategoryDoc[] = [
       {
@@ -332,6 +375,21 @@ describe('Sanity Document Transformers', () => {
     expect(categories[0].id).toBe('heritage');
     expect(categories[0].label.el).toBe('Ιστορία');
     expect(categories[0].label.en).toBe('Heritage');
+
+    const stayCategories = transformSanityCategories([
+      {
+        _id: 'category-stay',
+        _type: 'category',
+        id: 'stay',
+        labelEl: 'Φιλοξενία',
+        labelEn: 'Stay',
+        descriptionEl: 'Καταλύματα',
+        descriptionEn: 'Accommodation',
+        color: '#6c7aa1',
+        icon: '⌂',
+      },
+    ]);
+    expect(stayCategories[0].id).toBe('stay');
   });
 });
 
@@ -433,7 +491,7 @@ describe('Seed NDJSON Archive Integrity & Entry Formatter', () => {
       eyebrow: { el: 'Σημείο', en: 'Point' },
       summary: { el: 'Περίληψη', en: 'Summary' },
       body: { el: ['Κείμενο'], en: ['Text'] },
-      category: 'heritage',
+      category: 'stay',
       geometry: { type: 'Point', coordinates: [23.246, 39.177] },
       mapAnchor: [23.246, 39.177],
       images: [
@@ -453,6 +511,8 @@ describe('Seed NDJSON Archive Integrity & Entry Formatter', () => {
 
     expect(elDoc._id).toBe('place-sample-point-el');
     expect(enDoc._id).toBe('place-sample-point-en');
+    expect(elDoc.category).toBe('stay');
+    expect(enDoc.category).toBe('stay');
     expect(metaDoc._id).toBe('translation.place-sample-point');
     expect(metaDoc._type).toBe('translation.metadata');
 
@@ -500,5 +560,44 @@ describe('Seed NDJSON Archive Integrity & Entry Formatter', () => {
     expect(trailElDoc.videoUrl).toBe('https://youtu.be/jNQXAC9IVRw');
     expect(trailEnDoc._id).toBe('trail-sample-path-en');
     expect(trailEnDoc.videoUrl).toBe('https://youtu.be/jNQXAC9IVRw');
+
+    const [storyElDoc, storyEnDoc] = formatEntryDocuments({
+      kind: 'story',
+      entityKey: 'festival-story',
+      slug: { el: 'istoria-festival', en: 'festival-story' },
+      title: { el: 'Ιστορία φεστιβάλ', en: 'Festival story' },
+      eyebrow: { el: 'Παράδοση', en: 'Tradition' },
+      summary: { el: 'Περίληψη', en: 'Summary' },
+      body: { el: ['Κείμενο'], en: ['Text'] },
+      image: {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Platia_in_Lafkos%2C_Pilion.jpg',
+        alt: 'Εικόνα',
+        credit: 'Photo',
+        license: 'CC BY-SA 4.0',
+      },
+      event: {
+        month: 8,
+        dayStart: 14,
+        dayEnd: 16,
+        whenLabel: { el: '14–16 Αυγούστου', en: '14–16 August' },
+      },
+      relatedKeys: [],
+      sources: [{ label: 'Source', url: 'https://example.com' }],
+      featured: false,
+      isSeed: true,
+    });
+
+    expect(storyElDoc.event).toEqual({
+      month: 8,
+      dayStart: 14,
+      dayEnd: 16,
+      whenLabel: '14–16 Αυγούστου',
+    });
+    expect(storyEnDoc.event).toEqual({
+      month: 8,
+      dayStart: 14,
+      dayEnd: 16,
+      whenLabel: '14–16 August',
+    });
   });
 });

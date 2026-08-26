@@ -45,7 +45,7 @@ Every entry authored for Lafkos Guide must satisfy these core invariants:
     "el": ["Πρώτη παράγραφος αναλυτικού κειμένου.", "Δεύτερη παράγραφος."],
     "en": ["First paragraph of in-depth article.", "Second paragraph."]
   },
-  "category": "heritage", // heritage | architecture | sacred | nature | viewpoint | community
+  "category": "heritage", // heritage | architecture | sacred | nature | viewpoint | community | stay
   "geometry": {
     "type": "Point",
     "coordinates": [23.24646, 39.17751]
@@ -146,6 +146,12 @@ Both places and trails may carry a single optional `videoUrl` (https YouTube URL
     "el": ["Κείμενο ιστορίας...", "Δεύτερη παράγραφος..."],
     "en": ["Story text...", "Second paragraph..."]
   },
+  "event": {
+    "month": 8,
+    "dayStart": 14,
+    "dayEnd": 16,
+    "whenLabel": { "el": "14–16 Αυγούστου", "en": "14–16 August" }
+  },
   "image": {
     "src": "https://upload.wikimedia.org/...jpg",
     "alt": "Ιστορική φωτογραφία",
@@ -158,6 +164,8 @@ Both places and trails may carry a single optional `videoUrl` (https YouTube URL
   "isSeed": true
 }
 ```
+
+The optional `event` object describes a story connected to a recurring or dated event. `month` is required and must be `1`–`12`; `dayStart` and `dayEnd`, when present, must be `1`–`31`, and `dayEnd` must be greater than or equal to `dayStart`. `whenLabel` is a required localized display string. Stories without `event` remain valid, so existing content requires no backfill.
 
 ---
 
@@ -198,6 +206,7 @@ Both places and trails may carry a single optional `videoUrl` (https YouTube URL
    ```bash
    pnpm studio:import-seed
    ```
+
 ### Method 3: Via Sanity Studio UI
 
 1. Run `pnpm studio:dev` and open `http://localhost:3333`.

@@ -76,6 +76,13 @@ export const structure = (S: StructureBuilder) =>
                             .title('Community Places')
                             .filter('_type == "place" && category == "community"'),
                         ),
+                      S.listItem()
+                        .title('Φιλοξενία / Stay')
+                        .child(
+                          S.documentList()
+                            .title('Stay Places')
+                            .filter('_type == "place" && category == "stay"'),
+                        ),
                     ]),
                 ),
               S.listItem()

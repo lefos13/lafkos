@@ -28,7 +28,8 @@ const other = otherLocale(locale);
 const relatedEntries = story.relatedKeys
   .map((key) => {
     const place = dataset.places.find((p) => p.entityKey === key);
-    if (place) return { entry: place, category: dataset.categories.find((c) => c.id === place.category) };
+    if (place)
+      return { entry: place, category: dataset.categories.find((c) => c.id === place.category) };
     const trail = dataset.trails.find((t) => t.entityKey === key);
     if (trail) return { entry: trail, category: dataset.categories.find((c) => c.id === 'trail') };
     return null;
@@ -63,6 +64,30 @@ const fieldNotesLabel = locale === 'el' ? 'Σημειώσεις πεδίου' : 
     <header class="story-hero-header">
       <div class="story-hero-meta">
         <span class="story-eyebrow-pill">{story.eyebrow[locale]}</span>
+        {
+          story.event && (
+            <span class="story-event-badge">
+              <svg
+                class="story-event-icon"
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="3" y1="10" x2="21" y2="10" />
+              </svg>
+              <span>{story.event.whenLabel[locale]}</span>
+            </span>
+          )
+        }
         <span class="story-read-time">{readingTimeLabel}</span>
       </div>
       <h1 class="story-headline">{story.title[locale]}</h1>
@@ -94,7 +119,8 @@ const fieldNotesLabel = locale === 'el' ? 'Σημειώσεις πεδίου' : 
             }
           </p>
           <a class="button button-secondary sidebar-action" href={`/${locale}/map`}>
-            {exploreMapLabel} <span aria-hidden="true">↗</span>
+            {exploreMapLabel}
+            <span aria-hidden="true">↗</span>
           </a>
         </div>
       </aside>
@@ -164,3 +190,22 @@ const fieldNotesLabel = locale === 'el' ? 'Σημειώσεις πεδίου' : 
     }
   </article>
 </BaseLayout>
+
+<style>
+  .story-event-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.65rem;
+    border: 1px solid rgba(185, 101, 74, 0.35);
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--terracotta);
+    background: rgba(185, 101, 74, 0.08);
+  }
+
+  .story-event-icon {
+    flex-shrink: 0;
+  }
+</style>
