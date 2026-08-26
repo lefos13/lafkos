@@ -21,4 +21,18 @@ describe('map URL state', () => {
       '?categories=heritage&place=lafkos-square',
     );
   });
+
+  it('round-trips the bookmarkable narrative scope and lens', () => {
+    const state = parseMapState('?scope=walks&theme=stone-craft&categories=trail');
+    expect(state.scope).toBe('walks');
+    expect(state.theme).toBe('stone-craft');
+    expect(serializeMapState(state)).toBe('?categories=trail&scope=walks&theme=stone-craft');
+  });
+
+  it('ignores unknown scope and lens values', () => {
+    expect(parseMapState('?scope=unknown&theme=unknown')).toMatchObject({
+      scope: undefined,
+      theme: undefined,
+    });
+  });
 });

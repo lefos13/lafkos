@@ -9,6 +9,8 @@ export function getStaticPaths() {
 
 const { locale } = Astro.props as { locale: Locale };
 const ui = getCopy(locale);
+/* Keep trust language explicit: map precision varies by source and is never a
+ * substitute for local confirmation when a visit depends on exact access. */
 ---
 
 <BaseLayout locale={locale} title={ui.aboutTitle} description={ui.aboutIntro}>
@@ -45,8 +47,8 @@ const ui = getCopy(locale);
         <p>
           {
             locale === 'el'
-              ? 'Κάθε σημείο ενδιαφέροντος, κρήνη, μνημείο και πεζοπορική διαδρομή έχει ελεγχθεί και αντιστοιχιστεί σε πραγματικές γεωγραφικές συντεταγμένες βασισμένες σε δεδομένα πεδίου, ιστορικές πηγές και το OpenStreetMap. Ο διαδραστικός χάρτης λειτουργεί αυτόνομα, χωρίς ιχνηλάτες ή εμπορικές διαφημίσεις, επιτρέποντας την απρόσκοπτη πλοήγηση από υπολογιστή ή κινητό.'
-              : 'Every point of interest, historic spring, monument, and hiking trail is mapped to verified real-world geographic coordinates corroborated with field data, historical documentation, and OpenStreetMap. The interactive vector map operates autonomously without tracking or commercial advertisements, ensuring fast, accessible browsing across all devices.'
+              ? 'Ο χάρτης συνδυάζει διαφορετικά επίπεδα τεκμηρίωσης. Όπου υπάρχει δημόσια ή επιβεβαιωμένη γεωγραφική αναφορά, αυτή σημειώνεται μαζί με τις πηγές· άλλα σημεία είναι προσεγγιστικά, βασίζονται σε χάρτες ή τοπική παράδοση και αναμένουν επιτόπια επιβεβαίωση. Χρησιμοποίησε τις συντεταγμένες ως οδηγό προσανατολισμού και έλεγξε τις τοπικές συνθήκες πριν από μια διαδρομή. Ο διαδραστικός χάρτης λειτουργεί χωρίς ιχνηλάτες ή εμπορικές διαφημίσεις.'
+              : 'The map combines different levels of documentation. Public or corroborated geographic references are shown with their sources; other points are approximate, based on maps or local tradition, and await field confirmation. Treat coordinates as orientation, and check local conditions before relying on a route. The interactive map operates without trackers or commercial advertising.'
           }
         </p>
 

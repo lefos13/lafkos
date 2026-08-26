@@ -9,6 +9,8 @@ export function getStaticPaths() {
 
 const { locale } = Astro.props as { locale: Locale };
 const ui = getCopy(locale);
+/* Visitor guidance favors current local confirmation over fixed promises about
+ * access, water, opening hours, or events, all of which can change seasonally. */
 ---
 
 <BaseLayout locale={locale} title={ui.visitTitle} description={ui.visitIntro}>
@@ -34,8 +36,8 @@ const ui = getCopy(locale);
         <p>
           {
             locale === 'el'
-              ? 'Ο Λαύκος απέχει περίπου 50 χιλιόμετρα από την πόλη του Βόλου. Η διαδρομή ακολουθεί τον παραλιακό άξονα προς Αγριά, Καλά Νερά και στη συνέχεια ανηφορίζει μέσω Αργαλαστής. Η οδήγηση διαρκεί περίπου 1 ώρα και 15 λεπτά μέσα από γραφικά πηλιορείτικα τοπία. Υπάρχει επίσης τακτική σύνδεση με λεωφορεία του Υπεραστικού ΚΤΕΛ Μαγνησίας.'
-              : 'Lafkos is located roughly 50 km from the port city of Volos. The route follows the scenic coast through Agria and Kala Nera before climbing toward Argalasti, taking approximately 1 hour and 15 minutes by car. Regular regional bus services are operated by KTEL Magnesias.'
+              ? 'Ο Λαύκος απέχει περίπου 50 χιλιόμετρα από τον Βόλο. Η διαδρομή ακολουθεί τον παραλιακό άξονα προς Αγριά και Καλά Νερά και στη συνέχεια ανηφορίζει μέσω Αργαλαστής. Οι χρόνοι οδήγησης και τα δρομολόγια του ΚΤΕΛ αλλάζουν, γι’ αυτό επιβεβαιώστε τα πριν από την αναχώρηση.'
+              : 'Lafkos is roughly 50 km from Volos. The route follows the coast through Agria and Kala Nera before climbing toward Argalasti. Driving times and KTEL schedules can change, so confirm current details before setting out.'
           }
         </p>
         <p>
@@ -52,8 +54,8 @@ const ui = getCopy(locale);
         <p>
           {
             locale === 'el'
-              ? 'Τα καλντερίμια του Λαύκου είναι φτιαγμένα από τοπικό πηλιορείτικο ασβεστόλιθο και πλάκες. Φορέστε άνετα παπούτσια πεζοπορίας με καλή πρόσφυση, καθώς ορισμένα σημεία έχουν σκαλοπάτια ή κλίση. Το νερό στις δημόσιες πέτρινες κρήνες (Χατζή, Τουλούμπα, Παλαιοβρύση, Πλατεία) είναι πηγαίο, δροσερό και πόσιμο — ιδανικό για να γεμίσετε το παγούρι σας.'
-              : 'The village lanes and mountain footpaths are paved with native Pelion limestone flags and slate. Wear sturdy walking shoes with reliable grip, as many alleys feature stone steps or steady gradients. The water from all traditional public fountains (Chatzi, Touloumba, Palaiovrysi, Square) is fresh, cool, and potable — perfect for refilling water bottles.'
+              ? 'Τα καλντερίμια του Λαύκου είναι φτιαγμένα από πέτρα και πλάκες. Φορέστε παπούτσια με καλή πρόσφυση, καθώς υπάρχουν σκαλοπάτια, κλίσεις και σημεία που γλιστρούν μετά τη βροχή. Οι ιστορικές κρήνες (Χατζή, Τουλούμπα, Παλαιοβρύση, Πλατεία) είναι σημεία πολιτιστικού ενδιαφέροντος· μην θεωρείτε το νερό πόσιμο χωρίς τρέχουσα τοπική επιβεβαίωση ή σχετική σήμανση. Για επίσκεψη χωρίς αυτοκίνητο, αφήστε το όχημα στις εισόδους και κινηθείτε με τα πόδια, με χρόνο για ανηφόρες και σκαλοπάτια.'
+              : 'Lafkos’s kalderimia are built from stone and slate. Wear shoes with good grip: there are steps, gradients, and sections that become slippery after rain. The historic fountains (Chatzi, Touloumba, Palaiovrysi, Square) are cultural landmarks; do not assume their water is potable without current local confirmation or signage. For a car-free visit, leave the vehicle at the village entrances and explore on foot, allowing time for slopes and steps.'
           }
         </p>
 
@@ -61,8 +63,19 @@ const ui = getCopy(locale);
         <p>
           {
             locale === 'el'
-              ? 'Κάθε εποχή χαρίζει στον Λαύκο μια διαφορετική ατμόσφαιρα: Την Άνοιξη τα μονοπάτια γεμίζουν αγριολούλουδα και βότανα. Το Καλοκαίρι η πλατεία προσφέρει φυσική δροσιά κάτω από τα πλατάνια, ενώ οι παραλίες της Μηλίνας, του Πλατανιά και του Μικρού απέχουν μόλις λίγα λεπτά. Το Φθινόπωρο είναι η εποχή του λιομαζώματος και των παραδοσιακών αποστακτηρίων τσίπουρου, ενώ ο Χειμώνας φέρνει αναμμένες ξυλόσομπες και μυρωδιά φρεσκοψημένου ψωμιού στα σοκάκια.'
-              : 'Every season brings distinct charm to Lafkos: Spring fills the trails with blooming wildflowers and fragrant herbs. Summer offers breezy shaded afternoons under the plane trees, with the beaches of Milina, Platanias, and Mikro a short drive away. Autumn marks the olive harvest and traditional tsipouro distillation, while Winter brings cozy woodstoves and the scent of fresh wood-fired baking drifting along the alleys.'
+              ? 'Κάθε εποχή χαρίζει στον Λαύκο διαφορετική ατμόσφαιρα. Πριν από πεζοπορία, ελέγξτε τον καιρό και την κατάσταση των μονοπατιών: η ζέστη, η βροχή, ο πάγος ή τυχόν εποχικοί περιορισμοί μπορούν να αλλάξουν την πρόσβαση. Για παραλίες, εκδηλώσεις και μετακινήσεις εκτός χωριού, επιβεβαιώστε τις τρέχουσες συνθήκες τοπικά.'
+              : 'Every season gives Lafkos a different character. Before walking, check the weather and trail conditions: heat, rain, ice, or seasonal restrictions can change access. For beaches, events, and travel beyond the village, confirm current local conditions.'
+          }
+        </p>
+
+        <h2 class="section-title">
+          {locale === 'el' ? 'Ώρες λειτουργίας & Εκδηλώσεις' : 'Opening Hours & Events'}
+        </h2>
+        <p>
+          {
+            locale === 'el'
+              ? 'Τα μουσεία, τα καφενεία και οι χώροι πολιτισμού μπορεί να λειτουργούν εποχικά ή με μεταβαλλόμενο ωράριο. Επικοινωνήστε με τον χώρο ή τον τοπικό φορέα πριν οργανώσετε την επίσκεψη· το ίδιο ισχύει για πανηγύρια, εκδηλώσεις και προσωρινές δράσεις.'
+              : 'Museums, cafés, and cultural spaces may open seasonally or keep changing hours. Contact the venue or a local organization before planning a visit; the same applies to festivals, events, and temporary programs.'
           }
         </p>
 
@@ -83,8 +96,8 @@ const ui = getCopy(locale);
         <p>
           {
             locale === 'el'
-              ? 'Ο Λαύκος είναι ένας ζωντανός οικισμός με μόνιμους κατοίκους. Σεβαστείτε τις ώρες κοινής ησυχίας (15:00–17:30 και μετά τις 23:00), μην εισέρχεστε σε ιδιωτικές αυλές χωρίς άδεια, διατηρήστε τα μονοπάτια καθαρά και σεβαστείτε τα ιστορικά πέτρινα μνημεία και τις ξερολιθιές.'
-              : 'Lafkos is a living community with year-round residents. Please observe afternoon quiet hours (15:00–17:30) and evening tranquility, avoid entering private courtyards, keep trails pristine by packing out all waste, and respect the historic stone monuments and dry-stone boundary walls.'
+              ? 'Ο Λαύκος είναι ένας ζωντανός οικισμός με κατοίκους. Ακολουθήστε τις τοπικές σημάνσεις και ώρες κοινής ησυχίας, μην εισέρχεστε σε ιδιωτικές αυλές χωρίς άδεια, πάρτε μαζί σας τα απορρίμματά σας και σεβαστείτε τα ιστορικά πέτρινα μνημεία, τις ξερολιθιές και την καθημερινή ζωή του χωριού.'
+              : 'Lafkos is a living community with residents. Follow local signs and quiet hours, do not enter private courtyards without permission, carry out your waste, and respect historic stone monuments, dry-stone walls, and everyday village life.'
           }
         </p>
       </div>

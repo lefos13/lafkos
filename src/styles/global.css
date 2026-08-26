@@ -389,6 +389,62 @@ img {
 .story-card-copy {
   padding: 1.3rem;
 }
+/* Story cards carry both the reading invitation and optional map/relationship
+ * links, so the metadata stays legible without turning the index into a table. */
+.story-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.story-card-meta .text-link {
+  flex: 0 0 auto;
+}
+.story-map-link {
+  display: inline-block;
+  margin-top: 0.8rem;
+  color: var(--sea);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.story-card-related {
+  margin-top: 1.2rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--line);
+}
+.story-card-related p {
+  margin: 0 0 0.45rem;
+  color: var(--olive);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.story-card-related ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.7rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.story-card-related a {
+  color: var(--terracotta);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.stories-index-header {
+  max-width: 48rem;
+  margin-bottom: 3rem;
+}
+.stories-index-header .lede {
+  margin-bottom: 0;
+}
+.stories-index-grid {
+  display: grid;
+  gap: 1rem;
+}
 .story-card h3 {
   margin: 0;
   font-family: Newsreader, Georgia, serif;
@@ -496,6 +552,17 @@ img {
   border-inline: 1px solid var(--line);
   background: var(--paper);
   scrollbar-width: thin;
+}
+/* Scope and lens chips stay grouped for keyboard and screen-reader users while
+ * remaining one horizontally scrollable control on narrow screens. */
+.map-filter-group {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 0.4rem;
+}
+.map-filter-group + .map-filter-group {
+  padding-inline-start: 0.75rem;
+  border-inline-start: 1px solid var(--line);
 }
 .filter-chip {
   flex: 0 0 auto;
@@ -1533,6 +1600,9 @@ img {
     height: 100%;
     min-height: 18rem;
   }
+  .stories-index-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
   .map-section .section-header {
     padding-inline: 2rem;
   }
@@ -1583,6 +1653,12 @@ img {
   .map-filter-row {
     gap: 0.3rem;
     padding: 0 0.6rem 0.45rem;
+  }
+  .map-filter-group {
+    gap: 0.3rem;
+  }
+  .map-filter-group + .map-filter-group {
+    padding-inline-start: 0.55rem;
   }
   .filter-chip {
     padding: 0.35rem 0.62rem;

@@ -37,7 +37,16 @@ import type {
   MapFeatureProperties,
 } from '../lib/content';
 import type { Locale } from '../lib/locales';
-import { parseMapState, serializeMapState, type MapState } from '../lib/map-state';
+import {
+  mapScopeIds,
+  mapThemeIds,
+  parseMapState,
+  serializeMapState,
+  type MapScope,
+  type MapState,
+  type MapTheme,
+} from '../lib/map-state';
+import { featureMatchesScope, featureMatchesTheme } from '../lib/narrative-map';
 import { getCopy } from '../lib/ui-copy';
 import { getGeometryBounds, haversineDistanceMeters } from '../lib/geometry';
 
@@ -56,6 +65,18 @@ const DISTANT_PLACE_THRESHOLD_METERS = 1200;
 const defaultZoom = 13.6;
 const mapStyleUrl =
   import.meta.env.PUBLIC_MAP_STYLE_URL || 'https://tiles.openfreemap.org/styles/liberty';
+
+const scopeLabels: Record<MapScope, { el: string; en: string }> = {
+  village: { el: 'Χωριό', en: 'Village' },
+  walks: { el: 'Περίπατοι χωριού', en: 'Village walks' },
+  'south-pelion': { el: 'Νότιο Πήλιο', en: 'South Pelion' },
+};
+const themeLabels: Record<MapTheme, { el: string; en: string }> = {
+  'origins-water': { el: 'Αφετηρίες & νερό', en: 'Origins & Water' },
+  'square-1887': { el: 'Η πλατεία του 1887', en: 'The 1887 Square' },
+  'stone-craft': { el: 'Πέτρα & τέχνη', en: 'Stone & Craft' },
+  'sacred-ridge': { el: 'Ιερή ράχη', en: 'Sacred Ridge' },
+};
 
 function featureCollection(features: MapFeature[]) {
   return { type: 'FeatureCollection', features } as const;
@@ -240,7 +261,6 @@ function findNearbyMarker(
   return bestMatch;
 }
 
-
 export default function MapExplorer({
   locale,
   mapData,
@@ -269,23 +289,73 @@ export default function MapExplorer({
   const popupCoordRef = useRef<Coordinate | undefined>(undefined);
   selectedRef.current = selected;
   stateRef.current = state;
-  mapDataRef.current = mapData;
+  const activeScope = state.scope ?? 'village';
+  const selectedEntityKey = state.place ?? state.trail;
+  const scopedPlaces = useMemo(
+    () =>
+      mapData.places.filter(
+        (feature) =>
+          feature.properties.entityKey === selectedEntityKey ||
+          (featureMatchesScope(feature, activeScope) && featureMatchesTheme(feature, state.theme)),
+      ),
+    [activeScope, mapData.places, selectedEntityKey, state.theme],
+  );
+  const scopedTrails = useMemo(
+    () =>
+      mapData.trails.filter(
+        (feature) =>
+          feature.properties.entityKey === selectedEntityKey ||
+          (featureMatchesScope(feature, activeScope) && featureMatchesTheme(feature, state.theme)),
+      ),
+    [activeScope, mapData.trails, selectedEntityKey, state.theme],
+  );
+  const scopedWaypoints = useMemo(
+    () =>
+      mapData.waypoints.filter(
+        (feature) =>
+          featureMatchesScope(feature, activeScope) &&
+          scopedTrails.some((trail) => trail.properties.entityKey === feature.properties.parentKey),
+      ),
+    [activeScope, mapData.waypoints, scopedTrails],
+  );
+  /* The map canvas and accessible list share this derived set. Selected deep
+   * links are kept discoverable by the explicit South Pelion scope. */
+  const displayedMapData = useMemo(
+    () => ({ ...mapData, places: scopedPlaces, trails: scopedTrails, waypoints: scopedWaypoints }),
+    [mapData, scopedPlaces, scopedTrails, scopedWaypoints],
+  );
+  mapDataRef.current = displayedMapData;
 
   const allFeatures = useMemo(() => [...mapData.places, ...mapData.trails], [mapData]);
   const trailVisible = state.categories.length === 0 || state.categories.includes('trail');
   const visibleFeatures = useMemo(() => {
     const query = search.trim().toLocaleLowerCase(locale === 'el' ? 'el-GR' : 'en-GB');
-    return allFeatures.filter((feature) => {
+    /* Search is an explicit request for discovery, so it can surface a
+     * regional result that the default village scope intentionally de-emphasizes. */
+    const candidateFeatures = query ? allFeatures : [...scopedPlaces, ...scopedTrails];
+    return candidateFeatures.filter((feature) => {
       const categoryMatch =
         state.categories.length === 0 || state.categories.includes(feature.properties.category);
+      const themeMatch =
+        featureMatchesTheme(feature, state.theme) ||
+        feature.properties.entityKey === selectedEntityKey;
       const textMatch =
         !query ||
         `${feature.properties.title} ${feature.properties.summary}`
           .toLocaleLowerCase()
           .includes(query);
-      return categoryMatch && textMatch;
+      return categoryMatch && themeMatch && textMatch;
     });
-  }, [allFeatures, locale, search, state.categories]);
+  }, [
+    locale,
+    allFeatures,
+    scopedPlaces,
+    scopedTrails,
+    search,
+    selectedEntityKey,
+    state.categories,
+    state.theme,
+  ]);
 
   function writeState(next: MapState) {
     setState(next);
@@ -487,13 +557,13 @@ export default function MapExplorer({
       if (!map.getSource('lafkos-places')) {
         map.addSource('lafkos-places', {
           type: 'geojson',
-          data: featureCollection(mapData.places) as never,
+          data: featureCollection(mapDataRef.current.places) as never,
         });
       }
       if (!map.getSource('lafkos-trails')) {
         map.addSource('lafkos-trails', {
           type: 'geojson',
-          data: featureCollection(mapData.trails) as never,
+          data: featureCollection(mapDataRef.current.trails) as never,
         });
       }
       if (!map.getLayer('lafkos-trails-casing')) {
@@ -753,7 +823,6 @@ export default function MapExplorer({
       });
       map.on('click', handleMapClick);
 
-
       const targetTrailKey = stateRef.current?.trail ?? initialState?.trail;
       const targetPlaceKey = stateRef.current?.place ?? initialState?.place;
       const hasExplicitView = Boolean(stateRef.current?.view ?? initialState?.view);
@@ -814,12 +883,12 @@ export default function MapExplorer({
     const map = mapRef.current;
     if (!map || status !== 'ready') return;
     const placesSource = map.getSource('lafkos-places') as GeoJSONSource | undefined;
-    if (placesSource) placesSource.setData(featureCollection(mapData.places) as never);
+    if (placesSource) placesSource.setData(featureCollection(displayedMapData.places) as never);
     const trailsSource = map.getSource('lafkos-trails') as GeoJSONSource | undefined;
     if (trailsSource) {
-      trailsSource.setData(featureCollection(trailVisible ? mapData.trails : []) as never);
+      trailsSource.setData(featureCollection(trailVisible ? displayedMapData.trails : []) as never);
     }
-  }, [mapData, status, trailVisible]);
+  }, [displayedMapData, status, trailVisible]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -861,10 +930,15 @@ export default function MapExplorer({
      * preserving their full interactive affordance and label collision handling. */
     const labelItems: MarkerLabelItem[] = [];
 
-    mapData.places
+    displayedMapData.places
       .filter((feature) => feature.geometry.type === 'Point')
       .forEach((feature) => {
-        if (state.categories.length > 0 && !state.categories.includes(feature.properties.category))
+        if (
+          (state.categories.length > 0 &&
+            !state.categories.includes(feature.properties.category)) ||
+          (!featureMatchesTheme(feature, state.theme) &&
+            feature.properties.entityKey !== selectedEntityKey)
+        )
           return;
         const category = categories.find((cat) => cat.id === feature.properties.category);
         const isSelected = selected?.properties.entityKey === feature.properties.entityKey;
@@ -930,7 +1004,7 @@ export default function MapExplorer({
       });
 
     if (trailVisible) {
-      mapData.waypoints.forEach((feature) => {
+      displayedMapData.waypoints.forEach((feature) => {
         if (feature.geometry.type !== 'Point') return;
         const isSelected = selected?.properties.entityKey === feature.properties.entityKey;
 
@@ -1126,11 +1200,13 @@ export default function MapExplorer({
     };
   }, [
     categories,
-    mapData.places,
-    mapData.waypoints,
+    displayedMapData.places,
+    displayedMapData.waypoints,
     selected?.properties.entityKey,
+    selectedEntityKey,
     state.categories,
     status,
+    state.theme,
     trailVisible,
   ]);
 
@@ -1244,7 +1320,17 @@ export default function MapExplorer({
       if (popupRef.current === popup) {
         popupRef.current = null;
         setSelected(undefined);
-        writeState({ ...stateRef.current, place: undefined, trail: undefined });
+        /* Closing a deep-linked regional popup should not make its marker
+         * disappear when the default village scope is restored. Promote that
+         * view to South Pelion before clearing the transient selection. */
+        const currentState = stateRef.current;
+        const shouldPromoteScope = !featureMatchesScope(selected, currentState.scope ?? 'village');
+        writeState({
+          ...currentState,
+          scope: shouldPromoteScope ? 'south-pelion' : currentState.scope,
+          place: undefined,
+          trail: undefined,
+        });
       }
     };
     popup.on('close', onClose);
@@ -1328,6 +1414,45 @@ export default function MapExplorer({
             <span aria-hidden="true">{category.icon}</span> {category.label[locale]}
           </button>
         ))}
+      </div>
+      {/* Scope and lens controls sit above the existing category taxonomy: scope
+       * answers “where?” while a lens answers “what story?” and both remain
+       * encoded in the URL for shared, bookmarkable map views. */}
+      <div className="map-filter-row map-narrative-filter-row">
+        <div
+          className="map-filter-group"
+          role="group"
+          aria-label={locale === 'el' ? 'Περιοχή χάρτη' : 'Map scope'}
+        >
+          {mapScopeIds.map((scope) => (
+            <button
+              className={`filter-chip ${(state.scope ?? 'village') === scope ? 'is-active' : ''}`}
+              type="button"
+              key={scope}
+              onClick={() => writeState({ ...state, scope })}
+            >
+              {scopeLabels[scope][locale]}
+            </button>
+          ))}
+        </div>
+        <div
+          className="map-filter-group"
+          role="group"
+          aria-label={locale === 'el' ? 'Θεματικές διαδρομές' : 'Story lenses'}
+        >
+          {mapThemeIds.map((theme) => (
+            <button
+              className={`filter-chip ${state.theme === theme ? 'is-active' : ''}`}
+              type="button"
+              key={theme}
+              onClick={() =>
+                writeState({ ...state, theme: state.theme === theme ? undefined : theme })
+              }
+            >
+              {themeLabels[theme][locale]}
+            </button>
+          ))}
+        </div>
       </div>
       <div className="map-grid">
         <div className="map-canvas-wrap">

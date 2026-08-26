@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import StoryCard from '../../../components/StoryCard.astro';
+import { fetchSanityContent } from '../../../lib/content-api';
+import { locales, type Locale } from '../../../lib/locales';
+import { getCopy } from '../../../lib/ui-copy';
+
+export function getStaticPaths() {
+  return locales.map((locale) => ({ params: { locale }, props: { locale } }));
+}
+
+const { locale } = Astro.props as { locale: Locale };
+const ui = getCopy(locale);
+const dataset = await fetchSanityContent();
+
+/* Resolve story relations at render time so cards can expose useful place and
+ * trail links without creating a second editorial relationship model. */
+const stories = dataset.stories.map((story) => ({
+  story,
+  relatedEntries: story.relatedKeys
+    .flatMap((key) => {
+      const place = dataset.places.find((item) => item.entityKey === key);
+      if (place)
+        return [{ title: place.title[locale], href: `/${locale}/places/${place.slug[locale]}` }];
+      const trail = dataset.trails.find((item) => item.entityKey === key);
+      return trail
+        ? [{ title: trail.title[locale], href: `/${locale}/trails/${trail.slug[locale]}` }]
+        : [];
+    })
+    .slice(0, 4),
+}));
+---
+
+<BaseLayout locale={locale} title={ui.stories} description={ui.storiesIntro}>
+  <section class="prose-section container stories-index" aria-labelledby="stories-index-title">
+    <header class="stories-index-header">
+      <p class="eyebrow">{ui.stories}</p>
+      <h1 id="stories-index-title" class="page-title">
+        {locale === 'el' ? 'Ιστορίες που ανοίγουν τον τόπο.' : 'Stories that open the place.'}
+      </h1>
+      <p class="lede">{ui.storiesIntro}</p>
+    </header>
+    <div class="stories-index-grid">
+      {
+        stories.map(({ story, relatedEntries }) => (
+          <StoryCard story={story} locale={locale} relatedEntries={relatedEntries} />
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

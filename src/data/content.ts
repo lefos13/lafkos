@@ -101,6 +101,12 @@ export const categories: Category[] = [
   },
 ];
 
+/*
+ * The local seed remains the offline fallback, so these records distinguish
+ * documented history from local tradition and current conditions that need
+ * confirmation on arrival. Existing map geometry is retained; no inferred
+ * coordinates are introduced during the editorial audit.
+ */
 export const places: Place[] = [
   {
     kind: 'place',
@@ -286,7 +292,7 @@ export const places: Place[] = [
     },
     summary: {
       el: 'Μνημειακή κρήνη του 1800 με λαξευτές πέτρες και δροσερό τρεχούμενο νερό, κάτω από έναν υπεραιωνόβιο πλάτανο.',
-      en: 'A monumental stone spring built around 1800 with carved stone masonry and cool mountain water under a towering plane tree.',
+      en: 'A monumental stone spring built around 1800 with carved stone masonry and a cool visible flow under a towering plane tree.',
     },
     body: {
       el: [
@@ -320,11 +326,11 @@ export const places: Place[] = [
     ],
     practical: {
       el: [
-        'Πόσιμο, κρυστάλλινο πηγαίο νερό όλο τον χρόνο.',
+        'Η ποιότητα και η καταλληλότητα του νερού δεν έχουν πρόσφατα επιβεβαιωθεί· μην το θεωρείτε πόσιμο χωρίς τοπική ενημέρωση.',
         'Σημείο συνάντησης των πεζοπορικών διαδρομών προς Μηλίνα και Προφήτη Ηλία.',
       ],
       en: [
-        'Fresh, potable mountain spring water flows year-round.',
+        'Water quality and potability have not been recently confirmed; seek local advice before drinking.',
         'A key landmark where trails to Milina and Prophet Elias intersect.',
       ],
     },
@@ -541,23 +547,23 @@ export const places: Place[] = [
       en: 'Drositis Historic Stone Bakery',
     },
     eyebrow: {
-      el: 'Ξυλόφουρνος από το 1904',
-      en: 'Wood-fired masonry since 1904',
+      el: 'Ιστορικός φούρνος με τοπικές αποδόσεις',
+      en: 'Historic bakery with local attributions',
     },
     summary: {
-      el: 'Ιστορικός πετρόκτιστος φούρνος σχεδιασμένος στις αρχές του 20ού αιώνα, όπου ψήνεται αδιάκοπα χειροποίητο προζυμένιο ψωμί με ξύλα.',
-      en: 'Historic stone bakery designed in the early 1900s, continuously baking authentic sourdough bread in a traditional wood-fired oven.',
+      el: 'Ιστορικός πετρόκτιστος φούρνος που συνδέεται με το 1904 και με οικογενειακή λειτουργία από το 1955, χωρίς βεβαιότητα για κάθε αποδιδόμενη λεπτομέρεια.',
+      en: 'A historic stone bakery associated with 1904 and family operation since 1955, while some attributed details remain uncertain.',
     },
     body: {
       el: [
-        'Στον δρόμο που συνδέει την πλατεία με τη νότια γειτονιά βρίσκεται το παραδοσιακό αρτοποιείο της οικογένειας Δροσίτη. Το εμβληματικό πέτρινο κτίριο χτίστηκε το 1904 (με τοπική παράδοση να το συνδέει με τον Ιταλό μηχανικό Evaristo de Chirico) και λειτουργεί αδιάλειπτα ως αρτοποιείο από το 1955.',
-        'Ο τεράστιος θολωτός πέτρινος φούρνος καίει αποκλειστικά ξύλα οξιάς και πουρναριού, παράγοντας παραδοσιακό καρβέλι με αργή ζύμωση, τραγανή κόρα, αφράτη ψίχα, καθώς και παραδοσιακές πηλιορείτικες τυρόπιτες, ελιόψωμα και παξιμάδια.',
-        'Μια επίσκεψη νωρίς το πρωί, όταν ο καπνός βγαίνει από την καμινάδα και η μυρωδιά του φρεσκοψημένου ψωμιού γεμίζει τα καλντερίμια, αποτελεί αναπόσπαστη εμπειρία του Λαύκου.',
+        'Στον δρόμο που συνδέει την πλατεία με τη νότια γειτονιά βρίσκεται το παραδοσιακό αρτοποιείο της οικογένειας Δροσίτη. Το πέτρινο κτίριο χρονολογείται σε τοπικές αναφορές στο 1904 και η λειτουργία του ως αρτοποιείου συνδέεται με την οικογένεια από το 1955.',
+        'Ορισμένες πηγές αποδίδουν το κτίριο στον Ιταλό μηχανικό Evaristo de Chirico, όμως η έρευνα δεν εντόπισε αρχειακή απόδειξη· η απόδοση πρέπει να παραμένει ρητά παράδοση και όχι τεκμηριωμένη πατρότητα.',
+        'Το είδος καύσιμης ξυλείας, τα καθημερινά προϊόντα και η ώρα λειτουργίας είναι μεταβλητά στοιχεία· ελέγξτε τα τοπικά πριν από την επίσκεψη.',
       ],
       en: [
-        'On the stone lane leading south from the central square stands the historic Drositis family bakery. The handsome stone edifice was constructed in 1904 (historically attributed to Italian railway engineer Evaristo de Chirico) and has operated as an artisan wood bakery continuously since 1955.',
-        'The massive domed stone hearth is fired solely with mountain oak and beech timber, baking sourdough country loaves with golden crusts, alongside traditional cheese pies (tyropites), olive breads, and rusks.',
-        'Visiting early in the morning as fragrant woodsmoke rises and warm bread scents the cobblestones is one of the quintessential sensory experiences of Lafkos.',
+        'On the stone lane leading south from the central square stands the Drositis family bakery. Local accounts date the stone building to 1904 and associate its operation as a bakery with the family since 1955.',
+        'Some sources attribute the building to Italian engineer Evaristo de Chirico, but the research found no archival proof; this should remain explicitly a local tradition, not an established authorship.',
+        'Fuel type, daily products, and opening times can change; check locally before visiting.',
       ],
     },
     category: 'community',
@@ -582,12 +588,12 @@ export const places: Place[] = [
     ],
     practical: {
       el: [
-        'Επισκεφθείτε τον νωρίς το πρωί (07:30–11:00) για ζεστό προζυμένιο ψωμί και πίτες.',
-        'Βρίσκεται σε απόσταση 150 μέτρων νότια της κεντρικής πλατείας.',
+        'Το σημερινό ωράριο και η διαθεσιμότητα προϊόντων χρειάζονται τοπική επιβεβαίωση.',
+        'Βρίσκεται στη νότια πλευρά της κεντρικής πλατείας, σύμφωνα με την περιγραφική τεκμηρίωση.',
       ],
       en: [
-        'Visit early in the morning (07:30–11:00) for freshly baked hot sourdough loaves and savory pies.',
-        'Located 150 meters south of the central square along the main stone artery.',
+        'Confirm current opening times and product availability locally.',
+        'Located south of the central square along the main stone lane, according to the descriptive sources.',
       ],
     },
     sources: [
@@ -699,21 +705,21 @@ export const places: Place[] = [
       en: 'Lafkos Folklore Museum',
     },
     eyebrow: {
-      el: 'Η παραδοσιακή ζωή του Νοτίου Πηλίου',
-      en: 'Traditional South Pelion life',
+      el: 'Μουσείο προς τοπική επιβεβαίωση',
+      en: 'Museum requiring local confirmation',
     },
     summary: {
-      el: 'Πλούσια συλλογή εργαλείων, αργαλειών, υφαντών, τοπικών ενδυμασιών και οικιακών σκευών της πηλιορείτικης αγροτικής παράδοσης.',
-      en: 'A rich archive of agrarian tools, looms, hand-woven textiles, folk costumes, and everyday household artifacts.',
+      el: 'Τουριστικές πηγές αναφέρουν λαογραφική συλλογή στον Λαύκο, όμως δεν έχει εντοπιστεί ισοδύναμη επίσημη καταχώριση με σαφή θέση, ώρες και περιεχόμενο.',
+      en: 'Travel sources mention a folklore collection in Lafkos, but no equivalent official listing with a clear location, hours, and collection details has been found.',
     },
     body: {
       el: [
-        'Το Λαογραφικό Μουσείο Λαύκου προσφέρει ένα συναρπαστικό ταξίδι στην καθημερινότητα των προγόνων του χωριού κατά τον 19ο και 20ό αιώνα. Στεγάζεται στο κτιριακό συγκρότημα του παλαιού σχολείου.',
-        'Τα εκθέματα περιλαμβάνουν παραδοσιακούς ξύλινους αργαλειούς, περίτεχνα υφαντά και κεντήματα, αυθεντικές παραδοσιακές φορεσιές, εργαλεία ελαιοκομίας, γεωργίας και κτηνοτροφίας, καθώς και χάλκινα σκεύη και πήλινα πιθάρια αποθήκευσης λαδιού και κρασιού.',
+        'Η αναφορά σε Λαογραφικό Μουσείο ανήκει στο ευρύτερο πολιτιστικό αφήγημα του Λαύκου, αλλά η δημόσια τεκμηρίωση παραμένει ανεπαρκής για ασφαλή περιγραφή της στέγασης ή της συλλογής.',
+        'Οι ταξιδιώτες καλό είναι να ζητούν τοπική επιβεβαίωση πριν το εντάξουν στο πρόγραμμά τους· η καταχώριση δεν αποτελεί εγγύηση ότι υπάρχει σήμερα ανοιχτός εκθεσιακός χώρος.',
       ],
       en: [
-        'The Lafkos Folklore Museum offers an evocative window into rural domestic life and village crafts throughout the 19th and early 20th centuries, housed within the old school cultural complex.',
-        'Exhibits include traditional wooden looms, intricately embroidered textiles, authentic South Pelion festive costumes, olive harvesting gear, cooperage and farming implements, and antique copper cookware and ceramic storage pithoi.',
+        'The mention of a Lafkos Folklore Museum belongs to the village’s broader cultural narrative, but public documentation is not sufficient to describe its premises or collection with confidence.',
+        'Visitors should seek local confirmation before making it part of their itinerary; this entry does not guarantee that a public exhibition space is currently open.',
       ],
     },
     category: 'heritage',
@@ -738,12 +744,14 @@ export const places: Place[] = [
     ],
     practical: {
       el: [
-        'Εξαιρετική εκπαιδευτική στάση για οικογένειες και επισκέπτες που θέλουν να κατανοήσουν την τοπική ιστορία.',
-        'Συνδυάζεται άμεσα με την επίσκεψη στο Φάμπειο Μουσείο.',
+        'Δεν έχουν επιβεβαιωθεί δημόσια σημερινή διεύθυνση, ωράριο ή πρόσβαση.',
+        'Η θέση που εμφανίζεται στον χάρτη είναι ενδεικτική και όχι επιβεβαιωμένη διεύθυνση.',
+        'Ρωτήστε κατοίκους ή τον τοπικό πολιτιστικό σύλλογο πριν από την επίσκεψη.',
       ],
       en: [
-        'A rewarding educational stop for understanding traditional Pelion culture and craftsmanship.',
-        'Conveniently visited alongside the Fampas Museum in the same cultural building.',
+        'A current address, opening hours, and visitor access have not been publicly confirmed.',
+        'The map position is indicative, not a confirmed street address.',
+        'Ask locally or contact the village cultural association before visiting.',
       ],
     },
     sources: [
@@ -775,22 +783,22 @@ export const places: Place[] = [
       en: 'Historic Café Forlidas (1785)',
     },
     eyebrow: {
-      el: 'Το παλαιότερο καφενείο της Ελλάδας',
-      en: 'The oldest café in Greece',
+      el: 'Ιστορικό καφενείο με οικογενειακή παράδοση',
+      en: 'Historic café with a family tradition',
     },
     summary: {
-      el: 'Σε αδιάλειπτη λειτουργία από το 1785 από την ίδια οικογένεια εδώ και επτά γενιές — το αγαπημένο στέκι του Παπαδιαμάντη και του Βάρναλη.',
-      en: 'Operating continuously since 1785 across seven generations of the same family — a historic meeting place for Papadiamantis and Varnalis.',
+      el: 'Η οικογενειακή και δημοσιογραφική παράδοση το συνδέει με το 1785 και με το χάνι της πλατείας· η παλαιότητα δεν πρέπει να διαβάζεται ως επίσημη πανελλήνια κατάταξη.',
+      en: 'Family and journalistic tradition associates it with 1785 and the square’s former inn; its age should not be read as an official national ranking.',
     },
     body: {
       el: [
-        'Το Καφενείο του Φορλίδα, στην άκρη της κεντρικής πλατείας, αποτελεί το παλαιότερο εν λειτουργία καφενείο στην Ελλάδα, με τεκμηριωμένη ιστορία από το 1785. Για πάνω από 240 χρόνια παραμένει στα χέρια της ίδιας οικογένειας, διατηρώντας αναλλοίωτη την ατμόσφαιρα του 18ου και 19ου αιώνα.',
-        'Στον επάνω όροφο λειτουργούσε άλλοτε χάνι, όπου διανυκτέρευαν ταξιδιώτες και έμποροι που κατευθύνονταν από τις Βόρειες Σποράδες προς τον Βόλο. Μεταξύ των τακτικών θαμώνων υπήρξαν ο Αλέξανδρος Παπαδιαμάντης, ο Κώστας Βάρναλης (όταν δίδασκε στην Αργαλαστή), ο Αλέξανδρος Δελμούζος και ο Γιώργος Σεφέρης.',
+        'Το Καφενείο του Φορλίδα, στην άκρη της κεντρικής πλατείας, συνδέεται από ισχυρή οικογενειακή και δημοσιογραφική παράδοση με το 1785. Πρόκειται για ιστορικό τοπόσημο, αλλά η χρονολογία δεν συνοδεύεται από δημοσιευμένο πρωτογενές ιδρυτικό έγγραφο.',
+        'Το χάνι του επάνω ορόφου συνδέεται σε τοπικές αφηγήσεις με ταξιδιώτες από τις Σποράδες και με λογοτέχνες όπως ο Αλέξανδρος Παπαδιαμάντης, ο Κώστας Βάρναλης και ο Γιώργος Σεφέρης· οι επιμέρους επισκέψεις χρειάζονται προφορική ή αρχειακή επιβεβαίωση.',
         'Στο εσωτερικό του σώζονται η παραδοσιακή ξυλόσομπα, οι αυθεντικές ξύλινες καρέκλες, τα μαρμάρινα τραπεζάκια και ιστορικές φωτογραφίες που εξιστορούν δύο αιώνες ζωής.',
       ],
       en: [
-        'Located on the central square, Café Forlidas is the oldest continuously operating coffee house in Greece, documented since 1785. For over 240 years and seven generations of the Forlidas family, it has preserved an untouched 18th-century atmosphere.',
-        'Its upper floor once served as an inn (hani) where sea travelers and merchants from the Sporades islands (Skiathos, Skopelos, Alonnisos) stayed before boarding caïques to Volos. Notable patrons include the celebrated novelist Alexandros Papadiamantis, poet Kostas Varnalis, progressive educator Alexandros Delmouzos, and Nobel laureate Giorgos Seferis.',
+        'Located on the central square, Café Forlidas is associated by strong family and journalistic tradition with 1785. It is a historic landmark, but that date is not accompanied by a published primary founding document.',
+        'Local accounts associate the former inn with travellers from the Sporades and with writers including Alexandros Papadiamantis, Kostas Varnalis, and Giorgos Seferis; individual visits need oral or archival confirmation.',
         'Inside, an antique cast-iron woodstove, classic thonet wooden chairs, marble tables, and sepia photographs preserve a rare window into authentic Greek social history.',
       ],
     },
@@ -817,12 +825,12 @@ export const places: Place[] = [
     practical: {
       el: [
         'Δοκιμάστε ελληνικό καφέ ψημένο στη χόβολη και παραδοσιακά γλυκά του κουταλιού.',
-        'Ανοιχτό καθημερινά καθ’ όλη τη διάρκεια του έτους.',
+        'Το σημερινό ωράριο και η λειτουργία του χώρου χρειάζονται επιβεβαίωση πριν από την επίσκεψη.',
         'Ιστορικά κειμήλια και φωτογραφίες εκτίθενται στους εσωτερικούς τοίχους.',
       ],
       en: [
         'Try traditional Greek coffee brewed slowly over charcoal embers and local spoon sweets.',
-        'Open daily year-round.',
+        'Confirm current opening arrangements before visiting.',
         'Historic artifacts and century-old photographs are displayed throughout the interior.',
       ],
     },
@@ -838,6 +846,10 @@ export const places: Place[] = [
       {
         label: 'OpenStreetMap Contributors',
         url: 'https://www.openstreetmap.org/',
+      },
+      {
+        label: 'ERT / Café Forlidas video report',
+        url: 'https://www.youtube.com/watch?v=-Vig18AuSfo',
       },
     ],
     featured: true,
@@ -2776,23 +2788,21 @@ export const places: Place[] = [
       en: 'Antonis Tavanis Radio Museum',
     },
     eyebrow: {
-      el: 'Ένα από τα τρία μουσεία ραδιοφώνου στην Ελλάδα',
-      en: 'One of only three radio museums in Greece',
+      el: 'Συλλογή ραδιοφώνου σε ιστορικό αρχοντικό',
+      en: 'A radio collection in a historic mansion',
     },
     summary: {
-      el: 'Σπάνια συλλογή ιστορικών ραδιοφωνικών δεκτών (1917–1960), δωρεά του Γερμανού φιλέλληνα καθηγητή Wilfried Schoeps.',
-      en: 'A rare collection of vintage radio receivers from 1917–1960, donated by German philhellene professor Wilfried Schoeps.',
+      el: 'Μουσείο που άνοιξε το 2008 με αρχικό πυρήνα περίπου 100 ραδιόφωνα των δεκαετιών 1920–1960, δωρεά του Wilfried Schoeps.',
+      en: 'A museum opened in 2008 with an initial group of about 100 radios from the 1920s–60s, donated by Wilfried Schoeps.',
     },
     body: {
       el: [
-        'Εγκαινιασμένο το 2008, το Μουσείο Ραδιοφώνου του Λαύκου αποτελεί ένα από τα ελάχιστα εξειδικευμένα μουσεία του είδους στην Ευρώπη και το πρώτο στην Ελλάδα που σχεδιάστηκε με σύγχρονες μουσειολογικές προδιαγραφές.',
-        'Φιλοξενεί πάνω από 130 σπάνιους, λειτουργικούς ραδιοφωνικούς δέκτες που καλύπτουν την περίοδο 1917–1960: λυχνιακά ραδιόφωνα, κρυστάλλινους δέκτες, στρατιωτικές συσκευές επικοινωνίας και περίτεχνα ξύλινα έπιπλα-ραδιόφωνα της περιόδου του μεσοπολέμου.',
-        'Η συλλογή αποτελεί ευγενική δωρεά του Γερμανού καθηγητή Wilfried Schoeps προς τιμήν του αείμνηστου Λαυκιώτη γλύπτη Αντώνη Ταβάνη και του εθελοντή ξεναγού Στάθη Σφονδυλιά.',
+        'Το Μουσείο Ραδιοφώνου «Αντώνης Ταβάνης» άνοιξε στις 26 Οκτωβρίου 2008 σε διώροφο πέτρινο αρχοντικό. Η αναλυτική ιστορική πηγή αναφέρει αρχικό πυρήνα περίπου 100 συλλεκτικών ραδιοφώνων των δεκαετιών 1920–1960.',
+        'Η συλλογή δωρήθηκε από τον Γερμανό συλλέκτη Wilfried Schoeps και συνδέεται με τα ονόματα Αντώνης Ταβάνης και Στάθης Σφονδυλιάς. Ο ακριβής σημερινός αριθμός και η λειτουργία των συσκευών δεν πρέπει να θεωρούνται σταθερά χωρίς νέα επιβεβαίωση.',
       ],
       en: [
-        'Inaugurated in 2008, the Lafkos Radio Museum is one of only three dedicated radio museums in Greece and a rare gem of 20th-century technological heritage in the Mediterranean.',
-        'The museum houses over 130 rare, operable historic radio receivers dating from 1917 to 1960: tube radios, crystal sets, wartime communication units, and mastercrafted art-deco timber floor models.',
-        'The collection was donated by German professor and philhellene Wilfried Schoeps in memory of the artist Antonis Tavanis and longtime cultural advocate Stathis Sfondylias.',
+        'The Antonis Tavanis Radio Museum opened on 26 October 2008 in a two-storey stone mansion. The detailed historical source describes an initial group of about 100 collectible radios from the 1920s–60s.',
+        'The collection was donated by German collector Wilfried Schoeps and is associated with Antonis Tavanis and Stathis Sfondylias. The current number and operating condition of the receivers should not be treated as fixed without renewed confirmation.',
       ],
     },
     category: 'heritage',
@@ -2817,11 +2827,13 @@ export const places: Place[] = [
     ],
     practical: {
       el: [
-        'Στεγάζεται στην παλιά αποθήκη του Αγροτικού Συνεταιρισμού, στη διασταύρωση για Μηλίνα και Προμύρι, περίπου 400 μ. νότια της πλατείας (8 λεπτά με τα πόδια).',
+        'Οι νεότερες πηγές τοποθετούν το μουσείο στη διασταύρωση Μηλίνας–Προμυρίου, σε σύντομη παράκαμψη νότια της πλατείας· η ακριβής σημερινή πρόσβαση χρειάζεται επιβεβαίωση.',
+        'Η θέση του pin είναι ενδεικτική έως ότου επιβεβαιωθεί επιτόπου η ακριβής είσοδος.',
         'Διαθέτει επεξηγηματικές πινακίδες για την ιστορία των ραδιοκυμάτων και της τεχνολογίας.',
       ],
       en: [
-        'Housed in the old Agricultural Cooperative warehouse at the Milina/Promyri junction, about 400 m south of the square (an 8-minute walk).',
+        'Recent sources place the museum at the Milina–Promyri junction, a short detour south of the square; confirm the current access details locally.',
+        'Treat the map pin as indicative until the exact entrance is confirmed on site.',
         'Features explanatory documentation on the history of radio technology and broadcasting.',
       ],
     },
@@ -2837,6 +2849,10 @@ export const places: Place[] = [
       {
         label: 'OpenStreetMap Contributors',
         url: 'https://www.openstreetmap.org/',
+      },
+      {
+        label: 'Museum Finder — Antonis Tavanis–Stathis Sfondylias Radio Museum',
+        url: 'https://museumfinder.gr/listing/mouseio-radiofonou-antonis-tavanis-stathis-sfondylias/',
       },
     ],
     featured: true,
@@ -2934,21 +2950,21 @@ export const places: Place[] = [
       en: 'The Central Square Fountain',
     },
     eyebrow: {
-      el: 'Δροσιά στην καρδιά του χωριού',
-      en: 'Fresh water in the village square',
+      el: 'Ιστορική κρήνη στην καρδιά του χωριού',
+      en: 'Historic fountain in the village square',
     },
     summary: {
-      el: 'Λαξευτή κρήνη από πηλιορείτικη πέτρα και μάρμαρο, προσφέρει αδιάκοπα δροσερό νερό στους θαμώνες της πλατείας.',
-      en: 'Carved from Pelion stone and white marble, continuously providing cool water to visitors beneath the plane trees.',
+      el: 'Λαξευτή κρήνη από πέτρα και μάρμαρο, σημαντικό ιστορικό στοιχείο της πλατείας· η σημερινή καταλληλότητα του νερού χρειάζεται επιτόπια επιβεβαίωση.',
+      en: 'A carved stone-and-marble fountain and historic feature of the square; current water potability requires on-site confirmation.',
     },
     body: {
       el: [
         'Στο κέντρο της πλατείας, ανάμεσα στα τραπέζια των καφενείων και κάτω από τον παχύ ίσκιο των πλατάνων, βρίσκεται η κεντρική μαρμάρινη κρήνη. Σχεδιασμένη με σεβασμό στην πηλιορείτικη παράδοση της λιθογλυπτικής, αποτελεί αναπόσπαστο σημείο της καθημερινής συνήθειας των κατοίκων.',
-        'Εδώ σταματούν οι πεζοπόροι για να γεμίσουν τα παγούρια τους πριν αναχωρήσουν για τα μονοπάτια προς τη Μηλίνα, τον Προφήτη Ηλία ή το Μοναστήρι του Αγίου Αθανασίου.',
+        'Εδώ σταματούν οι πεζοπόροι για σύντομη ανάπαυση πριν αναχωρήσουν για τα μονοπάτια προς τη Μηλίνα, τον Προφήτη Ηλία ή το Μοναστήρι του Αγίου Αθανασίου. Για γέμισμα παγουριού, ελέγξτε πρώτα την τρέχουσα σήμανση.',
       ],
       en: [
         'At the core of the central square, nestled among the café tables beneath the dense plane tree boughs, stands the village square marble fountain. Built following traditional Pelion stonemasonry techniques, it is a focal point of daily life.',
-        'Hikers regularly pause here to refill water bottles before embarking on trail routes toward Milina, Prophet Elias summit, or the Monastery of Agios Athanasios.',
+        'Hikers regularly pause here before embarking on routes toward Milina, Prophet Elias summit, or the Monastery of Agios Athanasios. Check current signage before refilling a bottle.',
       ],
     },
     category: 'architecture',
@@ -2973,12 +2989,12 @@ export const places: Place[] = [
     ],
     practical: {
       el: [
-        'Κεντρικό σημείο ανεφοδιασμού νερού στην πλατεία.',
-        'Πόσιμο, τρεχούμενο νερό άριστης ποιότητας.',
+        'Ιστορικό σημείο νερού στην πλατεία, όχι εγγύηση για πόσιμο νερό.',
+        'Ελέγξτε επιτόπου πινακίδες ή ρωτήστε κατοίκους πριν γεμίσετε παγούρι.',
       ],
       en: [
-        'Central water refill point on the main square.',
-        'Potable, continuously flowing fresh mountain water.',
+        'Historic water point on the square, not a guarantee of drinking water.',
+        'Check local signs or ask residents before refilling a bottle.',
       ],
     },
     sources: [
@@ -3006,8 +3022,8 @@ export const places: Place[] = [
       en: 'church-nativity-theotokos',
     },
     title: {
-      el: 'Ιερός Ναός Γεννήσεως της Θεοτόκου (1888)',
-      en: 'Church of the Nativity of the Theotokos',
+      el: 'Ιερός Ναός Γεννήσεως της Θεοτόκου (από το 1887)',
+      en: 'Church of the Nativity of the Theotokos (from 1887)',
     },
     eyebrow: {
       el: 'Μνημειακή βασιλική',
@@ -3019,12 +3035,12 @@ export const places: Place[] = [
     },
     body: {
       el: [
-        'Ο μητροπολιτικός ναός της Γεννήσεως της Θεοτόκου θεμελιώθηκε στη σημερινή του μορφή το 1888 πάνω σε παλαιότερα βυζαντινά ίχνη, δεσπόζοντας με την επιβλητική του πέτρινη παρουσία στη δυτική πλευρά της πλατείας.',
+        'Ο σημερινός ναός της Γεννήσεως της Θεοτόκου άρχισε να οικοδομείται το 1887 στη θέση παλαιότερου ναού του 1756, δεσπόζοντας με την επιβλητική του πέτρινη παρουσία στη δυτική πλευρά της πλατείας.',
         'Αποτελεί κλασικό δείγμα της πηλιορείτικης εκκλησιαστικής αρχιτεκτονικής του ύστερου 19ου αιώνα. Στο εσωτερικό του ξεχωρίζουν το εξαιρετικό ξυλόγλυπτο τέμπλο, ο δεσποτικός θρόνος και σπάνιες φορητές εικόνες της μεταβυζαντινής περιόδου.',
         'Το περίτεχνο πέτρινο καμπαναριό με τα λαξευτά αγκωνάρια αποτελεί ένα από τα πιο αναγνωρίσιμα ορόσημα του ορίζοντα του Λαύκου.',
       ],
       en: [
-        'The parish church of the Nativity of the Theotokos was rebuilt in its present form in 1888 over earlier foundations, commanding the western side of the central square with majestic stone masonry.',
+        'The present Church of the Nativity of the Theotokos began construction in 1887 on the site of an earlier 1756 church, commanding the western side of the central square with majestic stone masonry.',
         'It stands as a quintessential exemplar of late 19th-century Pelion ecclesiastical architecture. Inside, it preserves a magnificent hand-carved wooden iconostasis, episcopal throne, and treasured post-Byzantine portable icons.',
         'Its finely dressed stone belfry with sculpted architraves forms one of the most recognizable landmarks on the village skyline.',
       ],
@@ -3051,11 +3067,11 @@ export const places: Place[] = [
     ],
     practical: {
       el: [
-        'Ανοιχτός κατά τις ιερές ακολουθίες και τα πρωινά του σαββατοκύριακου.',
+        'Η πρόσβαση εξαρτάται από τις ιερές ακολουθίες· ρωτήστε τοπικά για το σημερινό άνοιγμα.',
         'Η κύρια είσοδος ανοίγει απευθείας προς το πλακόστρωτο της πλατείας.',
       ],
       en: [
-        'Open during religious services and weekend mornings.',
+        'Access depends on services; ask locally about current opening arrangements.',
         'The main portal opens directly onto the paved village square.',
       ],
     },
@@ -6195,19 +6211,19 @@ export const trails: Trail[] = [
       en: 'From the mountain to the Pagasetic',
     },
     summary: {
-      el: 'Το κλασικό, καλοδιατηρημένο λιθόστρωτο μονοπάτι που κατηφορίζει μέσα από αιωνόβιους ελαιώνες προς το παραθαλάσσιο λιμανάκι της Μηλίνας.',
-      en: 'The quintessential stone-paved path descending through ancient olive groves to the seaside fishing harbor of Milina.',
+      el: 'Ιστορικό καλντερίμι που κατηφορίζει από τον Λαύκο, μέσω της Παλιόβρυσης, προς την παραθαλάσσια Μηλίνα.',
+      en: 'A historic kalderimi descending from Lafkos, via Palaiovrysi, towards the coast at Milina.',
     },
     body: {
       el: [
-        'Πρόκειται για ένα από τα πιο διάσημα και άριστα διατηρημένα καλντερίμια σε ολόκληρο το Πήλιο. Πριν τη διάνοιξη των σύγχρονων ασφαλτοστρωμένων δρόμων, αποτελούσε την κύρια εμπορική αρτηρία που συνέδεε το ορεινό κεφαλοχώρι του Λαύκου με το επίνειό του, τη Μηλίνα.',
-        'Η διαδρομή ξεκινά από τη δυτική πλευρά της πλατείας του Λαύκου, περνά από την Κρήνη Χατζή και κατηφορίζει ομαλά πάνω σε φαρδύ, καλοστρωμένο πέτρινο καλντερίμι ανάμεσα σε ελαιώνες με υπέροχη ανοιχτή θέα προς τον κόλπο και το νησάκι Αλατάς.',
-        'Η κατάληξη στην παραλία της Μηλίνας επιβραβεύει τον πεζοπόρο με κρυστάλλινα νερά για κολύμπι και παραθαλάσσια ταβερνάκια για φρέσκο ψάρι και τσίπουρο.',
+        'Το παλιό μονοπάτι συνέδεε τον ορεινό Λαύκο με το επίνειό του, τη Μηλίνα, πριν από τη διάνοιξη των σύγχρονων δρόμων. Η έρευνα το τεκμηριώνει ως διαδρομή, αλλά όχι ως πλήρως επιβεβαιωμένο survey-grade track σε κάθε τμήμα.',
+        'Η καταγεγραμμένη πορεία περνά από την Παλιόβρυση και κατηφορίζει μέσα από ελαιώνες προς τον Παγασητικό. Η ακριβής κατάσταση του καλντεριμιού και η σήμανση μπορεί να μεταβάλλονται εποχικά.',
+        'Η διαδρομή καταλήγει στην παραλιακή ζώνη της Μηλίνας· νερό, κολύμπι και υπηρεσίες εξαρτώνται από την εποχή και χρειάζονται επιτόπιο έλεγχο.',
       ],
       en: [
-        'This is one of the most celebrated and masterfully preserved kalderimi routes in all of Greece. Before modern road construction, it served as the vital lifeline connecting the mountain trading center of Lafkos with its coastal harbor at Milina.',
-        'Starting from the western edge of Lafkos square, the path passes the historic Chatzi Spring before descending gently along wide stone flags flanked by century-old olive groves and sweeping vistas over the Pagasetic Gulf and Alatas island.',
-        'Arriving at the coastal esplanade of Milina rewards walkers with calm sea waters for a refreshing swim and seaside tavernas offering fresh seafood and traditional tsipouro.',
+        'The old path connected mountain Lafkos with its coastal harbour at Milina before modern roads were built. The research confirms it as a route, but not as a fully survey-grade track at every section.',
+        'The documented course passes Palaiovrysi and descends through olive groves towards the Pagasetic Gulf. Surface condition and waymarking can change seasonally.',
+        'The route ends at Milina’s waterfront; water, swimming, and services depend on the season and should be checked locally.',
       ],
     },
     geometry: {
@@ -6339,12 +6355,12 @@ export const trails: Trail[] = [
     },
     safety: {
       el: [
-        'Ομαλή συνεχής κατάβαση με υψομετρική διαφορά περίπου 300 μέτρων.',
+        'Κατηφορική διαδρομή· η ακριβής υψομετρική διαφορά και η κατάσταση των τμημάτων χρειάζονται επιτόπιο έλεγχο.',
         'Φορέστε κατάλληλα παπούτσια πεζοπορίας για πρόσφυση στις πέτρες.',
         'Το καλοκαίρι προτιμήστε τις πρωινές ή απογευματινές ώρες για αποφυγή της ζέστης.',
       ],
       en: [
-        'Continuous gentle descent with an elevation drop of approximately 300 meters.',
+        'A descending route; exact elevation change and section conditions require on-site checking.',
         'Sturdy walking shoes recommended for optimal grip on stone surfaces.',
         'During summer, hike in the morning or late afternoon to avoid peak midday sun.',
       ],
@@ -11790,6 +11806,11 @@ export const trails: Trail[] = [
   },
 ];
 
+/*
+ * Stories use the same source discipline as map entries: inherited local
+ * memories remain valuable, but dates, superlatives, and named encounters
+ * are framed as tradition when the research does not provide primary proof.
+ */
 export const stories: Story[] = [
   {
     kind: 'story',
@@ -11812,12 +11833,12 @@ export const stories: Story[] = [
     },
     body: {
       el: [
-        'Πριν από τη διάνοιξη του σύγχρονου οδικού δικτύου στη δεκαετία του 1960, το Πήλιο κινούνταν αποκλειστικά πάνω σε καλντερίμια. Μαστόροι της πέτρας έχτιζαν με απίστευτη γεωμετρική ακρίβεια μονοπάτια με σταθερή κλίση, πλατιά πατήματα και αυλάκια απορροής των όμβριων υδάτων.',
-        'Το καλντερίμι Λαύκος – Μηλίνα αποτελεί την κορωνίδα αυτής της τέχνης: μια κατηφορική διαδρομή 3,5 χιλιομέτρων που επέτρεπε στα μουλάρια φορτωμένα με λάδι, κρασί και μετάξι να φτάνουν με ασφάλεια στο λιμάνι της Μηλίνας, έτοιμα να φορτωθούν σε καΐκια.',
+        'Πριν από τη διάνοιξη του σύγχρονου οδικού δικτύου, πολλές καθημερινές μετακινήσεις στο Πήλιο γίνονταν πάνω σε καλντερίμια. Μαστόροι της πέτρας έχτιζαν μονοπάτια με σταθερή κλίση, πλατιά πατήματα και αυλάκια απορροής των όμβριων υδάτων.',
+        'Το καλντερίμι Λαύκος – Μηλίνα είναι ένα από τα πιο χαρακτηριστικά παραδείγματα: μια κατηφορική διαδρομή περίπου 3,5 χιλιομέτρων που συνέδεε τον ορεινό οικισμό με την ακτή και τις θαλάσσιες μεταφορές.',
       ],
       en: [
-        'Before modern paved roads arrived in the 1960s, South Pelion moved exclusively along stone kalderimia. Traditional masons engineered these paths with remarkable precision, featuring steady gradients, broad stone steps, and integrated storm drainage channels.',
-        'The Lafkos – Milina kalderimi represents the crown jewel of this craft: a 3.4 km downhill route that allowed pack mules laden with olive oil, wine, and silk to travel safely to Milina harbour for shipment across the Aegean.',
+        'Before the modern road network, many everyday journeys in South Pelion relied on stone kalderimia. Traditional masons engineered these paths with steady gradients, broad stone steps, and integrated storm drainage channels.',
+        'The Lafkos–Milina kalderimi is one of the clearest surviving examples: an approximately 3.5 km downhill route linking the mountain settlement with the coast and its sea transport.',
       ],
     },
     image: {
@@ -11852,27 +11873,27 @@ export const stories: Story[] = [
       en: 'the-oldest-cafe-in-greece',
     },
     title: {
-      el: '1785: Το Παλαιότερο Καφενείο της Ελλάδας',
-      en: '1785: The Oldest Café in Greece',
+      el: '1785: Η παράδοση του Καφενείου Φορλίδα',
+      en: '1785: The Forlidas Café Tradition',
     },
     eyebrow: {
-      el: 'Επτά γενιές ιστορίας',
-      en: 'Seven generations of living memory',
+      el: 'Οικογενειακή και προφορική μνήμη',
+      en: 'Family and oral memory',
     },
     summary: {
-      el: 'Η συναρπαστική ιστορία του Καφενείου Φορλίδα, από χάνι των ταξιδιωτών των Σποράδων σε στέκι του Παπαδιαμάντη και του Βάρναλη.',
-      en: 'The story of Café Forlidas, from an 18th-century islanders’ inn to a cherished haunt of literary greats.',
+      el: 'Η συναρπαστική ιστορία του Καφενείου Φορλίδα, από την παράδοση του χανιού της πλατείας στις αφηγήσεις για τον Παπαδιαμάντη και τον Βάρναλη.',
+      en: 'The story of Café Forlidas, from the square’s inn tradition to local accounts of Papadiamantis and Varnalis.',
     },
     body: {
       el: [
-        'Όταν ο προπροπάππους της οικογένειας Φορλίδα άνοιξε το καφενείο το 1785, ο Λαύκος ήταν ένα ακμάζον κεφαλοχώρι υπό οθωμανική κυριαρχία. Στον επάνω όροφο του κτιρίου λειτούργησε χάνι — πανδοχείο όπου κατέλυαν οι ταξιδιώτες από τη Σκιάθο, τη Σκόπελο και την Αλόννησο που ταξίδευαν προς τον Βόλο.',
-        'Στο πέρασμα των αιώνων, το καφενείο έγινε μάρτυρας της νεότερης ελληνικής ιστορίας. Στα τραπέζια του κάθισε ο Αλέξανδρος Παπαδιαμάντης πίνοντας το ρακί του, ο Κώστας Βάρναλης έγραψε στίχους κατά τη θητεία του ως σχολάρχης, και ο Γιώργος Σεφέρης απόλαυσε την ηρεμία του πηλιορείτικου τοπίου.',
-        'Σήμερα, ο Μανώλης Φορλίδας συνεχίζει να ψήνει ελληνικό καφέ στη χόβολη, διατηρώντας ζωντανή μια αδιάσπαστη αλυσίδα 240 ετών.',
+        'Η οικογενειακή και δημοσιογραφική παράδοση συνδέει το καφενείο με το 1785, όταν ο Λαύκος ήταν ακμάζον κεφαλοχώρι. Ο επάνω όροφος περιγράφεται ως χάνι για ταξιδιώτες από τις Σποράδες προς τον Βόλο, χωρίς η χρονολογία να συνοδεύεται από δημοσιευμένο πρωτογενές ιδρυτικό έγγραφο.',
+        'Τοπικές αφηγήσεις συνδέουν τον χώρο με τον Αλέξανδρο Παπαδιαμάντη, τον Κώστα Βάρναλη και τον Γιώργο Σεφέρη. Οι επιμέρους επισκέψεις και περιστατικά διατηρούνται εδώ ως μνήμη του τόπου, όχι ως αρχειακά επιβεβαιωμένα γεγονότα.',
+        'Η σημερινή λειτουργία, το ωράριο και η συνέχεια της οικογενειακής διαχείρισης χρειάζονται επιβεβαίωση πριν από την επίσκεψη.',
       ],
       en: [
-        'When the Forlidas family opened their doors in 1785, Lafkos was a flourishing mountain trading town. The upper floor operated as a traveler’s inn (hani) hosting sea voyagers from Skiathos, Skopelos, and Alonnisos en route to Volos.',
-        'Across two centuries, the café bore witness to modern Greek history. Alexandros Papadiamantis lodged here on island crossings, poet Kostas Varnalis wrote verses while serving as schoolmaster in nearby Argalasti, and Nobel laureate Giorgos Seferis found quiet inspiration.',
-        'Today, Manolis Forlidas still brews traditional Greek coffee over embers, keeping alive an unbroken 240-year heritage of hospitality.',
+        'Family and journalistic tradition associates the café with 1785, when Lafkos was a flourishing mountain settlement. Its upper floor is described as an inn for Sporades travellers heading towards Volos, but the date is not accompanied by a published primary founding document.',
+        'Local accounts associate the place with Alexandros Papadiamantis, Kostas Varnalis, and Giorgos Seferis. These encounters are retained as local memory rather than archival fact.',
+        'Current operation, opening hours, and continuity of family management should be confirmed before visiting.',
       ],
     },
     image: {
@@ -11920,22 +11941,22 @@ export const stories: Story[] = [
     },
     body: {
       el: [
-        'Ένας τόπος όπως ο Λαύκος δεν αποκαλύπτεται με μια βιαστική τουριστική ματιά. Χτισμένος αμφιθεατρικά στην κορυφογραμμή του Νοτίου Πηλίου, σε υψόμετρο 310–330 μέτρων, ο οικισμός ιδρύθηκε αρχικά μεταξύ 15ου και 16ου αιώνα σε σημείο αθέατο από τα πειρατικά περάσματα του Αιγαίου και του Παγασητικού. Καθώς η πειρατεία υποχώρησε, το χωριό απλώθηκε στο διάσελο, κερδίζοντας επάξια τον τίτλο «το μπαλκόνι του Παγασητικού» χάρη στη μοναδική διπλή θέα του: από τη μια η γαλήνη του κόλπου με τα νησάκια Άλατας και Πρασούδα, κι από την άλλη ο ανοιχτός ορίζοντας προς τη Σκιάθο και τις Βόρειες Σποράδες.',
-        'Ξεκίνα την ανάγνωση από την καρδιά του οικισμού: την κεντρική πλατεία, μια από τις πιο επιβλητικές και ευρύχωρες σε όλο το Πήλιο, έκτασης άνω των τριών στρεμμάτων. Εδώ κυριαρχούν τα τέσσερα πελώρια πλατάνια που φυτεύτηκαν το 1887, προσφέροντας βαθιά σκιά και δροσιά. Το νερό υπήρξε ο αόρατος πολεοδόμος του Λαύκου. Οι υπόγειες πηγές όρισαν πού θα χτιστούν οι γειτονιές και πού θα διακλαδωθούν τα μονοπάτια. Ιστορικές πετρόχτιστες κρήνες όπως η θολωτή Χατζόβρυση (του 1800), η Τουλούμπα (1910) και η αρχέγονη Παλαιοβρύση δεν ήταν απλώς σημεία υδροδότησης, αλλά κοινωνικά κέντρα όπου οι γυναίκες έπλεναν στα πέτρινα πλυντήρια και οι ταξιδιώτες ξαπόσταιναν.',
+        'Ένας τόπος όπως ο Λαύκος δεν αποκαλύπτεται με μια βιαστική τουριστική ματιά. Χτισμένος αμφιθεατρικά στην κορυφογραμμή του Νοτίου Πηλίου, σε υψόμετρο 310–330 μέτρων, ο οικισμός τοποθετείται από την τοπική παράδοση στα τέλη του 15ου–αρχές του 16ου αιώνα, σε σημείο αθέατο από τα πειρατικά περάσματα του Αιγαίου και του Παγασητικού. Καθώς η πειρατεία υποχώρησε, το χωριό απλώθηκε στο διάσελο, κερδίζοντας τη φήμη του «μπαλκονιού του Παγασητικού» χάρη στη διπλή θέα του προς τον κόλπο και το Αιγαίο.',
+        'Ξεκίνα την ανάγνωση από την καρδιά του οικισμού: την πλατιά κεντρική πλατεία και τον ψηλό θόλο των πλατανιών, οι περισσότεροι από τους οποίους συνδέονται σε τοπικές αναφορές με το 1887. Το νερό υπήρξε ο αόρατος πολεοδόμος του Λαύκου. Οι υπόγειες πηγές όρισαν πού θα χτιστούν οι γειτονιές και πού θα διακλαδωθούν τα μονοπάτια. Ιστορικές πετρόχτιστες κρήνες όπως η θολωτή Χατζόβρυση (του 1800), η Τουλούμπα (1910) και η αρχέγονη Παλαιοβρύση δεν ήταν απλώς σημεία υδροδότησης, αλλά κοινωνικά κέντρα όπου οι κάτοικοι εργάζονταν, συναντιούνταν και ξαπόσταιναν.',
         'Στρέψε το βλέμμα στην πηλιορείτικη αρχιτεκτονική γραμματική. Τα κτίρια θεμελιώθηκαν πάνω σε συμπαγείς πέτρινους τοίχους από ντόπιο σχιστόλιθο και ασβεστόλιθο, ενισχυμένους με οριζόντιες ξυλοδεσιές («χατίλια») για ελαστικότητα στους σεισμούς. Στους επάνω ορόφους, η αυστηρή πέτρα υποχωρεί: προβάλλουν τα ξύλινα «σαχνισιά» (έρκερ) που στηρίζονται σε περίτεχνα ξύλινα φουρούσια, σχεδιασμένα για να αιχμαλωτίζουν το φως, τη θαλασσινή αύρα και τη θέα. Οι στέγες είναι καλυμμένες με τις φημισμένες γκρίζες και πρασινωπές πλάκες Πηλίου, τοποθετημένες με δεξιοτεχνία χωρίς λάσπη, ενώ τα μαρμάρινα υπέρθυρα φέρουν χαραγμένους σταυρούς, ημερομηνίες και λαϊκά φυλαχτά.',
-        'Η τέχνη της πέτρας έφτασε στην κορύφωσή της χάρη στους Ηπειρώτες και Δυτικομακεδόνες πρωτομάστορες («Ζουπανιώτες»). Εξέχον παράδειγμα αποτελεί η ιστορική Μονή Αγίου Αθανασίου (1795) στο Κωτίκι, έργο του φημισμένου πρωτομάστορα Δήμου Ζηπανιώτη, με το καθολικό της διακοσμημένο με περίτεχνα λιθανάγλυφα του γλύπτη Μίλιου που μοιάζουν με λεπτεπίλεπτο «κέντημα στο μάρμαρο». Στο κέντρο του χωριού, ο μεγαλοπρεπής Ναός της Γεννήσεως της Θεοτόκου (1888–1901), με το περίτεχνο μαρμάρινο τέμπλο και το ψηλό καμπαναριό, μαρτυρά την πνευματική ακτινοβολία και την ευημερία της κοινότητας.',
+        'Η τέχνη της πέτρας έφτασε στην κορύφωσή της χάρη στους Ηπειρώτες και Δυτικομακεδόνες πρωτομάστορες («Ζουπανιώτες»). Εξέχον παράδειγμα αποτελεί η ιστορική Μονή Αγίου Αθανασίου (1795) στο Κωτίκι, έργο του φημισμένου πρωτομάστορα Δήμου Ζηπανιώτη, με το καθολικό της διακοσμημένο με περίτεχνα λιθανάγλυφα του γλύπτη Μίλιου που μοιάζουν με λεπτεπίλεπτο «κέντημα στο μάρμαρο». Στο κέντρο του χωριού, ο σημερινός Ναός της Γεννήσεως της Θεοτόκου, που άρχισε να οικοδομείται το 1887 στη θέση παλαιότερου ναού, με το περίτεχνο τέμπλο και το ψηλό καμπαναριό, μαρτυρά την πνευματική ακτινοβολία και την ευημερία της κοινότητας.',
         'Κοίταξε κάτω στα πόδια σου: τα λιθόστρωτα καλντερίμια δεν ήταν διακοσμητικά, αλλά εξαιρετικά μελετημένες συγκοινωνιακές αρτηρίες. Κατασκευασμένα με ειδική κλίση, αυλάκια απορροής όμβριων υδάτων και πέτρινες βαθμίδες («πλατύσκαλα»), σχεδιάστηκαν για να διευκολύνουν τον βηματισμό των ανθρώπων και των φορτωμένων υποζυγίων. Το ιστορικό καλντερίμι που κατηφορίζει προς τη Μηλίνα συνέδεε την ορεινή αγροτική παραγωγή —λάδι, κρασί, μετάξι και ξυλεία— με τα παραθαλάσσια καΐκια που ταξίδευαν στον Βόλο, το Τρίκερι και τις Σποράδες.',
-        'Στα τέλη του 19ου και στις αρχές του 20ού αιώνα, η επιστροφή των Λαυκιωτών μεταναστών από την Αίγυπτο («Αιγυπτιώτες») έφερε νέο πλούτο και νεοκλασικές επιρροές. Έχτισαν αρχοντικά με συμμετρικές προσόψεις, χρηματοδότησαν το επιβλητικό Δημοτικό Σχολείο και καλλιέργησαν μια έντονη πνευματική ζωή. Αυτή η παράδοση συνεχίζεται σήμερα στο Φάμπειο Μουσείο, όπου εκτίθενται τα έργα του διεθνούς φήμης Λαυκιώτη γλύπτη Θανάση Φάμπα, και στο Μουσείο Ραδιοφώνου «Αντώνης Ταβάνης», ένα από τα ελάχιστα του είδους του στην Ευρώπη.',
-        'Καμία περιήγηση στον Λαύκο δεν ολοκληρώνεται χωρίς μια στάση στο ιστορικό Καφενείο Φορλίδα. Σε λειτουργία αδιάλειπτα από το 1785, αποτελεί το παλαιότερο καφενείο της Ελλάδας. Εδώ, όπου άλλοτε λειτουργούσε χάνι και ξαπόστασαν ο Αλέξανδρος Παπαδιαμάντης, ο Κώστας Βάρναλης και ο Γιώργος Σεφέρης, ο χρόνος κυλά με άλλους ρυθμούς. Ο καφές ψήνεται ακόμα στη χόβολη και οι ιστορίες των ντόπιων γίνονται το ζωντανό επιστέγασμα μιας ολόκληρης πολιτιστικής διαδρομής.',
+        'Στα τέλη του 19ου και στις αρχές του 20ού αιώνα, η επιστροφή των Λαυκιωτών μεταναστών από την Αίγυπτο («Αιγυπτιώτες») έφερε νέο πλούτο και νεοκλασικές επιρροές. Έχτισαν αρχοντικά με συμμετρικές προσόψεις, χρηματοδότησαν το επιβλητικό Δημοτικό Σχολείο και καλλιέργησαν μια έντονη πνευματική ζωή. Αυτή η παράδοση συνεχίζεται σήμερα στο Φάμπειο Μουσείο, όπου εκτίθενται τα έργα του Λαυκιώτη γλύπτη Θανάση Φάμπα, και στο Μουσείο Ραδιοφώνου «Αντώνης Ταβάνης», μια σπάνια συλλογή στην Ελλάδα.',
+        'Καμία περιήγηση στον Λαύκο δεν χρειάζεται να προσπεράσει το ιστορικό Καφενείο Φορλίδα. Η οικογενειακή και δημοσιογραφική παράδοση το συνδέει με το 1785, ενώ το χάνι και οι λογοτεχνικές επισκέψεις ανήκουν σε τοπικές αφηγήσεις που χρειάζονται αρχειακή επιβεβαίωση. Ο καφές και οι ιστορίες των ντόπιων παραμένουν ζωντανό μέρος της πολιτιστικής διαδρομής, εφόσον ο χώρος λειτουργεί κατά την επίσκεψη.',
       ],
       en: [
-        'A mountain village like Lafkos does not reveal its character to rushed sightseeing. Built amphitheatrically along the crest of South Pelion at an altitude of 310–330 meters, the settlement was founded in the 15th to 16th centuries in a sheltered fold of the hills, purposefully hidden from maritime pirate raids in the Aegean and Pagasetic. As piracy waned, the settlement expanded along the ridge, earning its reputation as the "Balcony of the Pagasetic" thanks to its dual horizon: to the west lie the tranquil waters of the Gulf with the islets of Alatas and Prasouda, while to the east stretches the Aegean Sea toward the distant silhouette of Skiathos.',
-        'Begin your exploration at the civic heart of the village: the central square, one of the grandest in all of Pelion, spanning over 3,000 square meters. Four monumental plane trees, planted in 1887, cast deep, cooling canopy shade over the flagstones. Water was the invisible urban planner of Lafkos: subterranean springs dictated where distinct neighborhoods formed and where mule paths branched out. Historic stone fountains like the vaulted Chatzovrysi (dating to ~1800), Touloumba (1910), and the ancient Palaiovrysi served as vital communal hubs where village women washed household linens in carved stone basins and travelers refreshed their mounts.',
+        'A mountain village like Lafkos does not reveal its character to rushed sightseeing. Built amphitheatrically along the crest of South Pelion at an altitude of 310–330 meters, the settlement is placed by local tradition in the late 15th or early 16th century, in a sheltered fold of the hills hidden from maritime pirate raids. As piracy waned, the settlement expanded along the ridge, earning its reputation as the “Balcony of the Pagasetic” through its dual horizon toward the gulf and the Aegean.',
+        'Begin your exploration at the civic heart of the village: the broad central square beneath its high canopy of plane trees, most of them associated in local accounts with 1887. Water was the invisible urban planner of Lafkos: subterranean springs dictated where distinct neighborhoods formed and where paths branched out. Historic stone fountains like the vaulted Chatzovrysi (dating to ~1800), Touloumba (1910), and the ancient Palaiovrysi served as communal hubs for work, conversation, and rest.',
         'Look closely at the vernacular architectural language. Buildings were erected upon thick, defensive ground floors of local metamorphic slate and limestone, tied together with horizontal timber lacing beams (xilodesies or chatilia) to absorb seismic shocks. On upper floors, the heavy stone gives way to lighter timber-framed oriel rooms (sahnisi) cantilevered on carved wooden corbels (fourousia), angled to capture southern sunlight, coastal sea drafts, and panoramic views. Roofs are tiled with layered Pelion slate laid without mortar, while carved marble lintels above heavy wooden doorways display protective folk rosettes, crosses, and builder inscriptions.',
-        'Masonry reached artistic heights through traveling guilds of Epirote and West Macedonian craftsmen known as Zoupaniotes. The pinnacle of their craft stands just outside the village at the historic Monastery of Agios Athanasios (1795) at Kotiki, designed by master builder Dimos Zipaniotis and decorated with exquisite stone reliefs by sculptor Milios that resemble delicate "embroidery in marble." In the village center, the monumental Church of the Nativity of the Theotokos (1888–1901), with its neoclassical bell tower and carved marble iconostasis, stands as a testament to communal spiritual devotion and civic prosperity.',
+        'Masonry reached artistic heights through traveling guilds of Epirote and West Macedonian craftsmen known as Zoupaniotes. The pinnacle of their craft stands just outside the village at the historic Monastery of Agios Athanasios (1795) at Kotiki, designed by master builder Dimos Zipaniotis and decorated with exquisite stone reliefs by sculptor Milios that resemble delicate “embroidery in marble.” In the village center, the present Church of the Nativity of the Theotokos began construction in 1887 on the site of an earlier church, with its bell tower and carved interior work standing as a testament to communal spiritual devotion.',
         'Beneath your feet lies an engineered transport network. Cobbled kalderimia were designed with deliberate slopes, drainage gutters, and stone step intervals calculated for the steady gait of laden pack mules and olive harvesters. The primary trunk trail descending from Lafkos to the coastal bay of Milina connected the mountain’s agricultural riches—olive oil, silk, wine, and timber—directly to sea caiques trading across the Pagasetic to Volos, Trikeri, and the Aegean archipelago.',
-        'In the late 19th and early 20th centuries, returning emigrants from the Greek diaspora in Alexandria and Cairo ("Egyptiotes") infused Lafkos with capital and neoclassical civic pride. They constructed stately neoclassical mansions, endowed the neoclassical Primary School, and nurtured a vibrant intellectual culture. This legacy endures today in the Fampas Sculpture Museum, housing works by internationally celebrated local sculptor Thanasis Fampas, and the Antonis Tavanis Radio Museum, preserving one of Europe’s rarest collections of vintage wireless receivers.',
-        'No understanding of Lafkos is complete without crossing the threshold of Café Forlidas on the main square. Operating continuously since 1785, it is recognized as the oldest café in Greece. Within walls that once served as a weary traveler’s inn—hosting literary figures like Alexandros Papadiamantis, Kostas Varnalis, and Nobel laureate Giorgos Seferis—time follows an older, gentler pulse. Over coffee slowly brewed in hot embers (chovoli), conversations with local olive growers and elders weave past centuries into a living, unbroken narrative.',
+        'In the late 19th and early 20th centuries, returning emigrants from the Greek diaspora in Alexandria and Cairo ("Egyptiotes") infused Lafkos with capital and neoclassical civic pride. They constructed stately neoclassical mansions, endowed the neoclassical Primary School, and nurtured a vibrant intellectual culture. This legacy endures today in the Fampas Sculpture Museum, housing works by local sculptor Thanasis Fampas, and the Antonis Tavanis Radio Museum, a rare collection in Greece.',
+        'No understanding of Lafkos needs to bypass Café Forlidas on the main square. Family and journalistic tradition associates it with 1785, while the former inn and literary visits remain local accounts requiring archival confirmation. Coffee and conversations with residents continue the village narrative when the café is operating during a visit.',
       ],
     },
     image: {
@@ -11949,7 +11970,7 @@ export const stories: Story[] = [
       'old-lanes',
       'chatzi-spring',
       'theotokos-church',
-      'monastery-thanasios',
+      'monastery-athanasios',
       'forlidas-cafe',
       'fampas-museum',
       'radio-museum',
@@ -11994,25 +12015,25 @@ export const stories: Story[] = [
       en: 'the-village-of-museums',
     },
     title: {
-      el: 'Το Χωριό των Μουσείων: Τέχνη και Ήχος στο Νότιο Πήλιο',
-      en: 'The Village of Museums: Art and Sound in South Pelion',
+      el: 'Μουσεία, Τέχνη και Ήχος στον Λαύκο',
+      en: 'Museums, Art, and Sound in Lafkos',
     },
     eyebrow: {
-      el: 'Πολιτιστικός θησαυρός',
-      en: 'A cultural treasure',
+      el: 'Δύο τεκμηριωμένοι σταθμοί και μία ανοιχτή έρευνα',
+      en: 'Two documented stops and one open question',
     },
     summary: {
-      el: 'Πώς ένα ορεινό χωριό συγκέντρωσε διεθνή γλυπτική, ένα από τα τρία μουσεία ραδιοφώνου της χώρας και πλούσια λαογραφία.',
-      en: 'How a mountain village became home to internationally acclaimed marble sculpture, vintage radios, and rich folklore.',
+      el: 'Το Φάμπειο και το Μουσείο Ραδιοφώνου είναι δύο τεκμηριωμένοι πολιτιστικοί σταθμοί· μια τρίτη λαογραφική αναφορά παραμένει υπό τοπική επιβεβαίωση.',
+      en: 'The Fampas and Radio Museums are two documented cultural stops; a third folklore reference remains pending local confirmation.',
     },
     body: {
       el: [
-        'Αν και μικρός σε πληθυσμό, ο Λαύκος διαθέτει μια πολιτιστική πυκνότητα που εκπλήσσει κάθε επισκέπτη. Μέσα σε λίγα μέτρα γύρω από την πλατεία συγκεντρώνονται τρία ξεχωριστά μουσεία.',
-        'Το Φάμπειο Μουσείο τιμά τον κορυφαίο γλύπτη Θανάση Φάμπα, του οποίου τα έργα σε λευκό πηλιορείτικο μάρμαρο έχουν εκτεθεί σε ευρωπαϊκές μητροπόλεις. Δίπλα του, το Μουσείο Ραδιοφώνου «Αντώνης Ταβάνης» ταξιδεύει τους επισκέπτες στον χρυσό αιώνα των ερτζιανών κυμάτων με δεκάδες ιστορικούς δέκτες, ενώ το Λαογραφικό Μουσείο διασώζει την αυθεντική αγροτική παράδοση του τόπου.',
+        'Αν και μικρός σε πληθυσμό, ο Λαύκος διαθέτει μια πολιτιστική πυκνότητα που εκπλήσσει κάθε επισκέπτη. Γύρω από την πλατεία βρίσκονται τουλάχιστον δύο τεκμηριωμένοι μουσειακοί σταθμοί, ενώ μια τρίτη λαογραφική αναφορά χρειάζεται επιτόπια επιβεβαίωση.',
+        'Το Φάμπειο Μουσείο τιμά τον γλύπτη Θανάση Φάμπα και στεγάζεται στο παλαιό δημοτικό σχολείο. Το Μουσείο Ραδιοφώνου «Αντώνης Ταβάνης» άνοιξε το 2008 με αρχικό πυρήνα περίπου 100 ιστορικών δεκτών, ενώ η αναφορά σε Λαογραφικό Μουσείο παραμένει καταχώριση χαμηλής βεβαιότητας που χρειάζεται τοπική επιβεβαίωση.',
       ],
       en: [
-        'Despite its modest size, Lafkos boasts an extraordinary cultural density that surprises every traveler. Within a short stroll around the main square stand three distinct museums.',
-        'The Fampas Museum honors master sculptor Thanasis Fampas, whose white Pelion marble creations have been exhibited across European capitals. Steps away, the Antonis Tavanis Radio Museum celebrates the golden age of wireless broadcasting with over 130 rare vintage receivers, while the Folklore Museum safeguards the authentic rural heritage of the region.',
+        'Despite its modest size, Lafkos has a cultural density that surprises many visitors. Around the main square, at least two museums are documented, while a third folklore reference still needs field confirmation.',
+        'The Fampas Museum honors sculptor Thanasis Fampas in the old primary school. The Antonis Tavanis Radio Museum opened in 2008 with an initial group of about 100 historic receivers, while the Folklore Museum remains a low-confidence listing requiring local confirmation.',
       ],
     },
     image: {
@@ -12060,14 +12081,14 @@ export const stories: Story[] = [
     },
     body: {
       el: [
-        'Στο Πήλιο, όπου υπάρχει πηγή υπάρχει και ένας πλάτανος· και όπου υπάρχει πλάτανος, γεννιέται μια γειτονιά. Ο Λαύκος είναι ένα από τα πιο χαρακτηριστικά παραδείγματα αυτού του υδάτινου πολιτισμού.',
-        'Από την αρχαία Παλαιοβρύση όπου πρωτοεγκαταστάθηκαν οι κάτοικοι, στην επιβλητική Κρήνη Χατζή του 1800 και στη μηχανική Κρήνη Τουλούμπα του 1910 στα Λειβαδάκια, κάθε βρύση έχει το δικό της όνομα, τη δική της ιστορία και τον δικό της πλάτανο.',
-        'Οι Ηπειρώτες μάστορες που έχτισαν τις κρήνες δεν δημιούργησαν απλώς υδρευτικά έργα, αλλά αρχιτεκτονικά μνημεία λαϊκής τέχνης που προσφέρουν δροσιά και ανακούφιση μέχρι σήμερα.',
+        'Στο Πήλιο, οι πηγές και οι πλάτανοι συχνά λειτουργούν ως σημεία γύρω από τα οποία συγκροτούνται γειτονιές. Ο Λαύκος είναι ένα χαρακτηριστικό παράδειγμα αυτού του υδάτινου πολιτισμού.',
+        'Η τοπική παράδοση συνδέει την αρχαία Παλαιοβρύση με την πρώτη εγκατάσταση των κατοίκων. Η επιβλητική Κρήνη Χατζή του 1800 και η μηχανική Κρήνη Τουλούμπα του 1910 στα Λειβαδάκια δείχνουν πώς κάθε βρύση διατηρεί το δικό της όνομα και ιστορία.',
+        'Οι μάστορες που έχτισαν τις κρήνες δεν δημιούργησαν απλώς υδρευτικά έργα, αλλά αρχιτεκτονικά μνημεία λαϊκής τέχνης και στάσεις σκιάς· η καταλληλότητα του νερού χρειάζεται πάντοτε τρέχουσα τοπική επιβεβαίωση.',
       ],
       en: [
-        'Throughout Pelion, wherever spring water rises, a plane tree takes root; and wherever a plane tree flourishes, a village quarter gathers. Lafkos stands as an exquisite exemplar of this mountain water culture.',
-        'From ancient Palaiovrysi where the earliest settlers built homes, to monumental Chatzi Spring in 1800 and the 1910 Touloumba pump in Livadakia, every fountain carries its own story, name, and dedicated plane tree.',
-        'The traveling Epirote stonemasons who built these fountains crafted not merely civic utilities, but enduring works of folk art that provide pure mountain refreshment to this day.',
+        'In Pelion, springs and plane trees often become the points around which village quarters gather. Lafkos is a vivid example of this mountain water culture.',
+        'Local tradition connects ancient Palaiovrysi with the settlement’s earliest residents. Monumental Chatzi Spring, dated around 1800, and the 1910 Touloumba pump in Livadakia show how each fountain carries its own name and history.',
+        'The masons who built these fountains created not merely water infrastructure, but enduring works of folk art and shaded resting places; water suitability always needs current local confirmation.',
       ],
     },
     image: {

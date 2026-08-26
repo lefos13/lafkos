@@ -1,16 +1,9 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import FeatureCard from '../../components/FeatureCard.astro';
 import StoryCard from '../../components/StoryCard.astro';
 import SeedNotice from '../../components/SeedNotice.astro';
 import MapExplorer from '../../components/MapExplorer';
-import {
-  featuredPlaces,
-  featuredStories,
-  featuredTrails,
-  fetchSanityContent,
-  publicMapData,
-} from '../../lib/content-api';
+import { fetchSanityContent, publicMapData } from '../../lib/content-api';
 import { locales, type Locale } from '../../lib/locales';
 import { getCopy } from '../../lib/ui-copy';
 
@@ -21,9 +14,17 @@ export function getStaticPaths() {
 const { locale } = Astro.props as { locale: Locale };
 const ui = getCopy(locale);
 const dataset = await fetchSanityContent();
-const places = featuredPlaces(dataset.places);
-const trails = featuredTrails(dataset.trails);
-const stories = featuredStories(dataset.stories);
+/* Keep the landing page intentionally small: these four stable story keys are
+ * invitations into the atlas, while the full archive remains on /stories/. */
+const narrativeStarts = [
+  { key: 'reading-lafkos', theme: 'origins-water', scope: 'walks' },
+  { key: 'water-and-stone', theme: 'origins-water', scope: 'walks' },
+  { key: 'oldest-cafe-forlidas', theme: 'square-1887', scope: 'village' },
+  { key: 'kalderimia-pelion', theme: 'stone-craft', scope: 'walks' },
+].flatMap(({ key, theme, scope }) => {
+  const story = dataset.stories.find((item) => item.entityKey === key);
+  return story ? [{ story, theme, scope }] : [];
+});
 const categories = dataset.categories;
 ---
 
@@ -37,7 +38,7 @@ const categories = dataset.categories;
         <a class="button button-primary" href={`/${locale}/map`}
           >{ui.explore} <span aria-hidden="true">↗</span></a
         >
-        <a class="button button-ghost" href={`/${locale}/stories/reading-lafkos`}>{ui.readStory}</a>
+        <a class="button button-ghost" href={`/${locale}/stories/`}>{ui.navStories}</a>
       </div>
     </div>
   </section>
@@ -59,46 +60,25 @@ const categories = dataset.categories;
     />
   </section>
 
-  <section class="section container" aria-labelledby="featured-title">
+  <section class="section container" aria-labelledby="starts-title">
     <div class="section-header">
       <div>
-        <p class="eyebrow">{ui.featured}</p><h2 id="featured-title" class="section-title">
+        <p class="eyebrow">{ui.featured}</p><h2 id="starts-title" class="section-title">
           {locale === 'el' ? 'Ξεκίνα από εδώ.' : 'Start here.'}
         </h2>
-      </div><a class="text-link" href={`/${locale}/map`}>{ui.viewAll}</a>
+        <p class="lede">{ui.storiesIntro}</p>
+      </div><a class="text-link" href={`/${locale}/stories/`}>{ui.viewAll}</a>
     </div>
     <div class="card-grid">
       {
-        places.map((place) => (
-          <FeatureCard
-            entry={place}
+        narrativeStarts.map(({ story, theme, scope }) => (
+          <StoryCard
+            story={story}
             locale={locale}
-            category={categories.find((category) => category.id === place.category)}
+            mapHref={`/${locale}/map?scope=${scope}&theme=${theme}`}
           />
         ))
       }
-      {
-        trails.map((trail) => (
-          <FeatureCard
-            entry={trail}
-            locale={locale}
-            category={categories.find((category) => category.id === 'trail')}
-          />
-        ))
-      }
-    </div>
-  </section>
-
-  <section class="section container" aria-labelledby="stories-title">
-    <div class="section-header">
-      <div>
-        <p class="eyebrow">{ui.stories}</p><h2 id="stories-title" class="section-title">
-          {locale === 'el' ? 'Ο τόπος συνεχίζει να μιλά.' : 'The place keeps speaking.'}
-        </h2>
-      </div><a class="text-link" href={`/${locale}/stories/reading-lafkos`}>{ui.viewAll}</a>
-    </div>
-    <div class="card-grid">
-      {stories.map((story) => <StoryCard story={story} locale={locale} />)}
     </div>
   </section>
 
