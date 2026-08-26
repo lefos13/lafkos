@@ -405,8 +405,8 @@ describe('Seed NDJSON Archive Integrity & Entry Formatter', () => {
     const lines = content.trim().split('\n');
 
     /* Each bilingual entity contributes three documents; these additions
-     * expand the original 107-document archive by 20 places and 13 trails. */
-    expect(lines.length).toBe(107 + 3 * 20 + 3 * 13);
+     * expand the original 107-document archive by 21 places and 13 trails. */
+    expect(lines.length).toBe(107 + 3 * 21 + 3 * 13);
 
     const types = new Set<string>();
     for (const line of lines) {

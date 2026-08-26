@@ -1221,7 +1221,7 @@ export default function MapExplorer({
         </span>
         <h4 class="map-popover-title">${selected.properties.title}</h4>
         <p class="map-popover-summary">${selected.properties.summary}</p>
-        <a class="map-popover-link" href="${link}">
+        <a class="map-popover-link" href="${link}" target="_blank" rel="noreferrer">
           <span>${locale === 'el' ? 'Περισσότερα' : 'Learn more'}</span>
           <span class="map-popover-arrow">↗</span>
         </a>

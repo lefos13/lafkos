@@ -76,7 +76,7 @@ const videoId = parseYouTubeVideoId(place.videoUrl ?? '');
           {
             place.sources.map((item) => (
               <li>
-                <a href={item.url} rel="noreferrer">
+                <a href={item.url} target="_blank" rel="noreferrer">
                   {item.label} ↗
                 </a>
               </li>

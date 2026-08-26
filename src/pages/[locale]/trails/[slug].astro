@@ -109,7 +109,7 @@ const videoId = parseYouTubeVideoId(trail.videoUrl ?? '');
           {
             trail.sources.map((item) => (
               <li>
-                <a href={item.url} rel="noreferrer">
+                <a href={item.url} target="_blank" rel="noreferrer">
                   {item.label} ↗
                 </a>
               </li>
