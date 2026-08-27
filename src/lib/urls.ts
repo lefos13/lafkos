@@ -45,3 +45,53 @@ export function getLocalizedUrlPaths({
 
   return { canonicalPath, alternatePath, xDefaultPath };
 }
+
+export const DEFAULT_SITE_ORIGIN = 'https://lafkos-guide.vercel.app';
+
+/*
+ * Generates the absolute canonical URL for any site path, guaranteeing the
+ * production origin and enforced trailing slash contract.
+ */
+export function getAbsoluteCanonicalUrl(
+  pathname: string,
+  origin: string = DEFAULT_SITE_ORIGIN,
+): string {
+  const normalized = normalizeTrailingSlash(pathname);
+  return new URL(normalized, origin).toString();
+}
+
+export interface ShareUrls {
+  facebook: string;
+  x: string;
+  whatsapp: string;
+}
+
+/*
+ * Pure, privacy-preserving share URL builder for social platforms without third-party
+ * tracking SDKs, pixels, or query parameters.
+ */
+export function buildShareUrls({
+  canonicalUrl,
+  title,
+}: {
+  canonicalUrl: string;
+  title: string;
+}): ShareUrls {
+  const encodedUrl = encodeURIComponent(canonicalUrl);
+
+  // Facebook share dialog accepts canonical URL only
+  const facebook = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+
+  // X web intent with localized title and canonical URL
+  const x = `https://x.com/intent/post?url=${encodedUrl}&text=${encodeURIComponent(title)}`;
+
+  // WhatsApp click-to-chat with localized title and canonical URL
+  const whatsappText = `${title} — ${canonicalUrl}`;
+  const whatsapp = `https://wa.me/?text=${encodeURIComponent(whatsappText)}`;
+
+  return {
+    facebook,
+    x,
+    whatsapp,
+  };
+}

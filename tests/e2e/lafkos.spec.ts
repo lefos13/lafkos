@@ -190,3 +190,160 @@ test('clicking on an overlapping place marker and route prioritizes the place ov
   await expect(popover.locator('.map-popover-title')).toHaveText('Μέτοχι');
   await expect(popover.locator('.map-popover-badge')).toContainText('Καθημερινή ζωή');
 });
+
+test('place detail page exposes privacy-preserving bilingual share quick actions and copy feedback', async ({
+  page,
+  context,
+}) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.goto('/el/places/plateia-lafkou/');
+
+  const shareSection = page.locator('.share-actions');
+  await expect(shareSection).toBeVisible();
+  await expect(shareSection.locator('.share-actions-label')).toHaveText('Κοινοποίηση:');
+
+  // Verify Facebook link
+  const fbLink = shareSection.locator('.share-btn--facebook');
+  await expect(fbLink).toBeVisible();
+  await expect(fbLink).toHaveAttribute('target', '_blank');
+  await expect(fbLink).toHaveAttribute('rel', 'noopener noreferrer');
+  const fbHref = await fbLink.getAttribute('href');
+  expect(fbHref).toContain('facebook.com/sharer/sharer.php');
+  expect(fbHref).toContain(
+    encodeURIComponent('https://lafkos-guide.vercel.app/el/places/plateia-lafkou/'),
+  );
+
+  // Verify X link
+  const xLink = shareSection.locator('.share-btn--x');
+  await expect(xLink).toBeVisible();
+  await expect(xLink).toHaveAttribute('target', '_blank');
+  await expect(xLink).toHaveAttribute('rel', 'noopener noreferrer');
+  const xHref = await xLink.getAttribute('href');
+  expect(xHref).toContain('x.com/intent/post');
+  expect(xHref).toContain(
+    encodeURIComponent('https://lafkos-guide.vercel.app/el/places/plateia-lafkou/'),
+  );
+
+  // Verify WhatsApp link
+  const waLink = shareSection.locator('.share-btn--whatsapp');
+  await expect(waLink).toBeVisible();
+  await expect(waLink).toHaveAttribute('target', '_blank');
+  await expect(waLink).toHaveAttribute('rel', 'noopener noreferrer');
+  const waHref = await waLink.getAttribute('href');
+  expect(waHref).toContain('wa.me');
+  expect(waHref).toContain(
+    encodeURIComponent('https://lafkos-guide.vercel.app/el/places/plateia-lafkou/'),
+  );
+
+  // Verify Copy Link action and live region feedback
+  const copyBtn = shareSection.locator('.share-btn--copy');
+  await expect(copyBtn).toBeVisible();
+  await expect(copyBtn).toHaveText(/Αντιγραφή συνδέσμου/);
+
+  await copyBtn.click();
+  await expect(copyBtn).toHaveAttribute('data-copied', 'true');
+  await expect(copyBtn).toHaveText(/Ο σύνδεσμος αντιγράφηκε!/);
+  const statusEl = shareSection.locator('.share-status');
+  await expect(statusEl).toHaveText('Ο σύνδεσμος αντιγράφηκε!');
+});
+
+test('English place detail page provides localized English share labels and copy feedback', async ({
+  page,
+  context,
+}) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.goto('/en/places/lafkos-square/');
+
+  const shareSection = page.locator('.share-actions');
+  await expect(shareSection).toBeVisible();
+  await expect(shareSection.locator('.share-actions-label')).toHaveText('Share:');
+
+  const copyBtn = shareSection.locator('.share-btn--copy');
+  await expect(copyBtn).toHaveText(/Copy link/);
+  await copyBtn.click();
+  await expect(copyBtn).toHaveText(/Link copied!/);
+  const statusEl = shareSection.locator('.share-status');
+  await expect(statusEl).toHaveText('Link copied!');
+});
+test('native web share button progressively unhides when navigator.share is available', async ({
+  page,
+}) => {
+  // Inject a mock navigator.share before page loads
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'share', {
+      value: async () => {},
+      configurable: true,
+      writable: true,
+    });
+  });
+  await page.goto('/el/places/plateia-lafkou/');
+  const nativeBtn = page.locator('.share-btn--native');
+  await expect(nativeBtn).toBeVisible();
+  await expect(nativeBtn).toHaveText(/Κοινοποίηση/);
+});
+
+test('share actions layout is responsive and touch-friendly on mobile 390px viewport', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/el/places/plateia-lafkou/');
+
+  const shareSection = page.locator('.share-actions');
+  await expect(shareSection).toBeVisible();
+
+  // Verify touch target dimensions (height >= 44px) on all visible buttons
+  const visibleButtons = shareSection.locator('.share-btn:not([hidden])');
+  const count = await visibleButtons.count();
+  expect(count).toBeGreaterThanOrEqual(4);
+  for (let i = 0; i < count; i++) {
+    const box = await visibleButtons.nth(i).boundingBox();
+    expect(box).not.toBeNull();
+    if (box) {
+      expect(box.height).toBeGreaterThanOrEqual(44);
+    }
+  }
+
+  // Verify no horizontal overflow at 390px
+  const hasHorizontalScroll = await page.evaluate(() => {
+    return document.documentElement.scrollWidth > document.documentElement.clientWidth;
+  });
+  expect(hasHorizontalScroll).toBe(false);
+});
+
+test('trail and story detail pages render share quick actions seamlessly in both locales', async ({
+  page,
+}) => {
+  await page.goto('/el/trails/kalderimi-lafkos-milina/');
+  await expect(page.locator('.share-actions')).toBeVisible();
+
+  await page.goto('/en/trails/historic-kalderimi-lafkos-milina/');
+  await expect(page.locator('.share-actions')).toBeVisible();
+
+  await page.goto('/el/stories/reading-lafkos/');
+  await expect(page.locator('.share-actions')).toBeVisible();
+
+  await page.goto('/en/stories/reading-lafkos/');
+  await expect(page.locator('.share-actions')).toBeVisible();
+});
+
+test('keyboard navigation cycles through share action controls with visible focus', async ({
+  page,
+}) => {
+  await page.goto('/el/places/plateia-lafkou/');
+
+  const fbLink = page.locator('.share-btn--facebook');
+  await fbLink.focus();
+  await expect(fbLink).toBeFocused();
+
+  await page.keyboard.press('Tab');
+  const xLink = page.locator('.share-btn--x');
+  await expect(xLink).toBeFocused();
+
+  await page.keyboard.press('Tab');
+  const waLink = page.locator('.share-btn--whatsapp');
+  await expect(waLink).toBeFocused();
+
+  await page.keyboard.press('Tab');
+  const copyBtn = page.locator('.share-btn--copy');
+  await expect(copyBtn).toBeFocused();
+});

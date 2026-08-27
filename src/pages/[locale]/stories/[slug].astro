@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import SeedNotice from '../../../components/SeedNotice.astro';
+import ShareActions from '../../../components/ShareActions.astro';
 import FeatureCard from '../../../components/FeatureCard.astro';
 import ResponsiveImage from '../../../components/ResponsiveImage.astro';
 import {
@@ -8,6 +9,7 @@ import {
   getLocalizedEditorialMetadata,
   type ContentDataset,
 } from '../../../lib/content-api';
+import { getAbsoluteCanonicalUrl } from '../../../lib/urls';
 import { locales, otherLocale, type Locale } from '../../../lib/locales';
 import { getCopy } from '../../../lib/ui-copy';
 import type { Story } from '../../../lib/content';
@@ -76,6 +78,8 @@ const jsonLd = buildStoryJsonLd({
   seoDescription,
   seoTitle,
 });
+const canonicalPath = `/${locale}/stories/${story.slug[locale]}/`;
+const canonicalUrl = getAbsoluteCanonicalUrl(canonicalPath);
 ---
 
 <BaseLayout
@@ -130,6 +134,12 @@ const jsonLd = buildStoryJsonLd({
       <h1 class="story-headline">{story.title[locale]}</h1>
       <p class="story-lede">{story.summary[locale]}</p>
       {story.isSeed && <SeedNotice locale={locale} />}
+      <ShareActions
+        locale={locale}
+        canonicalUrl={canonicalUrl}
+        title={story.title[locale]}
+        description={story.summary[locale]}
+      />
     </header>
 
     <figure class="story-feature-media">

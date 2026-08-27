@@ -97,6 +97,15 @@ export const copy = {
     seedFallbackWarning:
       'Προσοχή: Αυτή η εγκατάσταση εκτελείται με τοπικά προσωρινά δεδομένα (Local Seed Fallback) και όχι με το ζωντανό Sanity CMS. Οι αλλαγές που συγχρονίστηκαν στο CMS δεν θα εμφανίζονται εδώ μέχρι να ρυθμιστούν οι μεταβλητές περιβάλλοντος και να γίνει redeploy.',
     language: 'English',
+    shareTitle: 'Κοινοποίηση',
+    shareAriaGroup: 'Επιλογές κοινοποίησης',
+    shareNative: 'Κοινοποίηση',
+    shareFacebook: 'Κοινοποίηση στο Facebook',
+    shareX: 'Κοινοποίηση στο X',
+    shareWhatsApp: 'Κοινοποίηση στο WhatsApp',
+    shareCopyLink: 'Αντιγραφή συνδέσμου',
+    shareCopied: 'Ο σύνδεσμος αντιγράφηκε!',
+    shareCopyFailed: 'Αποτυχία αντιγραφής',
   },
   en: {
     home: 'Lafkos Guide home',
@@ -191,6 +200,15 @@ export const copy = {
     seedFallbackWarning:
       'Warning: This deployment is running on local fallback data (Local Seed Fallback) rather than the live Sanity CMS. Changes synced in the CMS will not appear here until environment variables are set and a redeploy is triggered.',
     language: 'Ελληνικά',
+    shareTitle: 'Share',
+    shareAriaGroup: 'Share options',
+    shareNative: 'Share',
+    shareFacebook: 'Share on Facebook',
+    shareX: 'Share on X',
+    shareWhatsApp: 'Share on WhatsApp',
+    shareCopyLink: 'Copy link',
+    shareCopied: 'Link copied!',
+    shareCopyFailed: 'Failed to copy',
   },
 } as const;
 export function getCopy(locale: Locale) {

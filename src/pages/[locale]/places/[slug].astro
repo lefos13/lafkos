@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import SeedNotice from '../../../components/SeedNotice.astro';
+import ShareActions from '../../../components/ShareActions.astro';
 import ResponsiveImage from '../../../components/ResponsiveImage.astro';
 import {
   fetchSanityContent,
@@ -8,6 +9,7 @@ import {
   type ContentDataset,
 } from '../../../lib/content-api';
 import { locales, otherLocale, type Locale } from '../../../lib/locales';
+import { getAbsoluteCanonicalUrl } from '../../../lib/urls';
 import { getCopy } from '../../../lib/ui-copy';
 import type { Place } from '../../../lib/content';
 import { parseYouTubeVideoId } from '../../../lib/video';
@@ -55,6 +57,8 @@ const jsonLd = buildPlaceJsonLd({
   seoDescription,
   seoTitle,
 });
+const canonicalPath = `/${locale}/places/${place.slug[locale]}/`;
+const canonicalUrl = getAbsoluteCanonicalUrl(canonicalPath);
 ---
 
 <BaseLayout
@@ -96,6 +100,12 @@ const jsonLd = buildPlaceJsonLd({
           >
         </div>
         {place.isSeed && <SeedNotice locale={locale} />}
+        <ShareActions
+          locale={locale}
+          canonicalUrl={canonicalUrl}
+          title={place.title[locale]}
+          description={place.summary[locale]}
+        />
       </div>
     </div>
     <div class="prose-layout prose-section">

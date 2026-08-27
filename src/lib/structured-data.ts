@@ -8,10 +8,9 @@
 import type { LocalizedEditorialMetadata } from './content-api';
 import type { Localized, Place, Story, Trail } from './content';
 import type { Locale } from './locales';
-import { normalizeTrailingSlash } from './urls';
+import { DEFAULT_SITE_ORIGIN, normalizeTrailingSlash } from './urls';
 
-export const canonicalSiteOrigin = 'https://lafkos-guide.vercel.app';
-
+export const canonicalSiteOrigin = DEFAULT_SITE_ORIGIN;
 /*
  * Builds an absolute canonical URL using the canonical site origin
  * and enforces the trailing slash URL format for routes, preserving

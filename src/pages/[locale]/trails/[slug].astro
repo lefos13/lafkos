@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import SeedNotice from '../../../components/SeedNotice.astro';
+import ShareActions from '../../../components/ShareActions.astro';
 import ResponsiveImage from '../../../components/ResponsiveImage.astro';
 import {
   fetchSanityContent,
@@ -8,6 +9,7 @@ import {
   type ContentDataset,
 } from '../../../lib/content-api';
 import { locales, otherLocale, type Locale } from '../../../lib/locales';
+import { getAbsoluteCanonicalUrl } from '../../../lib/urls';
 import { getCopy } from '../../../lib/ui-copy';
 import { formatDistance } from '../../../lib/geometry';
 import type { Trail } from '../../../lib/content';
@@ -57,6 +59,8 @@ const jsonLd = buildTrailJsonLd({
   seoDescription,
   seoTitle,
 });
+const canonicalPath = `/${locale}/trails/${trail.slug[locale]}/`;
+const canonicalUrl = getAbsoluteCanonicalUrl(canonicalPath);
 ---
 
 <BaseLayout
@@ -106,6 +110,12 @@ const jsonLd = buildTrailJsonLd({
           >
         </div>
         {trail.isSeed && <SeedNotice locale={locale} />}
+        <ShareActions
+          locale={locale}
+          canonicalUrl={canonicalUrl}
+          title={trail.title[locale]}
+          description={trail.summary[locale]}
+        />
       </div>
     </div>
     <div class="prose-layout prose-section">

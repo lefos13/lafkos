@@ -1,7 +1,8 @@
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { basename, join } from 'node:path';
+import { DEFAULT_SITE_ORIGIN } from './urls';
 
-export const DEFAULT_PRODUCTION_SITE_ORIGIN = 'https://lafkos-guide.vercel.app';
+export const DEFAULT_PRODUCTION_SITE_ORIGIN = DEFAULT_SITE_ORIGIN;
 export const DEFAULT_MAX_META_DESCRIPTION_LENGTH = 320;
 export const DEFAULT_HOMEPAGE_SIZE_CEILING_BYTES = 60 * 1024; // 60 KB ceiling
 
