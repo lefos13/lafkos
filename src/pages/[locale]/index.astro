@@ -76,7 +76,7 @@ const statsItems = [
       <h1 class="display">{locale === 'el' ? 'Λαύκος' : 'Lafkos'}</h1>
       <p class="lede">{ui.introLong}</p>
       <div class="hero-actions">
-        <a class="button button-primary" href={`/${locale}/map`}
+        <a class="button button-primary" href={`/${locale}/map/`}
           >{ui.explore} <span aria-hidden="true">↗</span></a
         >
         <a class="button button-ghost" href={`/${locale}/stories/`}>{ui.navStories}</a>
@@ -91,11 +91,11 @@ const statsItems = [
         <h2 id="stats-title" class="section-title">{statsTitle}</h2>
       </div>
       <div class="stats-ctas">
-        <a class="button button-secondary stats-cta-btn" href={`/${locale}/events`}>
+        <a class="button button-secondary stats-cta-btn" href={`/${locale}/events/`}>
           <span>{ctaEventsLabel}</span>
           <span class="cta-arrow" aria-hidden="true">→</span>
         </a>
-        <a class="button button-secondary stats-cta-btn" href={`/${locale}/timeline`}>
+        <a class="button button-secondary stats-cta-btn" href={`/${locale}/timeline/`}>
           <span>{ctaTimelineLabel}</span>
           <span class="cta-arrow" aria-hidden="true">→</span>
         </a>

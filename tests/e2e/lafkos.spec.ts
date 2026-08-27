@@ -12,26 +12,39 @@ test('root URL redirects seamlessly to default Greek locale', async ({ page }) =
   await expect(page.getByRole('heading', { name: 'Λαύκος', exact: true })).toBeVisible();
 });
 
-test('Greek home exposes the map, filters, and bilingual navigation', async ({ page }) => {
+test('Greek home exposes static map teaser, explore CTA, and bilingual navigation', async ({
+  page,
+}) => {
   await page.goto('/el/');
   await expect(page.getByRole('heading', { name: 'Λαύκος', exact: true })).toBeVisible();
-  const mapRegion = page.getByRole('region', { name: 'Εξερεύνησε τον Λαύκο' });
+  const mapSection = page.getByRole('region', { name: 'Βρες τον δρόμο σου.' });
+  await expect(mapSection).toBeVisible();
+  await mapSection.scrollIntoViewIfNeeded();
+  const mapCta = mapSection.getByRole('link', { name: /Άνοιγμα Διαδραστικού Χάρτη/ });
+  await expect(mapCta).toBeVisible();
+  await expect(mapCta).toHaveAttribute('href', '/el/map/');
+  await page.locator('footer').getByRole('link', { name: 'English' }).click();
+  await expect(page).toHaveURL('/en/');
+  await expect(page.getByRole('heading', { name: 'Lafkos', exact: true })).toBeVisible();
+});
+
+test('Greek map page exposes interactive canvas, filters, and bilingual navigation', async ({
+  page,
+}) => {
+  await page.goto('/el/map/');
+  const mapRegion = page.locator('.map-explorer');
   await expect(mapRegion).toBeVisible();
-  await mapRegion.scrollIntoViewIfNeeded();
   const mapCanvas = page.locator('.map-canvas .maplibregl-canvas');
   await expect(mapCanvas).toBeVisible();
   await expect.poll(() => mapCanvas.evaluate((element) => element.clientHeight)).toBeGreaterThan(0);
   await mapRegion.getByRole('button', { name: 'Ιστορία' }).click();
   await expect(page).toHaveURL(/categories=heritage/);
   await expect(page.getByRole('link', { name: /Μουσείο Φάμπα — περισσότερα/ })).toBeVisible();
-  await page.locator('footer').getByRole('link', { name: 'English' }).click();
-  await expect(page).toHaveURL('/en/');
-  await expect(page.getByRole('heading', { name: 'Lafkos', exact: true })).toBeVisible();
 });
 
 test('a selected map result creates a shareable place URL', async ({ page }) => {
-  await page.goto('/el/');
-  const mapRegion = page.getByRole('region', { name: 'Εξερεύνησε τον Λαύκο' });
+  await page.goto('/el/map/');
+  const mapRegion = page.locator('.map-explorer');
   await mapRegion.scrollIntoViewIfNeeded();
   await mapRegion
     .getByRole('complementary')
@@ -40,22 +53,22 @@ test('a selected map result creates a shareable place URL', async ({ page }) => 
   await expect(page).toHaveURL(/place=lafkos-square/);
   await expect(page.getByRole('link', { name: 'Περισσότερα ↗' })).toHaveAttribute(
     'href',
-    '/el/places/plateia-lafkou',
+    '/el/places/plateia-lafkou/',
   );
 });
 
 test('place pages switch to the translated slug', async ({ page }) => {
-  await page.goto('/el/places/plateia-lafkou');
+  await page.goto('/el/places/plateia-lafkou/');
   await expect(page.getByRole('heading', { name: 'Η πλατεία του Λαύκου' })).toBeVisible();
   await page.locator('footer').getByRole('link', { name: 'English' }).click();
-  await expect(page).toHaveURL('/en/places/lafkos-square');
+  await expect(page).toHaveURL('/en/places/lafkos-square/');
   await expect(page.getByRole('heading', { name: 'Lafkos square' })).toBeVisible();
 });
 
 test('reading-lafkos story renders beautifully in Greek and switches to English', async ({
   page,
 }) => {
-  await page.goto('/el/stories/reading-lafkos');
+  await page.goto('/el/stories/reading-lafkos/');
   await expect(
     page.getByRole('heading', { name: 'Πώς διαβάζεται ένας ορεινός οικισμός' }),
   ).toBeVisible();
@@ -63,7 +76,7 @@ test('reading-lafkos story renders beautifully in Greek and switches to English'
   await expect(page.locator('.story-prose-body')).toBeVisible();
   await expect(page.locator('.story-sources-panel')).toBeVisible();
   await page.locator('footer').getByRole('link', { name: 'English' }).click();
-  await expect(page).toHaveURL('/en/stories/reading-lafkos');
+  await expect(page).toHaveURL('/en/stories/reading-lafkos/');
   await expect(page.getByRole('heading', { name: 'How to Read a Mountain Village' })).toBeVisible();
 });
 
@@ -71,7 +84,7 @@ test('mobile map layout features minimal header, prominent canvas, and collapsib
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('/el/map');
+  await page.goto('/el/map/');
 
   // Verify minimal header and mobile language link
   const header = page.locator('.site-header');
@@ -107,7 +120,7 @@ test('mobile map layout features minimal header, prominent canvas, and collapsib
 });
 
 test('direct road path link frames route and shows drive route popover badge', async ({ page }) => {
-  await page.goto('/el/map?trail=lafkos-paltsi-drive');
+  await page.goto('/el/map/?trail=lafkos-paltsi-drive');
   const mapCanvas = page.locator('.map-canvas .maplibregl-canvas');
   await expect(mapCanvas).toBeVisible();
   const popover = page.locator('.map-popover-content');
@@ -117,7 +130,7 @@ test('direct road path link frames route and shows drive route popover badge', a
 });
 
 test('selecting road path updates URL and highlights drive route', async ({ page }) => {
-  await page.goto('/el/map');
+  await page.goto('/el/map/');
   const mapRegion = page.locator('.map-explorer');
   await expect(mapRegion).toBeVisible();
 
@@ -139,23 +152,23 @@ test('selecting road path updates URL and highlights drive route', async ({ page
 test('entity pages embed their YouTube video and pages without one stay iframe-free', async ({
   page,
 }) => {
-  await page.goto('/el/trails/lafkos-mousges-agios-spiridona');
+  await page.goto('/el/trails/lafkos-mousges-agios-spiridona/');
   const trailVideo = page.locator("iframe[src*='RH7zxUEjgjU']");
   await expect(trailVideo).toBeVisible();
 
-  await page.goto('/el/places/plateia-lafkou');
+  await page.goto('/el/places/plateia-lafkou/');
   const placeVideo = page.locator("iframe[src*='fV_O4f-pccE']");
   await expect(placeVideo).toBeVisible();
 
   // A trail without videoUrl must not render any embed at all.
-  await page.goto('/el/trails/profitis-ilias-trail');
+  await page.goto('/el/trails/profitis-ilias-trail/');
   await expect(page.locator('iframe')).toHaveCount(0);
 });
 test('clicking on an overlapping place marker and route prioritizes the place over the route', async ({
   page,
 }) => {
   // Frame the map on Metochi where the potistika-drive route passes directly through
-  await page.goto('/el/map?place=metochi');
+  await page.goto('/el/map/?place=metochi');
   const mapRegion = page.locator('.map-explorer');
   await expect(mapRegion).toBeVisible();
 

@@ -54,7 +54,7 @@ const socialImageAlt = editorial.socialImage?.alt ?? primaryImage?.alt ?? trail.
   author={editorial.author}
   publishedAt={editorial.publishedAt}
   modifiedAt={editorial.modifiedAt}
-  alternateHref={`/${otherLocale(locale)}/trails/${trail.slug[otherLocale(locale)]}`}
+  alternateHref={`/${otherLocale(locale)}/trails/${trail.slug[otherLocale(locale)]}/`}
 >
   <article class="container">
     <div class="detail-hero">
@@ -77,7 +77,7 @@ const socialImageAlt = editorial.socialImage?.alt ?? primaryImage?.alt ?? trail.
           ><span class="meta-pill">{ui[trail.difficulty]}</span>
         </div>
         <div class="hero-actions">
-          <a class="button button-primary" href={`/${locale}/map?trail=${trail.entityKey}`}
+          <a class="button button-primary" href={`/${locale}/map/?trail=${trail.entityKey}`}
             >{ui.openMap} <span aria-hidden="true">↗</span></a
           ><a
             class="button button-secondary"

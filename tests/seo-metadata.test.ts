@@ -190,8 +190,8 @@ describe('SEO Metadata & Social Graph Contracts', () => {
     // Bilingual content in Greek and English
     expect(pageContent).toContain('/el/');
     expect(pageContent).toContain('/en/');
-    expect(pageContent).toContain('/el/map');
-    expect(pageContent).toContain('/en/map');
+    expect(pageContent).toContain('/el/map/');
+    expect(pageContent).toContain('/en/map/');
     expect(pageContent).toContain('/el/places/');
     expect(pageContent).toContain('/en/places/');
     expect(pageContent).toContain('/el/trails/');
@@ -281,8 +281,8 @@ describe('SEO Metadata & Social Graph Contracts', () => {
       expect(html).toContain('name="robots" content="noindex, follow"');
       expect(html).toContain('/el/');
       expect(html).toContain('/en/');
-      expect(html).toContain('/el/map');
-      expect(html).toContain('/en/map');
+      expect(html).toContain('/el/map/');
+      expect(html).toContain('/en/map/');
       expect(html).toContain('/el/places/');
       expect(html).toContain('/en/places/');
       expect(html).toContain('/el/trails/');

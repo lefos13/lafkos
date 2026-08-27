@@ -73,7 +73,7 @@ const socialImageAlt = editorial.socialImage?.alt ?? primaryImage?.alt ?? story.
   author={editorial.author}
   publishedAt={editorial.publishedAt}
   modifiedAt={editorial.modifiedAt}
-  alternateHref={`/${other}/stories/${story.slug[other]}`}
+  alternateHref={`/${other}/stories/${story.slug[other]}/`}
 >
   <article class="container story-page">
     <nav class="story-breadcrumb" aria-label="Breadcrumb">
@@ -139,7 +139,7 @@ const socialImageAlt = editorial.socialImage?.alt ?? primaryImage?.alt ?? story.
                 : 'Lafkos preserves the authentic vernacular urban layout of South Pelion: stone kalderimia, shaded springs, and architecture oriented toward the Pagasetic Gulf.'
             }
           </p>
-          <a class="button button-secondary sidebar-action" href={`/${locale}/map`}>
+          <a class="button button-secondary sidebar-action" href={`/${locale}/map/`}>
             {exploreMapLabel}
             <span aria-hidden="true">↗</span>
           </a>
@@ -197,7 +197,7 @@ const socialImageAlt = editorial.socialImage?.alt ?? primaryImage?.alt ?? story.
                 {ui.related}
               </h2>
             </div>
-            <a class="button button-ghost" href={`/${locale}/map`}>
+            <a class="button button-ghost" href={`/${locale}/map/`}>
               {exploreMapLabel}
             </a>
           </div>

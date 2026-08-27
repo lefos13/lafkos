@@ -247,8 +247,8 @@ describe('Content Hubs & Navigation Contracts', () => {
     expect(indexTemplate).toMatch(/href=\{`\/\$\{locale\}\/trails(?:\/)?`\}/);
     expect(indexTemplate).toMatch(/href=\{`\/\$\{locale\}\/stories(?:\/)?`\}/);
 
-    // Map section CTA to /map must be preserved
-    expect(indexTemplate).toMatch(/href=\{`\/\$\{locale\}\/map`\}/);
+    // Map section CTA to /map/ must be preserved
+    expect(indexTemplate).toMatch(/href=\{`\/\$\{locale\}\/map\/`\}/);
   });
 
   /*

@@ -10,8 +10,8 @@ interface Props {
 const { entry, locale, category } = Astro.props;
 const href =
   entry.kind === 'place'
-    ? `/${locale}/places/${entry.slug[locale]}`
-    : `/${locale}/trails/${entry.slug[locale]}`;
+    ? `/${locale}/places/${entry.slug[locale]}/`
+    : `/${locale}/trails/${entry.slug[locale]}/`;
 const image =
   entry.kind === 'place'
     ? entry.images[0]

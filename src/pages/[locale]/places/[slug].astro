@@ -52,7 +52,7 @@ const socialImageAlt = editorial.socialImage?.alt ?? primaryImage?.alt ?? place.
   author={editorial.author}
   publishedAt={editorial.publishedAt}
   modifiedAt={editorial.modifiedAt}
-  alternateHref={`/${otherLocale(locale)}/places/${place.slug[otherLocale(locale)]}`}
+  alternateHref={`/${otherLocale(locale)}/places/${place.slug[otherLocale(locale)]}/`}
 >
   <article class="container">
     <div class="detail-hero">
@@ -62,7 +62,7 @@ const socialImageAlt = editorial.socialImage?.alt ?? primaryImage?.alt ?? place.
         <h1 class="page-title">{place.title[locale]}</h1>
         <p class="lede">{place.summary[locale]}</p>
         <div class="hero-actions">
-          <a class="button button-primary" href={`/${locale}/map?place=${place.entityKey}`}
+          <a class="button button-primary" href={`/${locale}/map/?place=${place.entityKey}`}
             >{ui.openMap} <span aria-hidden="true">↗</span></a
           ><a
             class="button button-secondary"

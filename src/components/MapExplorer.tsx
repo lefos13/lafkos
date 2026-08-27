@@ -63,7 +63,7 @@ function featureCollection(features: MapFeature[]) {
 
 function detailUrl(locale: Locale, properties: MapFeatureProperties) {
   const kind = properties.kind === 'place' ? 'places' : 'trails';
-  return `/${locale}/${kind}/${properties.slug}`;
+  return `/${locale}/${kind}/${properties.slug}/`;
 }
 
 function sanitizeFilter(expr: unknown): unknown {
@@ -239,7 +239,6 @@ function findNearbyMarker(
 
   return bestMatch;
 }
-
 
 export default function MapExplorer({
   locale,
@@ -752,7 +751,6 @@ export default function MapExplorer({
         map.on('click', layerId, handleRouteClick);
       });
       map.on('click', handleMapClick);
-
 
       const targetTrailKey = stateRef.current?.trail ?? initialState?.trail;
       const targetPlaceKey = stateRef.current?.place ?? initialState?.place;

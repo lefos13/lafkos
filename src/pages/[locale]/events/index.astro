@@ -185,7 +185,7 @@ const activeSeasons = seasons.filter((season) => season.stories.length > 0);
   locale={locale}
   title={pageTitle}
   description={pageDescription}
-  alternateHref={`/${other}/events`}
+  alternateHref={`/${other}/events/`}
 >
   <section class="prose-section container events-page">
     <nav
@@ -396,7 +396,7 @@ const activeSeasons = seasons.filter((season) => season.stories.length > 0);
                             </span>
                           </div>
                           <h3 class="event-card-title">
-                            <a href={`/${locale}/stories/${story.slug[locale]}`}>
+                            <a href={`/${locale}/stories/${story.slug[locale]}/`}>
                               {story.title[locale]}
                             </a>
                           </h3>
@@ -404,7 +404,7 @@ const activeSeasons = seasons.filter((season) => season.stories.length > 0);
                           <div class="event-card-action">
                             <a
                               class="text-link event-card-link"
-                              href={`/${locale}/stories/${story.slug[locale]}`}
+                              href={`/${locale}/stories/${story.slug[locale]}/`}
                             >
                               {ui.readStory} <span aria-hidden="true">→</span>
                             </a>

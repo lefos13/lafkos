@@ -34,7 +34,7 @@ const backToHomeLabel = locale === 'el' ? '← Αρχική' : '← Home';
   locale={locale}
   title={pageTitle}
   description={pageDescription}
-  alternateHref={`/${other}/timeline`}
+  alternateHref={`/${other}/timeline/`}
 >
   <section class="prose-section container timeline-page">
     <nav
@@ -148,7 +148,7 @@ const backToHomeLabel = locale === 'el' ? '← Αρχική' : '← Home';
               >
             </li>
           </ul>
-          <a class="button button-secondary map-sidebar-cta" href={`/${locale}/map`}>
+          <a class="button button-secondary map-sidebar-cta" href={`/${locale}/map/`}>
             {exploreMapLabel}
             <span aria-hidden="true">→</span>
           </a>
