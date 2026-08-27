@@ -3,7 +3,8 @@ import sitemap from '@astrojs/sitemap';
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://lafkos.guide',
+  site: 'https://lafkos-guide.vercel.app',
+  trailingSlash: 'always',
   i18n: {
     defaultLocale: 'el',
     locales: ['el', 'en'],
@@ -12,7 +13,14 @@ export default defineConfig({
       redirectToDefaultLocale: false,
     },
   },
-  integrations: [react(), sitemap()],
+  /*
+   * The root route is a permanent redirect to the default locale, so it must
+   * not be advertised as an indexable sitemap location.
+   */
+  integrations: [
+    react(),
+    sitemap({ filter: (page) => new URL(page).pathname !== '/' }),
+  ],
   output: 'static',
   prefetch: true,
   vite: {

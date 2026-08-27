@@ -1,9 +1,10 @@
 {
+  "trailingSlash": true,
   "redirects": [
     {
       "source": "/",
       "destination": "/el/",
-      "permanent": false
+      "permanent": true
     }
   ],
   "headers": [

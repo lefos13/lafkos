@@ -3,6 +3,7 @@ import '../styles/global.css';
 import { otherLocale, type Locale } from '../lib/locales';
 import { getCopy } from '../lib/ui-copy';
 import { fetchSanityContent } from '../lib/content-api';
+import { getLocalizedUrlPaths } from '../lib/urls';
 
 interface Props {
   locale: Locale;
@@ -29,10 +30,20 @@ const {
 } = Astro.props;
 const ui = getCopy(locale);
 const alternateLocale = otherLocale(locale);
-const alternatePath =
-  alternateHref ?? Astro.url.pathname.replace(`/${locale}`, `/${alternateLocale}`);
-const siteUrl = Astro.site ?? new URL('https://lafkos.guide');
-const canonical = new URL(Astro.url.pathname, siteUrl).toString();
+/*
+ * Canonical and language URLs are built from one normalized path contract.
+ * Detail pages pass translated slugs through alternateHref, allowing the
+ * Greek x-default link to point at the matching entity rather than /el/.
+ */
+const { canonicalPath, alternatePath, xDefaultPath } = getLocalizedUrlPaths({
+  locale,
+  pathname: Astro.url.pathname,
+  alternatePath: alternateHref,
+});
+const siteUrl = Astro.site ?? new URL('https://lafkos-guide.vercel.app');
+const canonical = new URL(canonicalPath, siteUrl).toString();
+const alternateUrl = new URL(alternatePath, siteUrl).toString();
+const xDefaultUrl = new URL(xDefaultPath, siteUrl).toString();
 const socialImage = image ?? new URL('/icons/icon-512.svg', siteUrl).toString();
 const dataset = await fetchSanityContent();
 const activeSource = contentSource ?? dataset.source;
@@ -53,8 +64,8 @@ const navTimelineLabel = locale === 'el' ? 'Χρονολόγιο' : 'Timeline';
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="canonical" href={canonical} />
     <link rel="alternate" hreflang={locale} href={canonical} />
-    <link rel="alternate" hreflang={alternateLocale} href={new URL(alternatePath, siteUrl)} />
-    <link rel="alternate" hreflang="x-default" href={new URL('/el/', siteUrl)} />
+    <link rel="alternate" hreflang={alternateLocale} href={alternateUrl} />
+    <link rel="alternate" hreflang="x-default" href={xDefaultUrl} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />

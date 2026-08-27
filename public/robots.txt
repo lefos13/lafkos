@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://lafkos.guide/sitemap-index.xml
+Sitemap: https://lafkos-guide.vercel.app/sitemap-index.xml
