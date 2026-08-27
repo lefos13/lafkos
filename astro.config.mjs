@@ -25,10 +25,10 @@ export default defineConfig({
   prefetch: true,
   vite: {
     optimizeDeps: {
-      /* MapLibre ships a separate worker entry that Vite's optimizer cannot
-       * serve reliably when it is prebundled as a dependency. */
-      exclude: ['maplibre-gl'],
+      /* MapLibre and PMTiles ship separate worker and protocol entries that Vite's
+       * optimizer should not prebundle to avoid outdated dependency hash errors. */
+      exclude: ['maplibre-gl', 'pmtiles'],
     },
-    ssr: { noExternal: ['maplibre-gl'] },
+    ssr: { noExternal: ['maplibre-gl', 'pmtiles'] },
   },
 });

@@ -55,6 +55,7 @@ const defaultDataset: ContentDataset = {
   source: 'seed',
 };
 
+
 let cachedDataset: ContentDataset | null = null;
 
 export async function fetchSanityContent(): Promise<ContentDataset> {
@@ -67,7 +68,9 @@ export async function fetchSanityContent(): Promise<ContentDataset> {
     return cachedDataset;
   }
   if (!isSanityConfigured()) {
-    cachedDataset = defaultDataset;
+    if (!isDev) {
+      cachedDataset = defaultDataset;
+    }
     return defaultDataset;
   }
 
