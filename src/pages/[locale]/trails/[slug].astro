@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import SeedNotice from '../../../components/SeedNotice.astro';
+import ResponsiveImage from '../../../components/ResponsiveImage.astro';
 import {
   fetchSanityContent,
   getLocalizedEditorialMetadata,
@@ -66,10 +67,14 @@ const jsonLd = buildTrailJsonLd({ trail, locale, editorial });
   <article class="container">
     <div class="detail-hero">
       <div class="detail-media">
-        <img
+        <ResponsiveImage
           src={trail.waypoints[0]?.image?.src ??
             'https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=1400&q=82'}
           alt={trail.waypoints[0]?.image?.alt ?? trail.title[locale]}
+          preset="hero"
+          loading="eager"
+          decoding="async"
+          fetchpriority="high"
         />
       </div>
       <div class="detail-copy">
@@ -130,7 +135,13 @@ const jsonLd = buildTrailJsonLd({ trail, locale, editorial });
                 </>
               </div>
               {waypoint.image && (
-                <img src={waypoint.image.src} alt={waypoint.image.alt} loading="lazy" />
+                <ResponsiveImage
+                  src={waypoint.image.src}
+                  alt={waypoint.image.alt}
+                  preset="waypoint"
+                  loading="lazy"
+                  decoding="async"
+                />
               )}
             </div>
           ))

@@ -40,6 +40,7 @@ import type { Locale } from '../lib/locales';
 import { parseMapState, serializeMapState, type MapState } from '../lib/map-state';
 import { getCopy } from '../lib/ui-copy';
 import { getGeometryBounds, haversineDistanceMeters } from '../lib/geometry';
+import { buildSrcSet, getOptimizedImageUrl, IMAGE_PRESETS } from '../lib/images';
 
 interface Props {
   locale: Locale;
@@ -1191,10 +1192,21 @@ export default function MapExplorer({
     const category = categories.find((c) => c.id === selected.properties.category);
     const link = detailUrl(locale, selected.properties);
 
+    const thumbRaw = selected.properties.thumbnail;
+    const thumbUrl = thumbRaw
+      ? getOptimizedImageUrl(thumbRaw, IMAGE_PRESETS.mapThumbnail.defaultWidth)
+      : '';
+    const thumbSrcset = thumbRaw
+      ? buildSrcSet(thumbRaw, IMAGE_PRESETS.mapThumbnail.widths)
+      : undefined;
+    const thumbSrcsetAttr = thumbSrcset
+      ? ` srcset="${thumbSrcset}" sizes="${IMAGE_PRESETS.mapThumbnail.sizes}"`
+      : '';
+
     const popupDiv = document.createElement('div');
     popupDiv.className = 'map-popover-content';
     popupDiv.innerHTML = `
-      ${selected.properties.thumbnail ? `<div class="map-popover-media"><img src="${selected.properties.thumbnail}" alt="${selected.properties.title}" /></div>` : ''}
+      ${thumbUrl ? `<div class="map-popover-media"><img src="${thumbUrl}"${thumbSrcsetAttr} alt="${selected.properties.title}" loading="lazy" decoding="async" /></div>` : ''}
       <div class="map-popover-body">
         <span class="map-popover-badge" style="background-color: ${category?.color || '#b66c45'}">
           ${

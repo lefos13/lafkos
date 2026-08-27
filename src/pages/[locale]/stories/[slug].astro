@@ -2,6 +2,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import SeedNotice from '../../../components/SeedNotice.astro';
 import FeatureCard from '../../../components/FeatureCard.astro';
+import ResponsiveImage from '../../../components/ResponsiveImage.astro';
 import {
   fetchSanityContent,
   getLocalizedEditorialMetadata,
@@ -125,7 +126,15 @@ const jsonLd = buildStoryJsonLd({ story, locale, editorial });
 
     <figure class="story-feature-media">
       <div class="story-media-wrapper">
-        <img src={story.image.src} alt={story.image.alt} class="story-hero-img" />
+        <ResponsiveImage
+          src={story.image.src}
+          alt={story.image.alt}
+          class="story-hero-img"
+          preset="storyHero"
+          loading="eager"
+          decoding="async"
+          fetchpriority="high"
+        />
       </div>
       <figcaption class="story-media-caption">
         <span class="caption-desc">{story.image.alt}</span>

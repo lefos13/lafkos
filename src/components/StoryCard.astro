@@ -1,4 +1,5 @@
 ---
+import ResponsiveImage from './ResponsiveImage.astro';
 import type { Story } from '../lib/content';
 import type { Locale } from '../lib/locales';
 import { getCopy } from '../lib/ui-copy';
@@ -12,7 +13,13 @@ const ui = getCopy(locale);
 ---
 
 <article class="story-card">
-  <img src={story.image.src} alt={story.image.alt} loading="lazy" />
+  <ResponsiveImage
+    src={story.image.src}
+    alt={story.image.alt}
+    preset="card"
+    loading="lazy"
+    decoding="async"
+  />
   <div class="story-card-copy">
     <p class="eyebrow">{story.eyebrow[locale]}</p>
     <h3>{story.title[locale]}</h3>

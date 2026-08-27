@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import SeedNotice from '../../../components/SeedNotice.astro';
+import ResponsiveImage from '../../../components/ResponsiveImage.astro';
 import {
   fetchSanityContent,
   getLocalizedEditorialMetadata,
@@ -63,7 +64,16 @@ const jsonLd = buildPlaceJsonLd({ place, locale, editorial });
 >
   <article class="container">
     <div class="detail-hero">
-      <div class="detail-media"><img src={place.images[0].src} alt={place.images[0].alt} /></div>
+      <div class="detail-media">
+        <ResponsiveImage
+          src={place.images[0].src}
+          alt={place.images[0].alt}
+          preset="hero"
+          loading="eager"
+          decoding="async"
+          fetchpriority="high"
+        />
+      </div>
       <div class="detail-copy">
         <p class="eyebrow">{category?.label[locale]} · {place.eyebrow[locale]}</p>
         <h1 class="page-title">{place.title[locale]}</h1>

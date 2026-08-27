@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ResponsiveImage from '../../../components/ResponsiveImage.astro';
 import { fetchSanityContent } from '../../../lib/content-api';
 import { locales, otherLocale, type Locale } from '../../../lib/locales';
 import { getCopy } from '../../../lib/ui-copy';
@@ -376,10 +377,12 @@ const activeSeasons = seasons.filter((season) => season.stories.length > 0);
                       <article class="event-card">
                         {story.image?.src && (
                           <div class="event-card-media">
-                            <img
+                            <ResponsiveImage
                               src={story.image.src}
                               alt={story.image.alt}
+                              preset="eventCard"
                               loading="lazy"
+                              decoding="async"
                               class="event-card-img"
                             />
                           </div>

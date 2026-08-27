@@ -1,4 +1,5 @@
 ---
+import ResponsiveImage from './ResponsiveImage.astro';
 import type { Category, Place, Trail } from '../lib/content';
 import type { Locale } from '../lib/locales';
 
@@ -19,7 +20,18 @@ const image =
 ---
 
 <a class="feature-card" href={href}>
-  {image && <img class="feature-card-media" src={image.src} alt={image.alt} loading="lazy" />}
+  {
+    image && (
+      <ResponsiveImage
+        class="feature-card-media"
+        src={image.src}
+        alt={image.alt}
+        preset="featureCard"
+        loading="lazy"
+        decoding="async"
+      />
+    )
+  }
   <div>
     <p class="eyebrow">
       {
