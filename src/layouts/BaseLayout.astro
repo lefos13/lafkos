@@ -4,6 +4,7 @@ import { otherLocale, type Locale } from '../lib/locales';
 import { getCopy } from '../lib/ui-copy';
 import { fetchSanityContent } from '../lib/content-api';
 import { getLocalizedUrlPaths } from '../lib/urls';
+import { serializeJsonLd } from '../lib/structured-data';
 
 interface Props {
   locale: Locale;
@@ -24,6 +25,7 @@ interface Props {
   isMapPage?: boolean;
   alternateHref?: string;
   contentSource?: 'sanity' | 'seed';
+  jsonLd?: unknown;
 }
 
 const {
@@ -42,6 +44,7 @@ const {
   modifiedAt,
   darkHeader = false,
   minimalHeader = false,
+  jsonLd,
   isMapPage = false,
   alternateHref,
   contentSource,
@@ -158,6 +161,14 @@ const navTimelineLabel = locale === 'el' ? 'Χρονολόγιο' : 'Timeline';
     <meta name="twitter:image" content={socialImageUrl} />
     <meta name="twitter:image:alt" content={socialImageAlt} />
     <title>{pageTitle}</title>
+    {
+      /*
+       * Structured Data (JSON-LD):
+       * Safely injects escaped Schema.org metadata graphs for SEO rich results
+       * without exposing the document to script termination vulnerabilities.
+       */
+    }
+    {jsonLd && <script is:inline type="application/ld+json" set:html={serializeJsonLd(jsonLd)} />}
   </head>
   <body>
     <a class="skip-link" href="#main-content">{ui.skipToContent}</a>

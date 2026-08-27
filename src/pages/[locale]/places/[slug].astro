@@ -10,6 +10,7 @@ import { locales, otherLocale, type Locale } from '../../../lib/locales';
 import { getCopy } from '../../../lib/ui-copy';
 import type { Place } from '../../../lib/content';
 import { parseYouTubeVideoId } from '../../../lib/video';
+import { buildPlaceJsonLd } from '../../../lib/structured-data';
 export async function getStaticPaths() {
   const dataset = await fetchSanityContent();
   return locales.flatMap((locale) =>
@@ -40,6 +41,11 @@ const seoDescription = editorial.description ?? place.summary[locale];
 const primaryImage = place.images[0];
 const socialImage = editorial.socialImage?.src ?? primaryImage?.src;
 const socialImageAlt = editorial.socialImage?.alt ?? primaryImage?.alt ?? place.title[locale];
+/*
+ * Structured Data:
+ * BreadcrumbList and Schema.org TouristAttraction graphs with real coordinates and images.
+ */
+const jsonLd = buildPlaceJsonLd({ place, locale, editorial });
 ---
 
 <BaseLayout
@@ -53,6 +59,7 @@ const socialImageAlt = editorial.socialImage?.alt ?? primaryImage?.alt ?? place.
   publishedAt={editorial.publishedAt}
   modifiedAt={editorial.modifiedAt}
   alternateHref={`/${otherLocale(locale)}/places/${place.slug[otherLocale(locale)]}/`}
+  jsonLd={jsonLd}
 >
   <article class="container">
     <div class="detail-hero">

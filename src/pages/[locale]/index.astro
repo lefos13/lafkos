@@ -11,6 +11,7 @@ import {
 } from '../../lib/content-api';
 import { locales, type Locale } from '../../lib/locales';
 import { getCopy } from '../../lib/ui-copy';
+import { buildHomeJsonLd } from '../../lib/structured-data';
 
 export function getStaticPaths() {
   return locales.map((locale) => ({ params: { locale }, props: { locale } }));
@@ -67,9 +68,20 @@ const statsItems = [
     caption: locale === 'el' ? 'η καρδιά του χωριού χωρίς αυτοκίνητα' : 'car-free village heart',
   },
 ];
+/*
+ * Structured Data:
+ * Stable site-wide WebSite and Organization Schema.org graphs for the homepage.
+ */
+const jsonLd = buildHomeJsonLd();
 ---
 
-<BaseLayout locale={locale} title={ui.explore} description={ui.introLong} darkHeader>
+<BaseLayout
+  locale={locale}
+  title={ui.explore}
+  description={ui.introLong}
+  darkHeader
+  jsonLd={jsonLd}
+>
   <section class="hero">
     <div class="hero-content">
       <p class="eyebrow">Νότιο Πήλιο · South Pelion</p>
