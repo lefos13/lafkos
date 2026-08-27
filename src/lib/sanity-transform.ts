@@ -3,8 +3,10 @@ import {
   type Category,
   type CategoryId,
   type Coordinate,
+  type EditorialMetadata,
   type ImageAsset,
   type Place,
+  type SeoMetadata,
   type Source,
   type Story,
   type Trail,
@@ -35,6 +37,15 @@ export const PLACES_QUERY = `*[_type == "place" && !(_id in path("drafts.**"))] 
   },
   practical,
   videoUrl,
+  seoTitle,
+  seoDescription,
+  socialImage {
+    ...,
+    asset-> { _id, url }
+  },
+  publishedAt,
+  modifiedAt,
+  author,
   sources,
   featured,
   isSeed
@@ -68,6 +79,15 @@ export const TRAILS_QUERY = `*[_type == "trail" && !(_id in path("drafts.**"))] 
   surface,
   safety,
   videoUrl,
+  seoTitle,
+  seoDescription,
+  socialImage {
+    ...,
+    asset-> { _id, url }
+  },
+  publishedAt,
+  modifiedAt,
+  author,
   sources,
   featured,
   isSeed
@@ -94,6 +114,15 @@ export const STORIES_QUERY = `*[_type == "story" && !(_id in path("drafts.**"))]
     whenLabel
   },
   relatedKeys,
+  seoTitle,
+  seoDescription,
+  socialImage {
+    ...,
+    asset-> { _id, url }
+  },
+  publishedAt,
+  modifiedAt,
+  author,
   sources,
   featured,
   isSeed
@@ -171,6 +200,76 @@ export function transformSanityImage(raw?: SanityImageRaw): ImageAsset | undefin
   };
 }
 
+/*
+ * Merges optional bilingual editorial and SEO fields from paired Sanity documents.
+ * Returns an empty object when no metadata is present on either document.
+ */
+export function transformSanityEditorialMetadata(
+  el?: {
+    seoTitle?: string;
+    seoDescription?: string;
+    socialImage?: SanityImageRaw;
+    publishedAt?: string;
+    modifiedAt?: string;
+    author?: string;
+  },
+  en?: {
+    seoTitle?: string;
+    seoDescription?: string;
+    socialImage?: SanityImageRaw;
+    publishedAt?: string;
+    modifiedAt?: string;
+    author?: string;
+  },
+): EditorialMetadata {
+  const elSocialImage = transformSanityImage(el?.socialImage);
+  const enSocialImage = transformSanityImage(en?.socialImage);
+
+  const elSeo: SeoMetadata | undefined =
+    el?.seoTitle || el?.seoDescription || elSocialImage
+      ? {
+          ...(el?.seoTitle ? { title: el.seoTitle } : {}),
+          ...(el?.seoDescription ? { description: el.seoDescription } : {}),
+          ...(elSocialImage ? { socialImage: elSocialImage } : {}),
+        }
+      : undefined;
+
+  const enSeo: SeoMetadata | undefined =
+    en?.seoTitle || en?.seoDescription || enSocialImage
+      ? {
+          ...(en?.seoTitle ? { title: en.seoTitle } : {}),
+          ...(en?.seoDescription ? { description: en.seoDescription } : {}),
+          ...(enSocialImage ? { socialImage: enSocialImage } : {}),
+        }
+      : undefined;
+
+  const seo =
+    elSeo || enSeo
+      ? {
+          el: elSeo ?? {},
+          en: enSeo ?? {},
+        }
+      : undefined;
+
+  const publishedAt = el?.publishedAt || en?.publishedAt || undefined;
+  const modifiedAt = el?.modifiedAt || en?.modifiedAt || undefined;
+
+  const author =
+    el?.author || en?.author
+      ? {
+          el: el?.author || en?.author || '',
+          en: en?.author || el?.author || '',
+        }
+      : undefined;
+
+  return {
+    ...(seo ? { seo } : {}),
+    ...(publishedAt ? { publishedAt } : {}),
+    ...(modifiedAt ? { modifiedAt } : {}),
+    ...(author ? { author } : {}),
+  };
+}
+
 export interface SanityPlaceDoc {
   _id: string;
   _type: 'place';
@@ -188,6 +287,12 @@ export interface SanityPlaceDoc {
   gallery?: SanityImageRaw[];
   practical?: string[];
   videoUrl?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  socialImage?: SanityImageRaw;
+  publishedAt?: string;
+  modifiedAt?: string;
+  author?: string;
   sources?: Array<{ label: string; url: string }>;
   featured?: boolean;
   isSeed?: boolean;
@@ -238,6 +343,7 @@ export function transformSanityPlaces(docs: SanityPlaceDoc[]): Place[] {
     places.push({
       kind: 'place',
       entityKey,
+      ...transformSanityEditorialMetadata(el, en),
       slug: {
         el: el.slug?.current || entityKey,
         en: en.slug?.current || entityKey,
@@ -307,6 +413,12 @@ export interface SanityTrailDoc {
   surface?: string;
   safety?: string[];
   videoUrl?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  socialImage?: SanityImageRaw;
+  publishedAt?: string;
+  modifiedAt?: string;
+  author?: string;
   sources?: Array<{ label: string; url: string }>;
   featured?: boolean;
   isSeed?: boolean;
@@ -383,6 +495,7 @@ export function transformSanityTrails(docs: SanityTrailDoc[]): Trail[] {
     trails.push({
       kind: 'trail',
       entityKey,
+      ...transformSanityEditorialMetadata(el, en),
       slug: {
         el: el.slug?.current || entityKey,
         en: en.slug?.current || entityKey,
@@ -452,6 +565,12 @@ export interface SanityStoryDoc {
     whenLabel?: string;
   };
   relatedKeys?: string[];
+  seoTitle?: string;
+  seoDescription?: string;
+  socialImage?: SanityImageRaw;
+  publishedAt?: string;
+  modifiedAt?: string;
+  author?: string;
   sources?: Array<{ label: string; url: string }>;
   featured?: boolean;
   isSeed?: boolean;
@@ -517,6 +636,7 @@ export function transformSanityStories(docs: SanityStoryDoc[]): Story[] {
     stories.push({
       kind: 'story',
       entityKey,
+      ...transformSanityEditorialMetadata(el, en),
       slug: {
         el: el.slug?.current || entityKey,
         en: en.slug?.current || entityKey,

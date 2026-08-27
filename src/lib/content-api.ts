@@ -14,6 +14,8 @@ import {
   storyEventSchema,
   type Category,
   type Coordinate,
+  type EditorialMetadata,
+  type ImageAsset,
   type MapData,
   type MapFeature,
   type Place,
@@ -233,6 +235,37 @@ export function featuredTrails(dataset: Trail[] = defaultDataset.trails): Trail[
 
 export function featuredStories(dataset: Story[] = defaultDataset.stories): Story[] {
   return dataset.filter((story) => story.featured);
+}
+
+export interface LocalizedEditorialMetadata {
+  title?: string;
+  description?: string;
+  socialImage?: ImageAsset;
+  author?: string;
+  publishedAt?: string;
+  modifiedAt?: string;
+}
+
+/*
+ * Extracts and flattens editorial and SEO metadata for a specific locale
+ * from any entity implementing the shared EditorialMetadata domain contract.
+ * Returns only the properties defined for that locale, omitting undefined keys.
+ */
+export function getLocalizedEditorialMetadata(
+  item: EditorialMetadata,
+  locale: Locale,
+): LocalizedEditorialMetadata {
+  const seo = item.seo?.[locale];
+  const author = item.author?.[locale];
+
+  return {
+    ...(seo?.title !== undefined ? { title: seo.title } : {}),
+    ...(seo?.description !== undefined ? { description: seo.description } : {}),
+    ...(seo?.socialImage !== undefined ? { socialImage: seo.socialImage } : {}),
+    ...(author !== undefined ? { author } : {}),
+    ...(item.publishedAt !== undefined ? { publishedAt: item.publishedAt } : {}),
+    ...(item.modifiedAt !== undefined ? { modifiedAt: item.modifiedAt } : {}),
+  };
 }
 
 export const categories = seedCategories;

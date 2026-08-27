@@ -14,6 +14,33 @@ function toSanityImage(image?: ImageAsset) {
     license: image.license,
   };
 }
+/*
+ * Formats optional editorial and SEO fields for a single language document.
+ * Returns an empty object when no metadata is defined on the domain item.
+ */
+function toSanityEditorialSeoFields(
+  item: {
+    seo?: {
+      el?: { title?: string; description?: string; socialImage?: ImageAsset };
+      en?: { title?: string; description?: string; socialImage?: ImageAsset };
+    };
+    publishedAt?: string;
+    modifiedAt?: string;
+    author?: { el?: string; en?: string };
+  },
+  language: 'el' | 'en',
+) {
+  const seoLang = item.seo?.[language];
+  const socialImage = toSanityImage(seoLang?.socialImage);
+  return {
+    ...(seoLang?.title ? { seoTitle: seoLang.title } : {}),
+    ...(seoLang?.description ? { seoDescription: seoLang.description } : {}),
+    ...(socialImage ? { socialImage } : {}),
+    ...(item.publishedAt ? { publishedAt: item.publishedAt } : {}),
+    ...(item.modifiedAt ? { modifiedAt: item.modifiedAt } : {}),
+    ...(item.author?.[language] ? { author: item.author[language] } : {}),
+  };
+}
 
 function toSanityStoryEvent(event: StoryEvent | undefined, language: 'el' | 'en') {
   if (!event) return undefined;
@@ -117,6 +144,7 @@ function generateNdjson() {
       gallery,
       practical: place.practical.el,
       videoUrl: place.videoUrl,
+      ...toSanityEditorialSeoFields(place, 'el'),
       sources,
       featured: place.featured,
       isSeed: place.isSeed,
@@ -142,6 +170,7 @@ function generateNdjson() {
       gallery,
       practical: place.practical.en,
       videoUrl: place.videoUrl,
+      ...toSanityEditorialSeoFields(place, 'en'),
       sources,
       featured: place.featured,
       isSeed: place.isSeed,
@@ -225,6 +254,7 @@ function generateNdjson() {
       surface: trail.surface.el,
       safety: trail.safety.el,
       videoUrl: trail.videoUrl,
+      ...toSanityEditorialSeoFields(trail, 'el'),
       sources,
       featured: trail.featured,
       isSeed: trail.isSeed,
@@ -253,6 +283,7 @@ function generateNdjson() {
       surface: trail.surface.en,
       safety: trail.safety.en,
       videoUrl: trail.videoUrl,
+      ...toSanityEditorialSeoFields(trail, 'en'),
       sources,
       featured: trail.featured,
       isSeed: trail.isSeed,
@@ -307,6 +338,7 @@ function generateNdjson() {
       body: story.body.el,
       hero,
       event: toSanityStoryEvent(story.event, 'el'),
+      ...toSanityEditorialSeoFields(story, 'el'),
       relatedKeys: story.relatedKeys,
       sources,
       featured: story.featured,
@@ -328,6 +360,7 @@ function generateNdjson() {
       body: story.body.en,
       hero,
       event: toSanityStoryEvent(story.event, 'en'),
+      ...toSanityEditorialSeoFields(story, 'en'),
       relatedKeys: story.relatedKeys,
       sources,
       featured: story.featured,

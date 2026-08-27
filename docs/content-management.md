@@ -55,6 +55,7 @@ Represents cultural landmarks, historic buildings, squares, cafes, museums, chur
 - **Sources & Citations (`sources`):** Array of labeled URLs for historical provenance.
 - **Video (`videoUrl`):** Optional single YouTube URL (watch/youtu.be/shorts/embed forms). Rendered as a privacy-enhanced youtube-nocookie embedded player on the place page below the practical notes. The field is NOT localized — both language documents share the same URL; validation accepts only `https://` YouTube URLs in Studio and the import CLI, and the production CSP allows only `www.youtube-nocookie.com` frames, so other embed hosts will not render.
 - **Featured (`featured`):** Boolean highlighting top spots on the home screen.
+- **Editorial SEO & Attribution (`seoTitle`, `seoDescription`, `socialImage`, `publishedAt`, `modifiedAt`, `author`):** Optional fields on each translated document for search snippet customization, Open Graph social card override, publication/freshness dates, and byline attribution.
 - **Seed Flag (`isSeed`):** Boolean marking entries that require on-the-ground local verification before launch.
 
 ### 2. Trail (`trail`)
@@ -69,6 +70,7 @@ Represents hiking routes, road routes, mixed access routes, cobbled kalderimi pa
 - **Surface & Safety:** Localized descriptions of path or road condition (e.g. kalderimi, dirt road, asphalt) and equipment/safety advice. For drives, explain road character, surfaces, clearance or caution points, and any access uncertainty; for mixed routes, state the handover and walk-in conditions explicitly.
 - **GPX File (`gpx`):** Optional downloadable track file.
 - **Video (`videoUrl`):** Optional single YouTube URL (watch/youtu.be/shorts/embed forms). Rendered as a privacy-enhanced youtube-nocookie embedded player on the trail page above the waypoint list. The field is NOT localized — both language documents share the same URL; validation accepts only `https://` YouTube URLs in Studio and the import CLI, and the production CSP allows only `www.youtube-nocookie.com` frames, so other embed hosts will not render.
+- **Editorial SEO & Attribution:** Optional `seoTitle`, `seoDescription`, `socialImage`, `publishedAt`, `modifiedAt`, and `author` fields matching the place contract.
 - **Verification & Status:** `lastVerifiedAt` date, `featured`, and `isSeed`.
 
 ### 3. Story (`story`)
@@ -80,6 +82,7 @@ Represents cultural oral histories, historical background, traditions, and artis
 - **Hero Image:** Featured image with full attribution.
 - **Optional Event (`event`):** A dated or recurring event descriptor with shape `{ month: number (1-12); dayStart?: number; dayEnd?: number; whenLabel: Localized<string> }`. `month` is required and must be `1`–`12`; optional day values must be `1`–`31`, and `dayEnd` must be greater than or equal to `dayStart` when both are provided. `whenLabel` is the localized display label. The field is optional so legacy stories without event metadata remain valid and need no backfill.
 - **Related Keys (`relatedKeys`):** Links to places or trails referenced in the narrative.
+- **Editorial SEO & Attribution:** Optional `seoTitle`, `seoDescription`, `socialImage`, `publishedAt`, `modifiedAt`, and `author` fields matching the place contract.
 - **Featured & Seed Flags:** Curation and audit controls.
 
 ### 4. Category (`category`)
@@ -100,7 +103,7 @@ The Studio desk (`studio/structure.ts`) organizes content for editors:
 2. **Trails:** All Trails, Trails by Difficulty (Easy, Moderate, Demanding), Featured Trails, and Pending Verification Seeds.
 3. **Stories:** All Stories, Featured Stories, and Pending Verification Seeds.
 4. **Categories:** Taxonomy definitions.
-5. **Editorial Audit & QA:** Dedicated review views to audit all unverified seed entries across the entire dataset.
+5. **Editorial Audit & QA:** Dedicated review views to audit all unverified seed entries across the entire dataset, plus specialized queues for custom SEO metadata and publication/author attribution.
 6. **Site Settings:** Global singleton editor for site copy and advisories.
 
 ---

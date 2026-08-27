@@ -50,6 +50,30 @@ export const sourceSchema = z.object({
   url: z.url(),
 });
 
+/* Editorial metadata is deliberately optional so the existing seed archive
+ * remains valid while each bilingual Sanity document can add search snippets,
+ * social-card assets, publication provenance, and freshness dates over time. */
+export const seoMetadataSchema = z.object({
+  title: z.string().trim().min(1).max(70).optional(),
+  description: z.string().trim().min(1).max(320).optional(),
+  socialImage: imageSchema.optional(),
+});
+export const localizedSeoMetadataSchema = z.object({
+  el: seoMetadataSchema,
+  en: seoMetadataSchema,
+});
+export const editorialDateSchema = z.iso.date();
+export const localizedAuthorSchema = z.object({
+  el: z.string().trim().min(1),
+  en: z.string().trim().min(1),
+});
+export const editorialMetadataSchema = z.object({
+  seo: localizedSeoMetadataSchema.optional(),
+  publishedAt: editorialDateSchema.optional(),
+  modifiedAt: editorialDateSchema.optional(),
+  author: localizedAuthorSchema.optional(),
+});
+
 /* Optional embedded-video URL for places and trails. Only YouTube is in
  * contract; the parser is shared with the embed component. NOTE: the same
  * validation regex lives duplicated in studio/schemaTypes.ts because Studio
@@ -87,6 +111,19 @@ export interface StoryEvent {
   whenLabel: Localized<string>;
 }
 
+export interface SeoMetadata {
+  title?: string;
+  description?: string;
+  socialImage?: ImageAsset;
+}
+
+export interface EditorialMetadata {
+  seo?: Localized<SeoMetadata>;
+  publishedAt?: string;
+  modifiedAt?: string;
+  author?: Localized<string>;
+}
+
 export interface Category {
   id: CategoryId;
   label: Localized<string>;
@@ -95,7 +132,7 @@ export interface Category {
   icon: string;
 }
 
-export interface Place {
+export interface Place extends EditorialMetadata {
   kind: 'place';
   entityKey: string;
   slug: Localized<string>;
@@ -115,7 +152,7 @@ export interface Place {
   isSeed: boolean;
 }
 
-export interface Trail {
+export interface Trail extends EditorialMetadata {
   kind: 'trail';
   entityKey: string;
   slug: Localized<string>;
@@ -146,7 +183,7 @@ export interface Trail {
   isSeed: boolean;
 }
 
-export interface Story {
+export interface Story extends EditorialMetadata {
   kind: 'story';
   entityKey: string;
   slug: Localized<string>;

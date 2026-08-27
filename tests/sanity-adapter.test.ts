@@ -12,11 +12,15 @@ import {
   findPlace,
   findStory,
   findTrail,
+  getLocalizedEditorialMetadata,
   publicMapData,
 } from '../src/lib/content-api';
 import { getCopy } from '../src/lib/ui-copy';
 import { isSanityConfigured } from '../src/lib/sanity-client';
 import {
+  PLACES_QUERY,
+  STORIES_QUERY,
+  TRAILS_QUERY,
   transformSanityCategories,
   transformSanityPlaces,
   transformSanityStories,
@@ -26,7 +30,12 @@ import {
   type SanityStoryDoc,
   type SanityTrailDoc,
 } from '../src/lib/sanity-transform';
-import { lineStringSchema, pointSchema, storyEventSchema } from '../src/lib/content';
+import {
+  lineStringSchema,
+  pointSchema,
+  storyEventSchema,
+  type EditorialMetadata,
+} from '../src/lib/content';
 import { formatEntryDocuments } from '../scripts/import-entry';
 describe('Sanity Client Config', () => {
   it('detects unconfigured or placeholder project IDs', () => {
@@ -81,6 +90,14 @@ describe('Sanity Document Transformers', () => {
         whenLabel: { el: '14–16 Αυγούστου', en: '14–16 August' },
       }).success,
     ).toBe(false);
+  });
+  it('preserves core projection fields in GROQ queries including featured and isSeed', () => {
+    expect(PLACES_QUERY).toContain('featured');
+    expect(PLACES_QUERY).toContain('isSeed');
+    expect(TRAILS_QUERY).toContain('featured');
+    expect(TRAILS_QUERY).toContain('isSeed');
+    expect(STORIES_QUERY).toContain('featured');
+    expect(STORIES_QUERY).toContain('isSeed');
   });
 
   it('transforms paired bilingual Place documents into unified Place objects', () => {
@@ -188,6 +205,66 @@ describe('Sanity Document Transformers', () => {
     expect(places[1].videoUrl).toBeUndefined();
   });
 
+  it('merges optional bilingual editorial SEO metadata from paired documents', () => {
+    const rawPlaces: SanityPlaceDoc[] = [
+      {
+        _id: 'place-seo-square-el',
+        _type: 'place',
+        entityKey: 'seo-square',
+        language: 'el',
+        title: 'Πλατεία SEO',
+        slug: { current: 'plateia-seo' },
+        category: 'community',
+        coordinate: { lng: 23.246, lat: 39.177 },
+        seoTitle: 'Πλατεία SEO στον Λαύκο',
+        seoDescription: 'Μια σύντομη περιγραφή της πλατείας.',
+        publishedAt: '2026-08-20',
+        author: 'Ομάδα Λαύκου',
+        socialImage: {
+          externalUrl: 'https://example.com/seo-square.jpg',
+          alt: 'Η πλατεία του Λαύκου',
+          credit: 'Lafkos Guide',
+          license: 'CC BY-SA 4.0',
+        },
+      },
+      {
+        _id: 'place-seo-square-en',
+        _type: 'place',
+        entityKey: 'seo-square',
+        language: 'en',
+        title: 'SEO Square',
+        slug: { current: 'seo-square' },
+        category: 'community',
+        coordinate: { lng: 23.246, lat: 39.177 },
+        seoTitle: 'SEO Square in Lafkos',
+        seoDescription: 'A short description of the square.',
+        modifiedAt: '2026-08-22',
+        author: 'Lafkos Guide Team',
+      },
+    ];
+
+    const place = transformSanityPlaces(rawPlaces)[0];
+    expect(place.seo).toEqual({
+      el: {
+        title: 'Πλατεία SEO στον Λαύκο',
+        description: 'Μια σύντομη περιγραφή της πλατείας.',
+        socialImage: {
+          src: 'https://example.com/seo-square.jpg',
+          alt: 'Η πλατεία του Λαύκου',
+          credit: 'Lafkos Guide',
+          license: 'CC BY-SA 4.0',
+        },
+      },
+      en: {
+        title: 'SEO Square in Lafkos',
+        description: 'A short description of the square.',
+      },
+    });
+    expect(place.publishedAt).toBe('2026-08-20');
+    expect(place.modifiedAt).toBe('2026-08-22');
+    expect(place.author).toEqual({ el: 'Ομάδα Λαύκου', en: 'Lafkos Guide Team' });
+  });
+
   it('transforms paired bilingual Trail documents with LineString geometry and waypoints', () => {
     const rawTrails: SanityTrailDoc[] = [
       {
@@ -225,6 +302,10 @@ describe('Sanity Document Transformers', () => {
         surface: 'Καλντερίμι',
         safety: ['Νερό και καλά παπούτσια'],
         videoUrl: 'https://youtu.be/jNQXAC9IVRw',
+        seoTitle: 'Μονοπάτι Δοκιμής στον Λαύκο',
+        seoDescription: 'Περιγραφή μονοπατιού για μηχανές αναζήτησης.',
+        publishedAt: '2026-08-15',
+        author: 'Ομάδα Πεζοπορίας',
         sources: [{ label: 'Topoguide', url: 'https://example.com' }],
         featured: true,
         isSeed: false,
@@ -264,12 +345,15 @@ describe('Sanity Document Transformers', () => {
         surface: 'Cobblestone',
         safety: ['Water and hiking shoes'],
         videoUrl: 'https://www.youtube.com/watch?v=M7lc1UVf-VE',
+        seoTitle: 'Test Path in Lafkos',
+        seoDescription: 'Trail description for search engines.',
+        modifiedAt: '2026-08-18',
+        author: 'Hiking Team',
         sources: [{ label: 'Topoguide', url: 'https://example.com' }],
         featured: true,
         isSeed: false,
       },
     ];
-
     const trails = transformSanityTrails(rawTrails);
     expect(trails).toHaveLength(1);
 
@@ -288,6 +372,11 @@ describe('Sanity Document Transformers', () => {
     const parsedGeometry = lineStringSchema.parse(trail.geometry);
     expect(parsedGeometry.coordinates).toHaveLength(3);
     expect(parsedGeometry.coordinates[0]).toEqual([23.246, 39.177]);
+    expect(trail.seo?.el?.title).toBe('Μονοπάτι Δοκιμής στον Λαύκο');
+    expect(trail.seo?.en?.title).toBe('Test Path in Lafkos');
+    expect(trail.publishedAt).toBe('2026-08-15');
+    expect(trail.modifiedAt).toBe('2026-08-18');
+    expect(trail.author).toEqual({ el: 'Ομάδα Πεζοπορίας', en: 'Hiking Team' });
   });
 
   it('transforms paired bilingual Story documents and Categories', () => {
@@ -317,6 +406,10 @@ describe('Sanity Document Transformers', () => {
         },
         relatedKeys: ['lafkos-square'],
         sources: [{ label: 'Source', url: 'https://example.com' }],
+        seoTitle: 'Ιστορία του Λαύκου',
+        seoDescription: 'Ιστορικό αφήγημα.',
+        publishedAt: '2026-08-10',
+        author: 'Τοπικός Ιστορικός',
         featured: true,
         isSeed: false,
       },
@@ -345,6 +438,10 @@ describe('Sanity Document Transformers', () => {
         },
         relatedKeys: ['lafkos-square'],
         sources: [{ label: 'Source', url: 'https://example.com' }],
+        seoTitle: 'History of Lafkos',
+        seoDescription: 'Historical narrative.',
+        modifiedAt: '2026-08-12',
+        author: 'Local Historian',
         featured: true,
         isSeed: false,
       },
@@ -361,7 +458,11 @@ describe('Sanity Document Transformers', () => {
       dayEnd: 16,
       whenLabel: { el: '14–16 Αυγούστου', en: '14–16 August' },
     });
-
+    expect(stories[0].seo?.el?.title).toBe('Ιστορία του Λαύκου');
+    expect(stories[0].seo?.en?.title).toBe('History of Lafkos');
+    expect(stories[0].publishedAt).toBe('2026-08-10');
+    expect(stories[0].modifiedAt).toBe('2026-08-12');
+    expect(stories[0].author).toEqual({ el: 'Τοπικός Ιστορικός', en: 'Local Historian' });
     const rawCategories: SanityCategoryDoc[] = [
       {
         _id: 'category-heritage',
@@ -460,6 +561,63 @@ describe('Content API Adapter', () => {
     const mapDataEn = publicMapData('en');
     expect(mapDataEn.places.length).toBe(mapDataEl.places.length);
   });
+
+  it('extracts localized editorial and SEO metadata without inventing fallbacks or leaking internal names', () => {
+    const fullyAttributedItem: EditorialMetadata = {
+      seo: {
+        el: {
+          title: 'Τίτλος SEO',
+          description: 'Περιγραφή SEO',
+          socialImage: {
+            src: 'https://example.com/share-el.jpg',
+            alt: 'Κοινωνική κάρτα',
+            credit: 'Φωτογράφος',
+            license: 'CC BY-SA 4.0',
+          },
+        },
+        en: {
+          title: 'SEO Title',
+        },
+      },
+      publishedAt: '2026-08-20',
+      modifiedAt: '2026-08-22',
+      author: {
+        el: 'Ομάδα Λαύκου',
+        en: 'Lafkos Team',
+      },
+    };
+
+    const elMeta = getLocalizedEditorialMetadata(fullyAttributedItem, 'el');
+    expect(elMeta).toEqual({
+      title: 'Τίτλος SEO',
+      description: 'Περιγραφή SEO',
+      socialImage: {
+        src: 'https://example.com/share-el.jpg',
+        alt: 'Κοινωνική κάρτα',
+        credit: 'Φωτογράφος',
+        license: 'CC BY-SA 4.0',
+      },
+      author: 'Ομάδα Λαύκου',
+      publishedAt: '2026-08-20',
+      modifiedAt: '2026-08-22',
+    });
+
+    const enMeta = getLocalizedEditorialMetadata(fullyAttributedItem, 'en');
+    expect(enMeta).toEqual({
+      title: 'SEO Title',
+      author: 'Lafkos Team',
+      publishedAt: '2026-08-20',
+      modifiedAt: '2026-08-22',
+    });
+    expect(enMeta.description).toBeUndefined();
+    expect(enMeta.socialImage).toBeUndefined();
+    expect(Object.keys(enMeta)).not.toContain('description');
+    expect(Object.keys(enMeta)).not.toContain('socialImage');
+
+    const emptyItem: EditorialMetadata = {};
+    expect(getLocalizedEditorialMetadata(emptyItem, 'el')).toEqual({});
+    expect(getLocalizedEditorialMetadata(emptyItem, 'en')).toEqual({});
+  });
 });
 
 describe('Seed NDJSON Archive Integrity & Entry Formatter', () => {
@@ -511,6 +669,25 @@ describe('Seed NDJSON Archive Integrity & Entry Formatter', () => {
         },
       ],
       practical: { el: [], en: [] },
+      seo: {
+        el: {
+          title: 'Δείγμα σημείου στον Λαύκο',
+          description: 'Περιγραφή δείγματος για μηχανές αναζήτησης.',
+          socialImage: {
+            src: 'https://example.com/share.jpg',
+            alt: 'Δείγμα σημείου',
+            credit: 'Lafkos Guide',
+            license: 'CC BY-SA 4.0',
+          },
+        },
+        en: {
+          title: 'Sample point in Lafkos',
+          description: 'Sample description for search engines.',
+        },
+      },
+      publishedAt: '2026-08-20',
+      modifiedAt: '2026-08-22',
+      author: { el: 'Ομάδα Λαύκου', en: 'Lafkos Guide Team' },
       videoUrl: 'https://www.youtube.com/watch?v=aqz-KE-bpKQ',
       sources: [{ label: 'Source', url: 'https://example.com' }],
       featured: false,
@@ -530,6 +707,25 @@ describe('Seed NDJSON Archive Integrity & Entry Formatter', () => {
     /* videoUrl is not localized: both language docs carry the same value. */
     expect(elDoc.videoUrl).toBe('https://www.youtube.com/watch?v=aqz-KE-bpKQ');
     expect(enDoc.videoUrl).toBe('https://www.youtube.com/watch?v=aqz-KE-bpKQ');
+    expect(elDoc.seoTitle).toBe('Δείγμα σημείου στον Λαύκο');
+    expect(enDoc.seoTitle).toBe('Sample point in Lafkos');
+    expect(elDoc.seoDescription).toBe('Περιγραφή δείγματος για μηχανές αναζήτησης.');
+    expect(enDoc.seoDescription).toBe('Sample description for search engines.');
+    expect(elDoc.publishedAt).toBe('2026-08-20');
+    expect(enDoc.modifiedAt).toBe('2026-08-22');
+    expect(elDoc.author).toBe('Ομάδα Λαύκου');
+    expect(enDoc.author).toBe('Lafkos Guide Team');
+    expect(elDoc.socialImage).toEqual({
+      _type: 'image',
+      externalUrl: 'https://example.com/share.jpg',
+      alt: 'Δείγμα σημείου',
+      credit: 'Lafkos Guide',
+      license: 'CC BY-SA 4.0',
+    });
+    expect(elDoc.isSeed).toBe(false);
+    expect(enDoc.isSeed).toBe(false);
+    expect(elDoc.featured).toBe(false);
+    expect(enDoc.featured).toBe(false);
 
     const [trailElDoc, trailEnDoc] = formatEntryDocuments({
       kind: 'trail',
@@ -559,15 +755,32 @@ describe('Seed NDJSON Archive Integrity & Entry Formatter', () => {
         },
       ],
       videoUrl: 'https://youtu.be/jNQXAC9IVRw',
+      seo: {
+        el: { title: 'SEO Μονοπάτι', description: 'Περιγραφή μονοπατιού' },
+        en: { title: 'SEO Path', description: 'Path description' },
+      },
+      publishedAt: '2026-08-15',
+      author: { el: 'Ομάδα Πεζοπορίας', en: 'Hiking Team' },
       sources: [{ label: 'Source', url: 'https://example.com' }],
       featured: false,
       isSeed: true,
     });
-
     expect(trailElDoc._id).toBe('trail-sample-path-el');
     expect(trailElDoc.videoUrl).toBe('https://youtu.be/jNQXAC9IVRw');
     expect(trailEnDoc._id).toBe('trail-sample-path-en');
     expect(trailEnDoc.videoUrl).toBe('https://youtu.be/jNQXAC9IVRw');
+    expect(trailElDoc.seoTitle).toBe('SEO Μονοπάτι');
+    expect(trailEnDoc.seoTitle).toBe('SEO Path');
+    expect(trailElDoc.seoDescription).toBe('Περιγραφή μονοπατιού');
+    expect(trailEnDoc.seoDescription).toBe('Path description');
+    expect(trailElDoc.publishedAt).toBe('2026-08-15');
+    expect(trailEnDoc.publishedAt).toBe('2026-08-15');
+    expect(trailElDoc.author).toBe('Ομάδα Πεζοπορίας');
+    expect(trailEnDoc.author).toBe('Hiking Team');
+    expect(trailElDoc.isSeed).toBe(true);
+    expect(trailEnDoc.isSeed).toBe(true);
+    expect(trailElDoc.featured).toBe(false);
+    expect(trailEnDoc.featured).toBe(false);
 
     const [storyElDoc, storyEnDoc] = formatEntryDocuments({
       kind: 'story',
@@ -590,6 +803,12 @@ describe('Seed NDJSON Archive Integrity & Entry Formatter', () => {
         whenLabel: { el: '14–16 Αυγούστου', en: '14–16 August' },
       },
       relatedKeys: [],
+      seo: {
+        el: { title: 'SEO Ιστορία' },
+        en: { title: 'SEO Story' },
+      },
+      modifiedAt: '2026-08-25',
+      author: { el: 'Ιστορικός', en: 'Historian' },
       sources: [{ label: 'Source', url: 'https://example.com' }],
       featured: false,
       isSeed: true,
@@ -607,5 +826,15 @@ describe('Seed NDJSON Archive Integrity & Entry Formatter', () => {
       dayEnd: 16,
       whenLabel: '14–16 August',
     });
+    expect(storyElDoc.seoTitle).toBe('SEO Ιστορία');
+    expect(storyEnDoc.seoTitle).toBe('SEO Story');
+    expect(storyElDoc.modifiedAt).toBe('2026-08-25');
+    expect(storyElDoc.isSeed).toBe(true);
+    expect(storyEnDoc.isSeed).toBe(true);
+    expect(storyElDoc.featured).toBe(false);
+    expect(storyEnDoc.featured).toBe(false);
+    expect(storyEnDoc.modifiedAt).toBe('2026-08-25');
+    expect(storyElDoc.author).toBe('Ιστορικός');
+    expect(storyEnDoc.author).toBe('Historian');
   });
 });

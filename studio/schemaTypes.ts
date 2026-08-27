@@ -117,6 +117,41 @@ const galleryField = (name: string, title: string) =>
     of: [{ type: 'image', options: { hotspot: true }, fields: imageMetaFields }],
   });
 
+/* These fields live on each translated document, matching the existing
+ * language-per-document model. Dates are shared editorial facts and the
+ * author string may be translated when a byline needs local-language copy. */
+const editorialSeoFields = [
+  defineField({
+    name: 'seoTitle',
+    title: 'SEO title (optional)',
+    type: 'string',
+    validation: (rule) => rule.max(70),
+  }),
+  defineField({
+    name: 'seoDescription',
+    title: 'SEO description (optional)',
+    type: 'text',
+    rows: 3,
+    validation: (rule) => rule.max(320),
+  }),
+  imageField('socialImage', 'Social sharing image (optional)'),
+  defineField({
+    name: 'publishedAt',
+    title: 'Publication date (optional)',
+    type: 'date',
+  }),
+  defineField({
+    name: 'modifiedAt',
+    title: 'Last modified date (optional)',
+    type: 'date',
+  }),
+  defineField({
+    name: 'author',
+    title: 'Author / Byline (optional)',
+    type: 'string',
+  }),
+];
+
 const coordinateField = (name: string, title: string, required = false) =>
   defineField({
     name,
@@ -174,6 +209,7 @@ const place = defineType({
     localizedSlug('slug', 'Slug'),
     localizedText('summary', 'Summary', 3),
     paragraphList('body', 'Body paragraphs'),
+    ...editorialSeoFields,
     defineField({
       name: 'category',
       title: 'Category',
@@ -251,6 +287,7 @@ const trail = defineType({
     localizedSlug('slug', 'Slug'),
     localizedText('summary', 'Summary', 3),
     paragraphList('body', 'Body paragraphs'),
+    ...editorialSeoFields,
     /* Keep hiking as the stored default so existing trails retain their
      * meaning while drives and mixed routes can be filtered explicitly. */
     defineField({
@@ -485,6 +522,7 @@ const story = defineType({
     localizedSlug('slug', 'Slug'),
     localizedText('summary', 'Summary', 3),
     paragraphList('body', 'Body paragraphs'),
+    ...editorialSeoFields,
     imageField('hero', 'Hero image', true),
     storyEventField,
     defineField({

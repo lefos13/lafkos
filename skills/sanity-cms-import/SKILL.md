@@ -167,6 +167,39 @@ Both places and trails may carry a single optional `videoUrl` (https YouTube URL
 
 The optional `event` object describes a story connected to a recurring or dated event. `month` is required and must be `1`–`12`; `dayStart` and `dayEnd`, when present, must be `1`–`31`, and `dayEnd` must be greater than or equal to `dayStart`. `whenLabel` is a required localized display string. Stories without `event` remain valid, so existing content requires no backfill.
 
+### D. Optional Editorial SEO & Attribution Metadata (All Kinds)
+
+Places, Trails, and Stories may optionally specify editorial SEO, publication dates, and author attribution:
+
+```json
+{
+  "seo": {
+    "el": {
+      "title": "Προσαρμοσμένος τίτλος SEO (έως 70 χαρακτήρες)",
+      "description": "Προσαρμοσμένη περιγραφή για μηχανές αναζήτησης (έως 320 χαρακτήρες).",
+      "socialImage": {
+        "src": "https://upload.wikimedia.org/...jpg",
+        "alt": "Περιγραφή εικόνας κοινωνικών δικτύων",
+        "credit": "Φωτογράφος",
+        "license": "CC BY-SA 4.0"
+      }
+    },
+    "en": {
+      "title": "Custom SEO Title (up to 70 chars)",
+      "description": "Custom search snippet description (up to 320 chars)."
+    }
+  },
+  "publishedAt": "2026-08-20", // ISO YYYY-MM-DD publication date
+  "modifiedAt": "2026-08-22", // ISO YYYY-MM-DD last modified date
+  "author": {
+    "el": "Ομάδα Λαύκου",
+    "en": "Lafkos Guide Team"
+  }
+}
+```
+
+All fields are backwards-compatible and optional. In Sanity Studio, `seoTitle`, `seoDescription`, `socialImage`, `publishedAt`, `modifiedAt`, and `author` live on each translated document matching the language-per-document model.
+
 ---
 
 ## 3. How to Import Entries & Safe Sync Workflow
@@ -217,7 +250,7 @@ The optional `event` object describes a story connected to a recurring or dated 
 
 ## 4. Keeping Data Structures in Sync
 
-Whenever schemas or fields evolve, agents and developers MUST update all 6 boundary layers in lockstep:
+Whenever schemas or fields evolve, agents and developers MUST update all 7 boundary layers in lockstep:
 
 1. **Contract Definition:** `src/lib/content.ts` (Zod schemas and TypeScript interfaces).
 2. **Sanity Studio Schemas:** `studio/schemaTypes.ts` (Sanity `defineField` / `defineType` declarations and `isUniquePerLanguage`).

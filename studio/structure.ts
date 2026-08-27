@@ -279,6 +279,28 @@ export const structure = (S: StructureBuilder) =>
                     .title('Featured Content')
                     .filter('(_type in ["place", "trail", "story"]) && featured == true'),
                 ),
+              /*
+               * Editorial audit queues for tracking documents that have custom SEO
+               * snippets, social sharing cards, or editorial attribution dates.
+               */
+              S.listItem()
+                .title('Items with Custom SEO Metadata')
+                .child(
+                  S.documentList()
+                    .title('Custom SEO Content')
+                    .filter(
+                      '(_type in ["place", "trail", "story"]) && (defined(seoTitle) || defined(seoDescription) || defined(socialImage))',
+                    ),
+                ),
+              S.listItem()
+                .title('Items with Publication Date or Author')
+                .child(
+                  S.documentList()
+                    .title('Attributed & Dated Content')
+                    .filter(
+                      '(_type in ["place", "trail", "story"]) && (defined(publishedAt) || defined(modifiedAt) || defined(author))',
+                    ),
+                ),
             ]),
         ),
 

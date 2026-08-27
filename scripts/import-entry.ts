@@ -15,6 +15,7 @@ import { resolve } from 'node:path';
 import { z } from 'zod';
 import {
   categorySchema,
+  editorialDateSchema,
   imageSchema,
   lineStringSchema,
   pointSchema,
@@ -45,6 +46,22 @@ const localizedStringArraySchema = z.object({
   en: z.array(z.string().min(1)),
 });
 
+const seoMetadataInputSchema = z.object({
+  title: z.string().trim().min(1).max(70).optional(),
+  description: z.string().trim().min(1).max(320).optional(),
+  socialImage: imageSchema.optional(),
+});
+
+const localizedSeoInputSchema = z.object({
+  el: seoMetadataInputSchema.optional(),
+  en: seoMetadataInputSchema.optional(),
+});
+
+const localizedAuthorInputSchema = z.object({
+  el: z.string().trim().min(1).optional(),
+  en: z.string().trim().min(1).optional(),
+});
+
 const placeInputSchema = z.object({
   kind: z.literal('place'),
   entityKey: z
@@ -62,6 +79,10 @@ const placeInputSchema = z.object({
   images: z.array(imageSchema).min(1),
   practical: localizedStringArraySchema.optional().default({ el: [], en: [] }),
   videoUrl: youTubeUrlSchema.optional(),
+  seo: localizedSeoInputSchema.optional(),
+  publishedAt: editorialDateSchema.optional(),
+  modifiedAt: editorialDateSchema.optional(),
+  author: localizedAuthorInputSchema.optional(),
   sources: z.array(sourceSchema).min(1),
   featured: z.boolean().optional().default(false),
   isSeed: z.boolean().optional().default(false),
@@ -87,6 +108,10 @@ const trailInputSchema = z.object({
   surface: localizedStringSchema,
   safety: localizedStringArraySchema.optional().default({ el: [], en: [] }),
   videoUrl: youTubeUrlSchema.optional(),
+  seo: localizedSeoInputSchema.optional(),
+  publishedAt: editorialDateSchema.optional(),
+  modifiedAt: editorialDateSchema.optional(),
+  author: localizedAuthorInputSchema.optional(),
   waypoints: z
     .array(
       z.object({
@@ -120,6 +145,10 @@ const storyInputSchema = z.object({
   image: imageSchema,
   event: storyEventSchema.optional(),
   relatedKeys: z.array(z.string()).optional().default([]),
+  seo: localizedSeoInputSchema.optional(),
+  publishedAt: editorialDateSchema.optional(),
+  modifiedAt: editorialDateSchema.optional(),
+  author: localizedAuthorInputSchema.optional(),
   sources: z.array(sourceSchema).min(1),
   featured: z.boolean().optional().default(false),
   isSeed: z.boolean().optional().default(false),
@@ -151,7 +180,6 @@ function toSanityStoryEvent(event: Story['event'], language: 'el' | 'en') {
     whenLabel: event.whenLabel[language],
   };
 }
-
 /* The import contract carries a stable place entityKey and expands it into
  * the localized reference IDs expected by the Sanity waypoint object. */
 function toSanityPlaceReference(placeKey: string | undefined, language: 'el' | 'en') {
@@ -159,6 +187,33 @@ function toSanityPlaceReference(placeKey: string | undefined, language: 'el' | '
   return { _type: 'reference', _ref: `place-${placeKey}-${language}` };
 }
 
+/*
+ * Formats optional editorial and SEO fields for a single language document.
+ * Returns an empty object when no metadata is defined on the input entry.
+ */
+function toSanityEditorialSeoFields(
+  item: {
+    seo?: {
+      el?: { title?: string; description?: string; socialImage?: ImageAsset };
+      en?: { title?: string; description?: string; socialImage?: ImageAsset };
+    };
+    publishedAt?: string;
+    modifiedAt?: string;
+    author?: { el?: string; en?: string };
+  },
+  language: 'el' | 'en',
+) {
+  const seoLang = item.seo?.[language];
+  const socialImage = toSanityImage(seoLang?.socialImage);
+  return {
+    ...(seoLang?.title ? { seoTitle: seoLang.title } : {}),
+    ...(seoLang?.description ? { seoDescription: seoLang.description } : {}),
+    ...(socialImage ? { socialImage } : {}),
+    ...(item.publishedAt ? { publishedAt: item.publishedAt } : {}),
+    ...(item.modifiedAt ? { modifiedAt: item.modifiedAt } : {}),
+    ...(item.author?.[language] ? { author: item.author[language] } : {}),
+  };
+}
 export function formatEntryDocuments(
   entry: Place | Trail | Story,
 ): [Record<string, unknown>, Record<string, unknown>, Record<string, unknown>] {
@@ -211,6 +266,7 @@ export function formatEntryDocuments(
       gallery,
       practical: entry.practical?.el || [],
       videoUrl: entry.videoUrl,
+      ...toSanityEditorialSeoFields(entry, 'el'),
       sources,
       featured: entry.featured,
       isSeed: entry.isSeed,
@@ -235,6 +291,7 @@ export function formatEntryDocuments(
       gallery,
       practical: entry.practical?.en || [],
       videoUrl: entry.videoUrl,
+      ...toSanityEditorialSeoFields(entry, 'en'),
       sources,
       featured: entry.featured,
       isSeed: entry.isSeed,
@@ -290,6 +347,7 @@ export function formatEntryDocuments(
       surface: entry.surface.el,
       safety: entry.safety?.el || [],
       videoUrl: entry.videoUrl,
+      ...toSanityEditorialSeoFields(entry, 'el'),
       sources,
       featured: entry.featured,
       isSeed: entry.isSeed,
@@ -317,6 +375,7 @@ export function formatEntryDocuments(
       surface: entry.surface.en,
       safety: entry.safety?.en || [],
       videoUrl: entry.videoUrl,
+      ...toSanityEditorialSeoFields(entry, 'en'),
       sources,
       featured: entry.featured,
       isSeed: entry.isSeed,
@@ -343,6 +402,7 @@ export function formatEntryDocuments(
       body: entry.body.el,
       hero,
       event: toSanityStoryEvent(entry.event, 'el'),
+      ...toSanityEditorialSeoFields(entry, 'el'),
       relatedKeys: entry.relatedKeys || [],
       sources,
       featured: entry.featured,
@@ -363,6 +423,7 @@ export function formatEntryDocuments(
       body: entry.body.en,
       hero,
       event: toSanityStoryEvent(entry.event, 'en'),
+      ...toSanityEditorialSeoFields(entry, 'en'),
       relatedKeys: entry.relatedKeys || [],
       sources,
       featured: entry.featured,
