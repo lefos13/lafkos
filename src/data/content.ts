@@ -1079,18 +1079,18 @@ export const places: Place[] = [
     },
     body: {
       el: [
-        'Η Καινούργια Βρύση κατασκευάστηκε το 1903–1904 σε σημείο με άφθονο νερό, εξυπηρετώντας την ύδρευση και τις καθημερινές ανάγκες του οικισμού. Για τις γυναίκες του Λαύκου υπήρξε ιδιαίτερα τόπος πλυσίματος, εργασίας και κοινωνικής συνάντησης.',
+        'Η Καινούργια Βρύση κατασκευάστηκε το 1903–1904 κοντά στην εκκλησία της Αγίας Παρασκευής, σε σημείο με άφθονο νερό, εξυπηρετώντας την ύδρευση και τις καθημερινές ανάγκες του οικισμού. Για τις γυναίκες του Λαύκου υπήρξε ιδιαίτερα τόπος πλυσίματος, εργασίας και κοινωνικής συνάντησης.',
       ],
       en: [
-        'Kainourgia Vrysi was built in 1903–1904 at a place with a generous flow, serving the settlement’s water supply and daily needs. For Lafkos women it was especially a place for washing, work, and social exchange.',
+        'Kainourgia Vrysi was built in 1903–1904 near the church of Agia Paraskevi at a place with a generous water flow, serving the settlement’s water supply and daily needs. For Lafkos women it was especially a place for washing, work, and social exchange.',
       ],
     },
     category: 'nature',
     geometry: {
       type: 'Point',
-      coordinates: [23.247, 39.176],
+      coordinates: [23.2435, 39.178],
     },
-    mapAnchor: [23.247, 39.176],
+    mapAnchor: [23.2435, 39.178],
     images: [
       {
         src: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/Pelion%2CLafkos_village%2Cfor_centuries_well_preserved%2C_local_traditional_Architecture.jpg',
@@ -1101,9 +1101,11 @@ export const places: Place[] = [
     ],
     practical: {
       el: [
+        'Βρίσκεται κοντά στην εκκλησία της Αγίας Παρασκευής, στη δυτική πλευρά του χωριού.',
         'Η δημόσια τεκμηρίωση προειδοποιεί ότι το νερό δεν πρέπει να θεωρείται πόσιμο χωρίς έλεγχο.',
       ],
       en: [
+        'Located near the church of Agia Paraskevi on the western side of the village.',
         'Public documentation cautions that the water should not be assumed potable without testing.',
       ],
     },
@@ -12974,11 +12976,11 @@ export const stories: Story[] = [
     },
     body: {
       el: [
-        'Στα Λειβαδάκια, η Τουλούμπα του 1910 έφερνε στο χωριό νερό από τις πηγές Στάκι και Σκούρα, ενώ ο πλάτανος του 1913 σημάδευε τον κοινόχρηστο χώρο. Λίγο πιο πέρα, η Καινούργια Βρύση με την υψηλή παροχή εξυπηρετούσε κυρίως το πλύσιμο των γυναικών.',
+        'Στα Λειβαδάκια, η Τουλούμπα του 1910 έφερνε στο χωριό νερό από τις πηγές Στάκι και Σκούρα, ενώ ο πλάτανος του 1913 σημάδευε τον κοινόχρηστο χώρο. Παράλληλα, προς την Αγία Παρασκευή, η Καινούργια Βρύση με την υψηλή παροχή εξυπηρετούσε κυρίως το πλύσιμο των γυναικών.',
         'Μαζί, αυτά τα σημεία δείχνουν πως η υδροδότηση ήταν εργασία, ρυθμός και κοινωνική ζωή — όχι αόρατη υπηρεσία πίσω από έναν σωλήνα.',
       ],
       en: [
-        'In Livadakia, the 1910 Touloumba brought water from the Staki and Skoura springs, while the 1913 plane tree marked the communal space. Nearby, high-flow Kainourgia Vrysi served especially as a place where women washed clothes.',
+        'In Livadakia, the 1910 Touloumba brought water from the Staki and Skoura springs, while the 1913 plane tree marked the communal space. Meanwhile, near Agia Paraskevi, high-flow Kainourgia Vrysi served especially as a place where women washed clothes.',
         'Together, these sites show that water supply was labour, rhythm, and social life—not an invisible service behind a pipe.',
       ],
     },
