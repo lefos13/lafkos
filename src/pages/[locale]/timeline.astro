@@ -1,25 +1,21 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { locales, otherLocale, type Locale } from '../../lib/locales';
+import { getCopy } from '../../lib/ui-copy';
 import { timelineEvents } from '../../data/timeline';
-
 export function getStaticPaths() {
   return locales.map((locale) => ({ params: { locale }, props: { locale } }));
 }
 
 const { locale } = Astro.props as { locale: Locale };
+const ui = getCopy(locale);
 const other = otherLocale(locale);
-
-const pageTitle =
-  locale === 'el'
-    ? 'Ο Λαύκος μέσα στον χρόνο — 1490 έως σήμερα'
-    : 'Lafkos Through Time — 1490 to Present';
-
-const pageDescription =
+const pageTitle = ui.timelineTitle;
+const metaDescription = ui.timelineDescription;
+const heroLede =
   locale === 'el'
     ? 'Μια ιστορική διαδρομή πέντε αιώνων στον οικισμό του Νοτίου Πηλίου: από τον αρχικό αθέατο πυρήνα παθητικής άμυνας στην Αγία Παρασκευή και τα 500 πέτρινα σπίτια, μέχρι τη μεγάλη αναμόρφωση της πλατείας το 1887, τα μουσεία και τη σύγχρονη διαφύλαξη της αρχιτεκτονικής του κληρονομιάς.'
     : 'A five-century chronicle through the South Pelion settlement: from the secluded initial haven of passive defense at Agia Paraskevi and the era of 500 stone mansions, to the transformative redesign of the square in 1887, living museums, and modern architectural preservation.';
-
 const eyebrowLabel = locale === 'el' ? 'Ιστορικό Χρονολόγιο' : 'Historical Timeline';
 const milestonesLabel = locale === 'el' ? 'Ιστορικά Ορόσημα' : 'Historical Milestones';
 const erasHeading = locale === 'el' ? 'Εποχές & Σταθμοί' : 'Eras & Epochs';
@@ -33,7 +29,7 @@ const backToHomeLabel = locale === 'el' ? '← Αρχική' : '← Home';
 <BaseLayout
   locale={locale}
   title={pageTitle}
-  description={pageDescription}
+  description={metaDescription}
   alternateHref={`/${other}/timeline/`}
 >
   <section class="prose-section container timeline-page">
@@ -49,7 +45,7 @@ const backToHomeLabel = locale === 'el' ? '← Αρχική' : '← Home';
     <header class="timeline-hero">
       <p class="eyebrow">{eyebrowLabel}</p>
       <h1 class="page-title">{pageTitle}</h1>
-      <p class="lede">{pageDescription}</p>
+      <p class="lede">{heroLede}</p>
     </header>
 
     <div class="timeline-layout">

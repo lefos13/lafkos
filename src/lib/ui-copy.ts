@@ -77,7 +77,17 @@ export const copy = {
     aboutIntro:
       'Το Lafkos Guide είναι ένα κοινοτικό, δίγλωσσο αρχείο τόπων, διαδρομών και ιστοριών.',
     privacyTitle: 'Ιδιωτικότητα',
+    privacyDescription:
+      'Πολιτική προστασίας δεδομένων και ιδιωτικότητας του Lafkos Guide: πλοήγηση χωρίς λογαριασμό, προαιρετικό GPS και μηδενικά διαφημιστικά cookies.',
     accessibilityTitle: 'Προσβασιμότητα',
+    accessibilityDescription:
+      'Δήλωση προσβασιμότητας του Lafkos Guide: συγχρονισμένη λίστα σημείων, αναγνώσιμη δομή, σαφείς ετικέτες χειριστηρίων και εναλλακτικά κείμενα εικόνων.',
+    eventsTitle: 'Ο ετήσιος κύκλος του Λαύκου',
+    eventsDescription:
+      'Ο ετήσιος κύκλος και οι εποχικές εκδηλώσεις στον Λαύκο: πανηγύρια, παραδοσιακές γιορτές και πολιτιστικές συνάξεις στο Νότιο Πήλιο.',
+    timelineTitle: 'Ο Λαύκος μέσα στον χρόνο — 1490 έως σήμερα',
+    timelineDescription:
+      'Ιστορικό χρονολόγιο πέντε αιώνων για τον Λαύκο: από τον αρχικό οικισμό του 15ου αιώνα και την αρχιτεκτονική ακμή μέχρι τη σύγχρονη κληρονομιά.',
     footer: 'Ένας ανεξάρτητος κοινοτικός οδηγός για τον Λαύκο και το Νότιο Πήλιο.',
     dataSource: 'Πηγή δεδομένων:',
     cmsLiveTitle: 'Sanity CMS (Live Content Lake)',
@@ -161,7 +171,17 @@ export const copy = {
     aboutTitle: 'The guide',
     aboutIntro: 'Lafkos Guide is a community bilingual archive of places, paths, and stories.',
     privacyTitle: 'Privacy',
+    privacyDescription:
+      'Privacy policy and data commitments of Lafkos Guide: account-free browsing, on-device GPS, privacy-first analytics, and no advertising cookies.',
     accessibilityTitle: 'Accessibility',
+    accessibilityDescription:
+      'Accessibility statement of Lafkos Guide: synchronized feature lists, semantic heading hierarchy, labeled controls, and image alternative text.',
+    eventsTitle: 'The Annual Cycle of Lafkos',
+    eventsDescription:
+      'The annual cycle and seasonal traditions of Lafkos: village festivals, cultural gatherings, and local heritage in South Pelion.',
+    timelineTitle: 'Lafkos Through Time — 1490 to Present',
+    timelineDescription:
+      'A five-century historical timeline of Lafkos: from its 15th-century origins and stone architectural heritage to modern village life in South Pelion.',
     footer: 'An independent community guide to Lafkos and South Pelion.',
     dataSource: 'Data source:',
     cmsLiveTitle: 'Sanity CMS (Live Content Lake)',

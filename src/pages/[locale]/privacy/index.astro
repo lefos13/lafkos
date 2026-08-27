@@ -9,7 +9,7 @@ const { locale } = Astro.props as { locale: Locale };
 const ui = getCopy(locale);
 ---
 
-<BaseLayout locale={locale} title={ui.privacyTitle} description={ui.privacyTitle}>
+<BaseLayout locale={locale} title={ui.privacyTitle} description={ui.privacyDescription}>
   <section class="prose-section container">
     <p class="eyebrow">{ui.privacyTitle}</p><h1 class="page-title">{ui.privacyTitle}</h1><div
       class="prose-layout"

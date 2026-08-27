@@ -12,6 +12,7 @@ import {
   buildStoryJsonLd,
   buildTrailJsonLd,
   canonicalSiteOrigin,
+  formatSeoSnippet,
   serializeJsonLd,
 } from '../src/lib/structured-data';
 import { getCopy } from '../src/lib/ui-copy';
@@ -136,7 +137,9 @@ describe('Structured Data & Safe JSON-LD Contracts', () => {
         // Attraction: factual data
         expect(attraction['@type']).toBe('TouristAttraction');
         expect(attraction.name).toBe(editorial.title ?? place.title[locale]);
-        expect(attraction.description).toBe(editorial.description ?? place.summary[locale]);
+        expect(attraction.description).toBe(
+          editorial.description ?? formatSeoSnippet(place.summary[locale]),
+        );
         expect(attraction.url).toBe(
           `${canonicalSiteOrigin}/${locale}/places/${place.slug[locale]}/`,
         );
@@ -188,7 +191,9 @@ describe('Structured Data & Safe JSON-LD Contracts', () => {
         // Trip: factual data
         expect(trip['@type']).toBe('TouristTrip');
         expect(trip.name).toBe(editorial.title ?? trail.title[locale]);
-        expect(trip.description).toBe(editorial.description ?? trail.summary[locale]);
+        expect(trip.description).toBe(
+          editorial.description ?? formatSeoSnippet(trail.summary[locale]),
+        );
         expect(trip.url).toBe(`${canonicalSiteOrigin}/${locale}/trails/${trail.slug[locale]}/`);
         expect(trip.inLanguage).toBe(locale);
 
@@ -233,7 +238,9 @@ describe('Structured Data & Safe JSON-LD Contracts', () => {
         // Article: headline, description, canonical url, publisher
         expect(article['@type']).toBe('Article');
         expect(article.headline).toBe(editorial.title ?? story.title[locale]);
-        expect(article.description).toBe(editorial.description ?? story.summary[locale]);
+        expect(article.description).toBe(
+          editorial.description ?? formatSeoSnippet(story.summary[locale]),
+        );
         expect(article.url).toBe(`${canonicalSiteOrigin}/${locale}/stories/${story.slug[locale]}/`);
         expect(article.mainEntityOfPage).toBe(
           `${canonicalSiteOrigin}/${locale}/stories/${story.slug[locale]}/`,

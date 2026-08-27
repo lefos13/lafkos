@@ -11,7 +11,7 @@ import { locales, otherLocale, type Locale } from '../../../lib/locales';
 import { getCopy } from '../../../lib/ui-copy';
 import type { Place } from '../../../lib/content';
 import { parseYouTubeVideoId } from '../../../lib/video';
-import { buildPlaceJsonLd } from '../../../lib/structured-data';
+import { buildPlaceJsonLd, formatSeoSnippet } from '../../../lib/structured-data';
 export async function getStaticPaths() {
   const dataset = await fetchSanityContent();
   return locales.flatMap((locale) =>
@@ -35,10 +35,12 @@ const videoId = parseYouTubeVideoId(place.videoUrl ?? '');
  * Editorial and SEO metadata overrides:
  * Allows CMS-defined titles, summaries, social images, author attribution,
  * and publication/modification timestamps to override default fields.
+ * Explicit editorial descriptions are preserved verbatim, while summary
+ * fallbacks are normalized and word-boundary truncated via formatSeoSnippet.
  */
 const editorial = getLocalizedEditorialMetadata(place, locale);
 const seoTitle = editorial.title ?? place.title[locale];
-const seoDescription = editorial.description ?? place.summary[locale];
+const seoDescription = editorial.description ?? formatSeoSnippet(place.summary[locale]);
 const primaryImage = place.images[0];
 const socialImage = editorial.socialImage?.src ?? primaryImage?.src;
 const socialImageAlt = editorial.socialImage?.alt ?? primaryImage?.alt ?? place.title[locale];
@@ -46,7 +48,13 @@ const socialImageAlt = editorial.socialImage?.alt ?? primaryImage?.alt ?? place.
  * Structured Data:
  * BreadcrumbList and Schema.org TouristAttraction graphs with real coordinates and images.
  */
-const jsonLd = buildPlaceJsonLd({ place, locale, editorial });
+const jsonLd = buildPlaceJsonLd({
+  place,
+  locale,
+  editorial,
+  seoDescription,
+  seoTitle,
+});
 ---
 
 <BaseLayout

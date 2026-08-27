@@ -26,6 +26,70 @@ export function buildCanonicalUrl(pathname: string): string {
   return `${canonicalSiteOrigin}${normalizeTrailingSlash(pathname)}`;
 }
 
+export const DEFAULT_SEO_DESCRIPTION_MAX_LENGTH = 160;
+
+/*
+ * SEO Snippet Formatting:
+ * Normalizes whitespace and truncates long summary fallbacks at word boundaries
+ * to produce clean, readable meta descriptions within standard search engine snippet limits
+ * (capped at ~155-160 characters). Preserves un-truncated text when within budget,
+ * avoids dangling punctuation or half-open delimiters, and safely handles unbroken tokens.
+ */
+export function formatSeoSnippet(
+  text: string | null | undefined,
+  maxLength: number = DEFAULT_SEO_DESCRIPTION_MAX_LENGTH,
+  ellipsis: string = '…',
+): string {
+  if (!text || maxLength <= 0) return '';
+  const normalized = text.replace(/\s+/g, ' ').trim();
+  if (normalized.length <= maxLength) {
+    return normalized;
+  }
+
+  const budget = maxLength - ellipsis.length;
+  if (budget <= 0) {
+    return ellipsis.slice(0, maxLength);
+  }
+
+  const rawSlice = normalized.slice(0, budget);
+  const lastSpaceIndex = rawSlice.lastIndexOf(' ');
+
+  let truncated = lastSpaceIndex > 0 ? rawSlice.slice(0, lastSpaceIndex) : rawSlice;
+  truncated = truncated.replace(/[\s,;:!?.—–\-/\\()[\]{}«»"“”'`]+$/, '');
+
+  const openParenCount = (truncated.match(/\(/g) || []).length;
+  const closeParenCount = (truncated.match(/\)/g) || []).length;
+  if (openParenCount > closeParenCount) {
+    const lastOpenParen = truncated.lastIndexOf('(');
+    const beforeParen = truncated
+      .slice(0, lastOpenParen)
+      .replace(/[\s,;:!?.—–\-/\\()[\]{}«»"“”'`]+$/, '');
+    if (beforeParen.length > 0) {
+      truncated = beforeParen;
+    }
+  }
+
+  const openBracketCount = (truncated.match(/\[/g) || []).length;
+  const closeBracketCount = (truncated.match(/\]/g) || []).length;
+  if (openBracketCount > closeBracketCount) {
+    const lastOpenBracket = truncated.lastIndexOf('[');
+    const beforeBracket = truncated
+      .slice(0, lastOpenBracket)
+      .replace(/[\s,;:!?.—–\-/\\()[\]{}«»"“”'`]+$/, '');
+    if (beforeBracket.length > 0) {
+      truncated = beforeBracket;
+    }
+  }
+
+  truncated = truncated.replace(/[\s,;:!?.—–\-/\\()[\]{}«»"“”'`]+$/, '');
+
+  if (truncated.length === 0) {
+    truncated = rawSlice.trim();
+  }
+
+  return `${truncated}${ellipsis}`;
+}
+
 /*
  * Safely serializes an object into a JSON-LD script-compatible string.
  * Replaces '<' with unicode escape '\u003c' so hostile payload strings
@@ -148,15 +212,20 @@ export function buildPlaceJsonLd({
   place,
   locale,
   editorial,
+  seoDescription,
+  seoTitle,
 }: {
   place: Place;
   locale: Locale;
   editorial?: LocalizedEditorialMetadata;
+  seoDescription?: string;
+  seoTitle?: string;
 }): SchemaPlaceGraph {
   const homeLabel = locale === 'el' ? 'Αρχική' : 'Home';
   const placesLabel = locale === 'el' ? 'Μέρη' : 'Places';
-  const placeTitle = editorial?.title ?? place.title[locale];
-  const placeDescription = editorial?.description ?? place.summary[locale];
+  const placeTitle = seoTitle ?? editorial?.title ?? place.title[locale];
+  const placeDescription =
+    seoDescription ?? editorial?.description ?? formatSeoSnippet(place.summary[locale]);
   const placeUrl = buildCanonicalUrl(`/${locale}/places/${place.slug[locale]}/`);
   const images = place.images.map((img) => img.src);
   if (editorial?.socialImage?.src && !images.includes(editorial.socialImage.src)) {
@@ -211,15 +280,20 @@ export function buildTrailJsonLd({
   trail,
   locale,
   editorial,
+  seoDescription,
+  seoTitle,
 }: {
   trail: Trail;
   locale: Locale;
   editorial?: LocalizedEditorialMetadata;
+  seoDescription?: string;
+  seoTitle?: string;
 }): SchemaTrailGraph {
   const homeLabel = locale === 'el' ? 'Αρχική' : 'Home';
   const trailsLabel = locale === 'el' ? 'Διαδρομές' : 'Trails';
-  const trailTitle = editorial?.title ?? trail.title[locale];
-  const trailDescription = editorial?.description ?? trail.summary[locale];
+  const trailTitle = seoTitle ?? editorial?.title ?? trail.title[locale];
+  const trailDescription =
+    seoDescription ?? editorial?.description ?? formatSeoSnippet(trail.summary[locale]);
   const trailUrl = buildCanonicalUrl(`/${locale}/trails/${trail.slug[locale]}/`);
 
   const images: string[] = [];
@@ -292,15 +366,20 @@ export function buildStoryJsonLd({
   story,
   locale,
   editorial,
+  seoDescription,
+  seoTitle,
 }: {
   story: Story;
   locale: Locale;
   editorial?: LocalizedEditorialMetadata;
+  seoDescription?: string;
+  seoTitle?: string;
 }): SchemaStoryGraph {
   const homeLabel = locale === 'el' ? 'Αρχική' : 'Home';
   const storiesLabel = locale === 'el' ? 'Ιστορίες' : 'Stories';
-  const storyTitle = editorial?.title ?? story.title[locale];
-  const storyDescription = editorial?.description ?? story.summary[locale];
+  const storyTitle = seoTitle ?? editorial?.title ?? story.title[locale];
+  const storyDescription =
+    seoDescription ?? editorial?.description ?? formatSeoSnippet(story.summary[locale]);
   const storyUrl = buildCanonicalUrl(`/${locale}/stories/${story.slug[locale]}/`);
   const rootUrl = buildCanonicalUrl('/');
   const logoUrl = buildCanonicalUrl('/images/og-default.png');

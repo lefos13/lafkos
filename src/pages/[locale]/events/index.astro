@@ -14,13 +14,12 @@ const { locale } = Astro.props as { locale: Locale };
 const ui = getCopy(locale);
 const other = otherLocale(locale);
 
-const pageTitle = locale === 'el' ? 'Ο ετήσιος κύκλος του Λαύκου' : 'The Annual Cycle of Lafkos';
-
-const pageDescription =
+const pageTitle = ui.eventsTitle;
+const metaDescription = ui.eventsDescription;
+const heroLede =
   locale === 'el'
     ? 'Ο ετήσιος κύκλος και οι εποχικές εκδηλώσεις στον Λαύκο του Νοτίου Πηλίου: από τα υπαίθρια πανηγύρια της άνοιξης στο Μοναστήρι του Αγίου Αθανασίου μέχρι τις φθινοπωρινές και χειμερινές συνάξεις στην πλατεία.'
     : 'The annual cycle and seasonal events of Lafkos in South Pelion: from open-air spring celebrations at the Monastery of Agios Athanasios to autumn and winter gatherings in the village square.';
-
 const eyebrowLabel = locale === 'el' ? 'Εποχικό Ημερολόγιο' : 'Seasonal Calendar';
 const backToHomeLabel = locale === 'el' ? '← Αρχική' : '← Home';
 const seasonsSidebarHeading = locale === 'el' ? 'Εποχές του Έτους' : 'Seasons of the Year';
@@ -185,7 +184,7 @@ const activeSeasons = seasons.filter((season) => season.stories.length > 0);
 <BaseLayout
   locale={locale}
   title={pageTitle}
-  description={pageDescription}
+  description={metaDescription}
   alternateHref={`/${other}/events/`}
 >
   <section class="prose-section container events-page">
@@ -201,7 +200,7 @@ const activeSeasons = seasons.filter((season) => season.stories.length > 0);
     <header class="events-hero">
       <p class="eyebrow">{eyebrowLabel}</p>
       <h1 class="page-title">{pageTitle}</h1>
-      <p class="lede">{pageDescription}</p>
+      <p class="lede">{heroLede}</p>
     </header>
 
     <div class="events-layout">

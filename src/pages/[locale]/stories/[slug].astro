@@ -11,7 +11,7 @@ import {
 import { locales, otherLocale, type Locale } from '../../../lib/locales';
 import { getCopy } from '../../../lib/ui-copy';
 import type { Story } from '../../../lib/content';
-import { buildStoryJsonLd } from '../../../lib/structured-data';
+import { buildStoryJsonLd, formatSeoSnippet } from '../../../lib/structured-data';
 export async function getStaticPaths() {
   const dataset = await fetchSanityContent();
   return locales.flatMap((locale) =>
@@ -55,10 +55,12 @@ const fieldNotesLabel = locale === 'el' ? 'Σημειώσεις πεδίου' : 
  * Editorial and SEO metadata overrides:
  * Allows CMS-defined titles, summaries, social images, author attribution,
  * and publication/modification timestamps to override default fields.
+ * Explicit editorial descriptions are preserved verbatim, while summary
+ * fallbacks are normalized and word-boundary truncated via formatSeoSnippet.
  */
 const editorial = getLocalizedEditorialMetadata(story, locale);
 const seoTitle = editorial.title ?? story.title[locale];
-const seoDescription = editorial.description ?? story.summary[locale];
+const seoDescription = editorial.description ?? formatSeoSnippet(story.summary[locale]);
 const primaryImage = story.image;
 const socialImage = editorial.socialImage?.src ?? primaryImage?.src;
 const socialImageAlt = editorial.socialImage?.alt ?? primaryImage?.alt ?? story.title[locale];
@@ -67,7 +69,13 @@ const socialImageAlt = editorial.socialImage?.alt ?? primaryImage?.alt ?? story.
  * Structured Data:
  * BreadcrumbList and Google-compatible Article graphs with author and date metadata.
  */
-const jsonLd = buildStoryJsonLd({ story, locale, editorial });
+const jsonLd = buildStoryJsonLd({
+  story,
+  locale,
+  editorial,
+  seoDescription,
+  seoTitle,
+});
 ---
 
 <BaseLayout
