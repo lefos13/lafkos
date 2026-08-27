@@ -18,7 +18,7 @@
     "format": "prettier --write .",
     "studio:dev": "pnpm --filter @lafkos/studio dev",
     "studio:build": "pnpm --filter @lafkos/studio build",
-    "studio:deploy": "pnpm --filter @lafkos/studio deploy",
+    "studio:deploy": "pnpm --filter @lafkos/studio run deploy",
     "studio:export-seed": "tsx scripts/export-sanity-seed.ts",
     "studio:import-seed": "pnpm --filter @lafkos/studio import-seed",
     "studio:pull-content": "tsx scripts/pull-sanity-content.ts",
