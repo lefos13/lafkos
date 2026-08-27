@@ -81,7 +81,7 @@ const statsItems = [
         <a class="button button-primary" href={`/${locale}/map`}
           >{ui.explore} <span aria-hidden="true">↗</span></a
         >
-        <a class="button button-ghost" href={`/${locale}/stories/reading-lafkos`}>{ui.readStory}</a>
+        <a class="button button-ghost" href={`/${locale}/stories/`}>{ui.navStories}</a>
       </div>
     </div>
   </section>
@@ -134,13 +134,15 @@ const statsItems = [
     />
   </section>
 
-  <section class="section container" aria-labelledby="featured-title">
+  <section class="section container" aria-labelledby="places-title">
     <div class="section-header">
       <div>
-        <p class="eyebrow">{ui.featured}</p><h2 id="featured-title" class="section-title">
-          {locale === 'el' ? 'Ξεκίνα από εδώ.' : 'Start here.'}
+        <p class="eyebrow">{ui.navPlaces}</p>
+        <h2 id="places-title" class="section-title">
+          {locale === 'el' ? 'Μέρη & Αξιοθέατα' : 'Places & Landmarks'}
         </h2>
-      </div><a class="text-link" href={`/${locale}/map`}>{ui.viewAll}</a>
+      </div>
+      <a class="text-link" href={`/${locale}/places/`}>{ui.viewAll}</a>
     </div>
     <div class="card-grid">
       {
@@ -152,6 +154,20 @@ const statsItems = [
           />
         ))
       }
+    </div>
+  </section>
+
+  <section class="section container" aria-labelledby="trails-title">
+    <div class="section-header">
+      <div>
+        <p class="eyebrow">{ui.navTrails}</p>
+        <h2 id="trails-title" class="section-title">
+          {locale === 'el' ? 'Πεζοπορικές Διαδρομές' : 'Hiking Trails'}
+        </h2>
+      </div>
+      <a class="text-link" href={`/${locale}/trails/`}>{ui.viewAll}</a>
+    </div>
+    <div class="card-grid">
       {
         trails.map((trail) => (
           <FeatureCard
@@ -167,16 +183,17 @@ const statsItems = [
   <section class="section container" aria-labelledby="stories-title">
     <div class="section-header">
       <div>
-        <p class="eyebrow">{ui.stories}</p><h2 id="stories-title" class="section-title">
+        <p class="eyebrow">{ui.stories}</p>
+        <h2 id="stories-title" class="section-title">
           {locale === 'el' ? 'Ο τόπος συνεχίζει να μιλά.' : 'The place keeps speaking.'}
         </h2>
-      </div><a class="text-link" href={`/${locale}/stories/reading-lafkos`}>{ui.viewAll}</a>
+      </div>
+      <a class="text-link" href={`/${locale}/stories/`}>{ui.viewAll}</a>
     </div>
     <div class="card-grid">
       {stories.map((story) => <StoryCard story={story} locale={locale} />)}
     </div>
   </section>
-
   <section class="section container" aria-label={ui.seed}>
     <SeedNotice locale={locale} />
   </section>

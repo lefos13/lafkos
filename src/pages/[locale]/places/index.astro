@@ -1,0 +1,71 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import FeatureCard from '../../../components/FeatureCard.astro';
+import SeedNotice from '../../../components/SeedNotice.astro';
+import { fetchSanityContent } from '../../../lib/content-api';
+import { locales, otherLocale, type Locale } from '../../../lib/locales';
+import { getCopy } from '../../../lib/ui-copy';
+
+/*
+ * Places Content Hub:
+ * Crawlable bilingual index route for cultural landmarks, museums, fountains,
+ * and heritage sites across Lafkos and South Pelion. Renders direct anchor
+ * links to every place detail page for search engine indexing and natural browsing.
+ */
+export function getStaticPaths() {
+  return locales.map((locale) => ({ params: { locale }, props: { locale } }));
+}
+
+const { locale } = Astro.props as { locale: Locale };
+const ui = getCopy(locale);
+const other = otherLocale(locale);
+const dataset = await fetchSanityContent();
+const places = dataset.places;
+const categories = dataset.categories;
+
+const pageTitle = ui.placesTitle;
+const pageDescription = ui.placesIntro;
+const eyebrowLabel = ui.navPlaces;
+const backToHomeLabel = ui.backToHome;
+---
+
+<BaseLayout
+  locale={locale}
+  title={pageTitle}
+  description={pageDescription}
+  alternateHref={`/${other}/places`}
+>
+  <section class="prose-section container">
+    <nav
+      class="story-breadcrumb"
+      aria-label={locale === 'el' ? 'Πλοήγηση διαδρομής' : 'Breadcrumb'}
+    >
+      <a href={`/${locale}/`} class="story-back-link">{backToHomeLabel}</a>
+      <span class="breadcrumb-separator" aria-hidden="true">/</span>
+      <span class="breadcrumb-current">{eyebrowLabel}</span>
+    </nav>
+
+    <header class="story-hero-header">
+      <p class="eyebrow">{eyebrowLabel}</p>
+      <h1 class="page-title">{pageTitle}</h1>
+      <p class="lede">{pageDescription}</p>
+    </header>
+    <section class="hub-collection" aria-labelledby="places-list-heading">
+      <h2 id="places-list-heading" class="sr-only">{ui.placesListHeading}</h2>
+      <div class="card-grid" style="margin-top: 2.5rem;">
+        {
+          places.map((place) => (
+            <FeatureCard
+              entry={place}
+              locale={locale}
+              category={categories.find((category) => category.id === place.category)}
+            />
+          ))
+        }
+      </div>
+    </section>
+    <section class="section" aria-label={ui.seed} style="margin-top: 4rem;">
+      <SeedNotice locale={locale} />
+    </section>
+  </section>
+</BaseLayout>

@@ -1,0 +1,62 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import StoryCard from '../../../components/StoryCard.astro';
+import SeedNotice from '../../../components/SeedNotice.astro';
+import { fetchSanityContent } from '../../../lib/content-api';
+import { locales, otherLocale, type Locale } from '../../../lib/locales';
+import { getCopy } from '../../../lib/ui-copy';
+
+/*
+ * Stories Content Hub:
+ * Crawlable bilingual index route for local narratives, oral histories,
+ * cultural heritage articles, and seasonal chronicles of Lafkos. Renders direct
+ * anchor links to every story detail page for indexing and narrative browsing.
+ */
+export function getStaticPaths() {
+  return locales.map((locale) => ({ params: { locale }, props: { locale } }));
+}
+
+const { locale } = Astro.props as { locale: Locale };
+const ui = getCopy(locale);
+const other = otherLocale(locale);
+const dataset = await fetchSanityContent();
+const stories = dataset.stories;
+
+const pageTitle = ui.storiesTitle;
+const pageDescription = ui.storiesIntro;
+const eyebrowLabel = ui.navStories;
+const backToHomeLabel = ui.backToHome;
+---
+
+<BaseLayout
+  locale={locale}
+  title={pageTitle}
+  description={pageDescription}
+  alternateHref={`/${other}/stories`}
+>
+  <section class="prose-section container">
+    <nav
+      class="story-breadcrumb"
+      aria-label={locale === 'el' ? 'Πλοήγηση διαδρομής' : 'Breadcrumb'}
+    >
+      <a href={`/${locale}/`} class="story-back-link">{backToHomeLabel}</a>
+      <span class="breadcrumb-separator" aria-hidden="true">/</span>
+      <span class="breadcrumb-current">{eyebrowLabel}</span>
+    </nav>
+
+    <header class="story-hero-header">
+      <p class="eyebrow">{eyebrowLabel}</p>
+      <h1 class="page-title">{pageTitle}</h1>
+      <p class="lede">{pageDescription}</p>
+    </header>
+    <section class="hub-collection" aria-labelledby="stories-list-heading">
+      <h2 id="stories-list-heading" class="sr-only">{ui.storiesListHeading}</h2>
+      <div class="card-grid" style="margin-top: 2.5rem;">
+        {stories.map((story) => <StoryCard story={story} locale={locale} />)}
+      </div>
+    </section>
+    <section class="section" aria-label={ui.seed} style="margin-top: 4rem;">
+      <SeedNotice locale={locale} />
+    </section>
+  </section>
+</BaseLayout>

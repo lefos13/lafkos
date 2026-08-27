@@ -1,0 +1,63 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import FeatureCard from '../../../components/FeatureCard.astro';
+import SeedNotice from '../../../components/SeedNotice.astro';
+import { fetchSanityContent } from '../../../lib/content-api';
+import { locales, otherLocale, type Locale } from '../../../lib/locales';
+import { getCopy } from '../../../lib/ui-copy';
+
+/*
+ * Trails Content Hub:
+ * Crawlable bilingual index route for historic stone paths, mountain kalderimia,
+ * and coastal walking routes around Lafkos and South Pelion. Renders direct
+ * anchor links to every trail detail page for indexing and natural discovery.
+ */
+export function getStaticPaths() {
+  return locales.map((locale) => ({ params: { locale }, props: { locale } }));
+}
+
+const { locale } = Astro.props as { locale: Locale };
+const ui = getCopy(locale);
+const other = otherLocale(locale);
+const dataset = await fetchSanityContent();
+const trails = dataset.trails;
+const category = dataset.categories.find((c) => c.id === 'trail');
+
+const pageTitle = ui.trailsTitle;
+const pageDescription = ui.trailsIntro;
+const eyebrowLabel = ui.navTrails;
+const backToHomeLabel = ui.backToHome;
+---
+
+<BaseLayout
+  locale={locale}
+  title={pageTitle}
+  description={pageDescription}
+  alternateHref={`/${other}/trails`}
+>
+  <section class="prose-section container">
+    <nav
+      class="story-breadcrumb"
+      aria-label={locale === 'el' ? 'Πλοήγηση διαδρομής' : 'Breadcrumb'}
+    >
+      <a href={`/${locale}/`} class="story-back-link">{backToHomeLabel}</a>
+      <span class="breadcrumb-separator" aria-hidden="true">/</span>
+      <span class="breadcrumb-current">{eyebrowLabel}</span>
+    </nav>
+
+    <header class="story-hero-header">
+      <p class="eyebrow">{eyebrowLabel}</p>
+      <h1 class="page-title">{pageTitle}</h1>
+      <p class="lede">{pageDescription}</p>
+    </header>
+    <section class="hub-collection" aria-labelledby="trails-list-heading">
+      <h2 id="trails-list-heading" class="sr-only">{ui.trailsListHeading}</h2>
+      <div class="card-grid" style="margin-top: 2.5rem;">
+        {trails.map((trail) => <FeatureCard entry={trail} locale={locale} category={category} />)}
+      </div>
+    </section>
+    <section class="section" aria-label={ui.seed} style="margin-top: 4rem;">
+      <SeedNotice locale={locale} />
+    </section>
+  </section>
+</BaseLayout>

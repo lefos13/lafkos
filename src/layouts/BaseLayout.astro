@@ -91,7 +91,9 @@ const navTimelineLabel = locale === 'el' ? 'Χρονολόγιο' : 'Timeline';
         </a>
         <nav class="nav-links" aria-label={ui.primaryNav}>
           <a href={`/${locale}/map`}>{ui.navMap}</a>
-          <a href={`/${locale}/stories/reading-lafkos`}>{ui.navStories}</a>
+          <a href={`/${locale}/places/`}>{ui.navPlaces}</a>
+          <a href={`/${locale}/trails/`}>{ui.navTrails}</a>
+          <a href={`/${locale}/stories/`}>{ui.navStories}</a>
           <a href={`/${locale}/events`}>{navEventsLabel}</a>
           <a href={`/${locale}/timeline`}>{navTimelineLabel}</a>
           <a href={`/${locale}/visit`}>{ui.navVisit}</a>
@@ -112,6 +114,9 @@ const navTimelineLabel = locale === 'el' ? 'Χρονολόγιο' : 'Timeline';
             <p class="footer-copy">{ui.footer}</p>
           </div>
           <nav class="footer-links" aria-label={ui.footerNav}>
+            <a href={`/${locale}/places/`}>{ui.navPlaces}</a>
+            <a href={`/${locale}/trails/`}>{ui.navTrails}</a>
+            <a href={`/${locale}/stories/`}>{ui.navStories}</a>
             <a href={`/${locale}/events`}>{navEventsLabel}</a>
             <a href={`/${locale}/timeline`}>{navTimelineLabel}</a>
             <a href={`/${locale}/about`}>{ui.navAbout}</a>

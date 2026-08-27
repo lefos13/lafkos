@@ -269,10 +269,7 @@ const activeSeasons = seasons.filter((season) => season.stories.length > 0);
               >
             </li>
           </ul>
-          <a
-            class="button button-secondary events-sidebar-cta"
-            href={`/${locale}/stories/reading-lafkos`}
-          >
+          <a class="button button-secondary events-sidebar-cta" href={`/${locale}/stories/`}>
             {allStoriesLabel}
             <span aria-hidden="true">→</span>
           </a>
@@ -432,7 +429,7 @@ const activeSeasons = seasons.filter((season) => season.stories.length > 0);
                   ? 'Οι εποχικές εκδηλώσεις, τα παραδοσιακά πανηγύρια και οι ιστορικές ημερομηνίες-σταθμοί του Λαύκου καταγράφονται και θα αναρτηθούν σύντομα στο πλαίσιο της κοινοτικής τεκμηρίωσης.'
                   : 'Seasonal events, traditional village feasts, and milestone dates for Lafkos are being curated and will be published here shortly as community documentation grows.'}
               </p>
-              <a class="button button-primary empty-cta" href={`/${locale}/stories/reading-lafkos`}>
+              <a class="button button-primary empty-cta" href={`/${locale}/stories/`}>
                 {locale === 'el' ? 'Ανακαλύψτε τις Ιστορίες του Τόπου' : 'Explore Village Stories'}{' '}
                 <span aria-hidden="true">→</span>
               </a>
