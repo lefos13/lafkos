@@ -1,7 +1,11 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import SeedNotice from '../../../components/SeedNotice.astro';
-import { fetchSanityContent, type ContentDataset } from '../../../lib/content-api';
+import {
+  fetchSanityContent,
+  getLocalizedEditorialMetadata,
+  type ContentDataset,
+} from '../../../lib/content-api';
 import { locales, otherLocale, type Locale } from '../../../lib/locales';
 import { getCopy } from '../../../lib/ui-copy';
 import { formatDistance } from '../../../lib/geometry';
@@ -26,13 +30,30 @@ const ui = getCopy(locale);
 const category = dataset.categories.find((item) => item.id === 'trail');
 // Only a successfully parsed YouTube id produces an embed; other hosts are blocked by CSP anyway.
 const videoId = parseYouTubeVideoId(trail.videoUrl ?? '');
+
+/*
+ * Editorial and SEO metadata overrides:
+ * Allows CMS-defined titles, summaries, social images, author attribution,
+ * and publication/modification timestamps to override default fields.
+ */
+const editorial = getLocalizedEditorialMetadata(trail, locale);
+const seoTitle = editorial.title ?? trail.title[locale];
+const seoDescription = editorial.description ?? trail.summary[locale];
+const primaryImage = trail.waypoints.find((w) => w.image)?.image ?? trail.waypoints[0]?.image;
+const socialImage = editorial.socialImage?.src ?? primaryImage?.src;
+const socialImageAlt = editorial.socialImage?.alt ?? primaryImage?.alt ?? trail.title[locale];
 ---
 
 <BaseLayout
   locale={locale}
-  title={trail.title[locale]}
-  description={trail.summary[locale]}
-  image={trail.waypoints[0]?.image?.src}
+  title={seoTitle}
+  description={seoDescription}
+  image={socialImage}
+  imageAlt={socialImageAlt}
+  type="article"
+  author={editorial.author}
+  publishedAt={editorial.publishedAt}
+  modifiedAt={editorial.modifiedAt}
   alternateHref={`/${otherLocale(locale)}/trails/${trail.slug[otherLocale(locale)]}`}
 >
   <article class="container">
@@ -72,20 +93,23 @@ const videoId = parseYouTubeVideoId(trail.videoUrl ?? '');
       <div class="prose-copy">
         {trail.body[locale].map((paragraph) => <p>{paragraph}</p>)}
         <ul>{trail.safety[locale].map((item) => <li>{item}</li>)}</ul>
-        {videoId && (
-          <>
-            <p class="eyebrow">{ui.video}</p>
-            <figure class="video-embed">
-              <iframe
-                src={`https://www.youtube-nocookie.com/embed/${videoId}`}
-                title={trail.title[locale]}
-                loading="lazy"
-                allowfullscreen
-                referrerpolicy="strict-origin-when-cross-origin"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
-            </figure>
-          </>
-        )}
+        {
+          videoId && (
+            <>
+              <p class="eyebrow">{ui.video}</p>
+              <figure class="video-embed">
+                <iframe
+                  src={`https://www.youtube-nocookie.com/embed/${videoId}`}
+                  title={trail.title[locale]}
+                  loading="lazy"
+                  allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                />
+              </figure>
+            </>
+          )
+        }
         <h2 class="section-title">{locale === 'el' ? 'Σημεία στη διαδρομή' : 'Waypoints'}</h2>
         {
           trail.waypoints.map((waypoint) => (

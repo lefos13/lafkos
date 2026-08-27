@@ -2,7 +2,11 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import SeedNotice from '../../../components/SeedNotice.astro';
 import FeatureCard from '../../../components/FeatureCard.astro';
-import { fetchSanityContent, type ContentDataset } from '../../../lib/content-api';
+import {
+  fetchSanityContent,
+  getLocalizedEditorialMetadata,
+  type ContentDataset,
+} from '../../../lib/content-api';
 import { locales, otherLocale, type Locale } from '../../../lib/locales';
 import { getCopy } from '../../../lib/ui-copy';
 import type { Story } from '../../../lib/content';
@@ -45,13 +49,30 @@ const backToGuideLabel = locale === 'el' ? '← Πίσω στον οδηγό' : 
 const photoCreditLabel = locale === 'el' ? 'Φωτογραφία' : 'Photo';
 const exploreMapLabel = locale === 'el' ? 'Εξερεύνηση στον χάρτη' : 'Explore on map';
 const fieldNotesLabel = locale === 'el' ? 'Σημειώσεις πεδίου' : 'Field observations';
+
+/*
+ * Editorial and SEO metadata overrides:
+ * Allows CMS-defined titles, summaries, social images, author attribution,
+ * and publication/modification timestamps to override default fields.
+ */
+const editorial = getLocalizedEditorialMetadata(story, locale);
+const seoTitle = editorial.title ?? story.title[locale];
+const seoDescription = editorial.description ?? story.summary[locale];
+const primaryImage = story.image;
+const socialImage = editorial.socialImage?.src ?? primaryImage?.src;
+const socialImageAlt = editorial.socialImage?.alt ?? primaryImage?.alt ?? story.title[locale];
 ---
 
 <BaseLayout
   locale={locale}
-  title={story.title[locale]}
-  description={story.summary[locale]}
-  image={story.image.src}
+  title={seoTitle}
+  description={seoDescription}
+  image={socialImage}
+  imageAlt={socialImageAlt}
+  type="article"
+  author={editorial.author}
+  publishedAt={editorial.publishedAt}
+  modifiedAt={editorial.modifiedAt}
   alternateHref={`/${other}/stories/${story.slug[other]}`}
 >
   <article class="container story-page">

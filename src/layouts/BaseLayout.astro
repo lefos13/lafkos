@@ -10,6 +10,15 @@ interface Props {
   title: string;
   description: string;
   image?: string;
+  imageAlt?: string;
+  imageWidth?: number | string;
+  imageHeight?: number | string;
+  imageType?: string;
+  type?: 'website' | 'article';
+  robots?: string;
+  author?: string;
+  publishedAt?: string;
+  modifiedAt?: string;
   darkHeader?: boolean;
   minimalHeader?: boolean;
   isMapPage?: boolean;
@@ -22,6 +31,15 @@ const {
   title,
   description,
   image,
+  imageAlt,
+  imageWidth,
+  imageHeight,
+  imageType,
+  type = 'website',
+  robots,
+  author,
+  publishedAt,
+  modifiedAt,
   darkHeader = false,
   minimalHeader = false,
   isMapPage = false,
@@ -44,7 +62,56 @@ const siteUrl = Astro.site ?? new URL('https://lafkos-guide.vercel.app');
 const canonical = new URL(canonicalPath, siteUrl).toString();
 const alternateUrl = new URL(alternatePath, siteUrl).toString();
 const xDefaultUrl = new URL(xDefaultPath, siteUrl).toString();
-const socialImage = image ?? new URL('/icons/icon-512.svg', siteUrl).toString();
+/*
+ * Social sharing image resolution:
+ * Resolves absolute image URLs for Open Graph and Twitter cards, defaulting to
+ * the dedicated 1200x630 raster PNG social card asset when no entity image is provided.
+ */
+const defaultSocialImagePath = '/images/og-default.png';
+const isDefaultImage = !image;
+const socialImageUrl = image
+  ? image.startsWith('http://') || image.startsWith('https://')
+    ? image
+    : new URL(image, siteUrl).toString()
+  : new URL(defaultSocialImagePath, siteUrl).toString();
+
+const defaultAlt =
+  locale === 'el'
+    ? 'Lafkos Guide — Οδηγός Λαύκου και Νοτίου Πηλίου'
+    : 'Lafkos Guide — Cultural Guide to Lafkos & South Pelion';
+
+const socialImageAlt = imageAlt ?? (isDefaultImage ? defaultAlt : title);
+const socialImageWidth = imageWidth ? String(imageWidth) : isDefaultImage ? '1200' : undefined;
+const socialImageHeight = imageHeight ? String(imageHeight) : isDefaultImage ? '630' : undefined;
+
+function inferImageType(url: string, explicitType?: string): string | undefined {
+  if (explicitType) return explicitType;
+  try {
+    const pathname = new URL(url).pathname.toLowerCase();
+    if (pathname.endsWith('.png')) return 'image/png';
+    if (pathname.endsWith('.jpg') || pathname.endsWith('.jpeg')) return 'image/jpeg';
+    if (pathname.endsWith('.webp')) return 'image/webp';
+    if (pathname.endsWith('.svg')) return 'image/svg+xml';
+  } catch {
+    if (url.endsWith('.png')) return 'image/png';
+    if (url.endsWith('.jpg') || url.endsWith('.jpeg')) return 'image/jpeg';
+    if (url.endsWith('.webp')) return 'image/webp';
+    if (url.endsWith('.svg')) return 'image/svg+xml';
+  }
+  return undefined;
+}
+
+const socialImageType = inferImageType(
+  socialImageUrl,
+  imageType ?? (isDefaultImage ? 'image/png' : undefined),
+);
+
+/*
+ * Page title composition:
+ * Composes a unique title string with the brand suffix, avoiding duplicate brand suffixes
+ * if the provided title already includes 'Lafkos Guide'.
+ */
+const pageTitle = title.includes('Lafkos Guide') ? title : `${title} · Lafkos Guide`;
 const dataset = await fetchSanityContent();
 const activeSource = contentSource ?? dataset.source;
 const isCms = activeSource === 'sanity';
@@ -60,18 +127,37 @@ const navTimelineLabel = locale === 'el' ? 'Χρονολόγιο' : 'Timeline';
     <meta name="theme-color" content="#24433f" />
     <meta name="build-revision" content="2026-08-20-csp-2" />
     <meta name="description" content={description} />
+    {author && <meta name="author" content={author} />}
+    {robots && <meta name="robots" content={robots} />}
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="canonical" href={canonical} />
     <link rel="alternate" hreflang={locale} href={canonical} />
     <link rel="alternate" hreflang={alternateLocale} href={alternateUrl} />
     <link rel="alternate" hreflang="x-default" href={xDefaultUrl} />
+    <meta property="og:site_name" content="Lafkos Guide" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={type} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={socialImage} />
-    <title>{title} · Lafkos Guide</title>
+    <meta property="og:locale" content={locale === 'el' ? 'el_GR' : 'en_US'} />
+    <meta property="og:locale:alternate" content={locale === 'el' ? 'en_US' : 'el_GR'} />
+    <meta property="og:image" content={socialImageUrl} />
+    <meta property="og:image:url" content={socialImageUrl} />
+    <meta property="og:image:secure_url" content={socialImageUrl} />
+    <meta property="og:image:alt" content={socialImageAlt} />
+    {socialImageWidth && <meta property="og:image:width" content={socialImageWidth} />}
+    {socialImageHeight && <meta property="og:image:height" content={socialImageHeight} />}
+    {socialImageType && <meta property="og:image:type" content={socialImageType} />}
+    {publishedAt && <meta property="article:published_time" content={publishedAt} />}
+    {modifiedAt && <meta property="article:modified_time" content={modifiedAt} />}
+    {author && <meta property="article:author" content={author} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImageUrl} />
+    <meta name="twitter:image:alt" content={socialImageAlt} />
+    <title>{pageTitle}</title>
   </head>
   <body>
     <a class="skip-link" href="#main-content">{ui.skipToContent}</a>

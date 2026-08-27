@@ -18,6 +18,9 @@ export const copy = {
     intro: 'Ένας ζωντανός χάρτης για ένα ορεινό χωριό του Νοτίου Πηλίου.',
     introLong:
       'Πέτρα, πλατάνια, καλντερίμια και θέα στον Παγασητικό. Βρες τις μικρές ιστορίες που κάνουν τον Λαύκο τόπο.',
+    mapTitle: 'Διαδραστικός χάρτης Λαύκου και Νοτίου Πηλίου',
+    mapIntro:
+      'Εξερευνήστε διαδραστικά τα σημεία ενδιαφέροντος, τα ιστορικά κτίρια, τις παραδοσιακές κρήνες και τα πεζοπορικά μονοπάτια στον Λαύκο και το Νότιο Πήλιο.',
     featured: 'Μικρές αφετηρίες',
     trails: 'Διαδρομές',
     stories: 'Ιστορίες του τόπου',
@@ -100,6 +103,9 @@ export const copy = {
     intro: 'A living map for a mountain village in South Pelion.',
     introLong:
       'Stone, plane trees, cobbled lanes, and views over the Pagasetic Gulf. Find the small stories that make Lafkos a place.',
+    mapTitle: 'Interactive Map of Lafkos and South Pelion',
+    mapIntro:
+      'Explore points of interest, historic buildings, traditional stone fountains, and hiking paths across Lafkos and South Pelion on an interactive map.',
     featured: 'Small beginnings',
     trails: 'Walk slowly',
     stories: 'Stories of place',

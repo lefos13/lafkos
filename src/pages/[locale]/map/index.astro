@@ -3,7 +3,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import MapExplorer from '../../../components/MapExplorer';
 import SeedNotice from '../../../components/SeedNotice.astro';
 import { fetchSanityContent, publicMapData } from '../../../lib/content-api';
-import { locales, type Locale } from '../../../lib/locales';
+import { locales, otherLocale, type Locale } from '../../../lib/locales';
 import { getCopy } from '../../../lib/ui-copy';
 import { parseMapState } from '../../../lib/map-state';
 
@@ -15,9 +15,24 @@ const ui = getCopy(locale);
 const dataset = await fetchSanityContent();
 const categories = dataset.categories;
 const mapData = publicMapData(locale, dataset);
+const other = otherLocale(locale);
+
+/*
+ * Map SEO and Navigation signals:
+ * Distinct localized search title and description derived from ui-copy,
+ * paired with a single accessible DOM H1 across responsive breakpoints.
+ */
+const pageTitle = ui.mapTitle;
+const pageDescription = ui.mapIntro;
 ---
 
-<BaseLayout locale={locale} title={ui.explore} description={ui.introLong} isMapPage>
+<BaseLayout
+  locale={locale}
+  title={pageTitle}
+  description={pageDescription}
+  alternateHref={`/${other}/map`}
+  isMapPage
+>
   <div class="map-page-intro sr-only-mobile">
     <section class="prose-section container">
       <p class="eyebrow">{ui.explore}</p>
@@ -27,9 +42,6 @@ const mapData = publicMapData(locale, dataset);
       <p class="lede">{ui.introLong}</p>
     </section>
   </div>
-  <h1 class="sr-only sr-only-non-mobile">
-    {locale === 'el' ? 'Ο Λαύκος, σημείο προς σημείο.' : 'Lafkos, point by point.'}
-  </h1>
   <section class="map-section map-page-section container" aria-label={ui.explore}>
     <MapExplorer
       client:load

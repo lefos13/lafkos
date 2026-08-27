@@ -1,0 +1,106 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+/*
+ * Bilingual 404 Error Route:
+ * Provides an accessible, user-friendly fallback for broken or outdated links.
+ * Emits noindex, follow to preserve crawl budget while guiding visitors back
+ * to localized homepages, interactive map explorer, and primary content hubs.
+ */
+const title = '404 — Η σελίδα δεν βρέθηκε · Page Not Found';
+const description =
+  'Η σελίδα που ζητήσατε δεν βρέθηκε. Περιηγηθείτε στον οδηγό του Λαύκου στα ελληνικά ή στα αγγλικά. / The page you requested could not be found. Browse the Lafkos Guide in Greek or English.';
+---
+
+<BaseLayout locale="el" title={title} description={description} robots="noindex, follow">
+  <div class="container not-found-page">
+    <div class="not-found-grid">
+      <!-- Greek section -->
+      <section class="not-found-section" lang="el">
+        <p class="eyebrow">404 · Σφάλμα</p>
+        <h1 class="page-title">Η σελίδα δεν βρέθηκε</h1>
+        <p class="lede">
+          Η σελίδα που αναζητάτε δεν υπάρχει ή έχει μετακινηθεί. Μπορείτε να επιστρέψετε στην αρχική
+          σελίδα ή να εξερευνήσετε τις κύριες ενότητες του οδηγού:
+        </p>
+        <ul class="not-found-links">
+          <li>
+            <a href="/el/" class="button button-primary">Αρχική Σελίδα ↗</a>
+          </li>
+          <li>
+            <a href="/el/map/" class="button button-secondary">Διαδραστικός Χάρτης ↗</a>
+          </li>
+          <li>
+            <a href="/el/places/" class="button button-secondary">Μέρη & Αξιοθέατα ↗</a>
+          </li>
+          <li>
+            <a href="/el/trails/" class="button button-secondary">Πεζοπορικές Διαδρομές ↗</a>
+          </li>
+          <li>
+            <a href="/el/stories/" class="button button-secondary">Ιστορίες του Τόπου ↗</a>
+          </li>
+        </ul>
+      </section>
+
+      <!-- English section -->
+      <section class="not-found-section" lang="en">
+        <p class="eyebrow">404 · Error</p>
+        <h2 class="section-title">Page Not Found</h2>
+        <p class="lede">
+          The page you are looking for does not exist or has been moved. You can return to the
+          homepage or explore the main sections of the guide:
+        </p>
+        <ul class="not-found-links">
+          <li>
+            <a href="/en/" class="button button-primary">Home Page ↗</a>
+          </li>
+          <li>
+            <a href="/en/map/" class="button button-secondary">Interactive Map ↗</a>
+          </li>
+          <li>
+            <a href="/en/places/" class="button button-secondary">Places & Landmarks ↗</a>
+          </li>
+          <li>
+            <a href="/en/trails/" class="button button-secondary">Hiking Trails ↗</a>
+          </li>
+          <li>
+            <a href="/en/stories/" class="button button-secondary">Stories & Heritage ↗</a>
+          </li>
+        </ul>
+      </section>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .not-found-page {
+    padding: 5rem 0 7rem;
+  }
+  .not-found-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3.5rem;
+  }
+  @media (min-width: 768px) {
+    .not-found-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+    }
+  }
+  .not-found-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  .not-found-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 0;
+  }
+  .not-found-links li {
+    margin: 0;
+  }
+</style>

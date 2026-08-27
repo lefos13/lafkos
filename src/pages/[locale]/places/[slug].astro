@@ -1,7 +1,11 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import SeedNotice from '../../../components/SeedNotice.astro';
-import { fetchSanityContent, type ContentDataset } from '../../../lib/content-api';
+import {
+  fetchSanityContent,
+  getLocalizedEditorialMetadata,
+  type ContentDataset,
+} from '../../../lib/content-api';
 import { locales, otherLocale, type Locale } from '../../../lib/locales';
 import { getCopy } from '../../../lib/ui-copy';
 import type { Place } from '../../../lib/content';
@@ -24,13 +28,30 @@ const ui = getCopy(locale);
 const category = dataset.categories.find((item) => item.id === place.category);
 // Only a successfully parsed YouTube id produces an embed; other hosts are blocked by CSP anyway.
 const videoId = parseYouTubeVideoId(place.videoUrl ?? '');
+
+/*
+ * Editorial and SEO metadata overrides:
+ * Allows CMS-defined titles, summaries, social images, author attribution,
+ * and publication/modification timestamps to override default fields.
+ */
+const editorial = getLocalizedEditorialMetadata(place, locale);
+const seoTitle = editorial.title ?? place.title[locale];
+const seoDescription = editorial.description ?? place.summary[locale];
+const primaryImage = place.images[0];
+const socialImage = editorial.socialImage?.src ?? primaryImage?.src;
+const socialImageAlt = editorial.socialImage?.alt ?? primaryImage?.alt ?? place.title[locale];
 ---
 
 <BaseLayout
   locale={locale}
-  title={place.title[locale]}
-  description={place.summary[locale]}
-  image={place.images[0]?.src}
+  title={seoTitle}
+  description={seoDescription}
+  image={socialImage}
+  imageAlt={socialImageAlt}
+  type="article"
+  author={editorial.author}
+  publishedAt={editorial.publishedAt}
+  modifiedAt={editorial.modifiedAt}
   alternateHref={`/${otherLocale(locale)}/places/${place.slug[otherLocale(locale)]}`}
 >
   <article class="container">
@@ -57,20 +78,23 @@ const videoId = parseYouTubeVideoId(place.videoUrl ?? '');
       <div class="prose-copy">
         {place.body[locale].map((paragraph) => <p>{paragraph}</p>)}
         <ul>{place.practical[locale].map((item) => <li>{item}</li>)}</ul>
-        {videoId && (
-          <>
-            <p class="eyebrow">{ui.video}</p>
-            <figure class="video-embed">
-              <iframe
-                src={`https://www.youtube-nocookie.com/embed/${videoId}`}
-                title={place.title[locale]}
-                loading="lazy"
-                allowfullscreen
-                referrerpolicy="strict-origin-when-cross-origin"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
-            </figure>
-          </>
-        )}
+        {
+          videoId && (
+            <>
+              <p class="eyebrow">{ui.video}</p>
+              <figure class="video-embed">
+                <iframe
+                  src={`https://www.youtube-nocookie.com/embed/${videoId}`}
+                  title={place.title[locale]}
+                  loading="lazy"
+                  allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                />
+              </figure>
+            </>
+          )
+        }
         <h2 class="section-title">{ui.sources}</h2>
         <ul class="source-list">
           {
