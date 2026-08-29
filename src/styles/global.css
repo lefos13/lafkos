@@ -605,8 +605,9 @@ img {
   font-size: 0.75rem;
   line-height: 1.4;
 }
+/* Marker roots stay outside document flow while MapLibre positions them by transform. */
 .map-marker-btn {
-  position: relative;
+  position: absolute;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -791,7 +792,7 @@ img {
 
 /* Accessible Map Cluster Markers: high-contrast circular badges with >=44px touch targets. */
 .map-cluster-btn {
-  position: relative;
+  position: absolute;
   display: inline-flex;
   align-items: center;
   justify-content: center;

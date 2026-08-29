@@ -935,10 +935,10 @@ export default function MapExplorer({
       isDistant: boolean,
     ): HTMLSpanElement {
       const isWaypoint = feature.properties.kind === 'waypoint';
-      const buttonClassName = `map-marker-btn ${
-        isWaypoint ? 'map-marker-btn--waypoint' : isDistant ? 'map-marker-btn--distant' : ''
-      } ${isSelected ? 'is-selected' : ''}`;
-      if (markerButton.className !== buttonClassName) markerButton.className = buttonClassName;
+      markerButton.classList.add('map-marker-btn');
+      markerButton.classList.toggle('map-marker-btn--waypoint', isWaypoint);
+      markerButton.classList.toggle('map-marker-btn--distant', !isWaypoint && isDistant);
+      markerButton.classList.toggle('is-selected', isSelected);
       const accessibleLabel = isWaypoint
         ? `${feature.properties.title} — ${feature.properties.summary}`
         : feature.properties.title;

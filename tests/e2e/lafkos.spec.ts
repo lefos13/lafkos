@@ -60,8 +60,18 @@ test('dense map markers form accessible clusters that expand on activation', asy
   await expect(cluster).toBeVisible();
   await expect(cluster).toHaveAttribute('aria-label', /Μεγέθυνση για προβολή \d+ σημείων/);
   await expect
+    .poll(() => cluster.evaluate((element) => getComputedStyle(element).position))
+    .toBe('absolute');
+  await expect
     .poll(() => cluster.evaluate((element) => getComputedStyle(element).transitionProperty))
     .not.toContain('transform');
+
+  const visibleLeaf = page.locator('.map-marker-btn').first();
+  await expect(visibleLeaf).toBeVisible();
+  await expect(visibleLeaf).toHaveClass(/maplibregl-marker/);
+  await expect
+    .poll(() => visibleLeaf.evaluate((element) => getComputedStyle(element).position))
+    .toBe('absolute');
 
   await cluster.focus();
   await cluster.press('Enter');
