@@ -32,16 +32,19 @@ const ctaTimelineLabel = locale === 'el' ? 'Ιστορικό χρονολόγι�
 
 const statsItems = [
   {
+    icon: 'cafe',
     value: '1785',
     label: locale === 'el' ? 'Καφενείο Φορλίδα' : 'Forlidas Café',
     caption: locale === 'el' ? 'το αρχαιότερο καφενείο της Ελλάδας' : "Greece's oldest café",
   },
   {
+    icon: 'museum',
     value: locale === 'el' ? '3 μουσεία' : '3 museums',
     label: locale === 'el' ? 'Πολιτισμός' : 'Culture',
     caption: locale === 'el' ? 'για 378 κατοίκους' : 'museums for 378 residents',
   },
   {
+    icon: 'trail',
     value: locale === 'el' ? '168 χλμ.' : '168 km',
     label: 'Long Pelion Trail',
     caption:
@@ -50,11 +53,13 @@ const statsItems = [
         : 'flagship long-distance trail at our doorstep',
   },
   {
+    icon: 'climb',
     value: locale === 'el' ? '16 διαδρομές' : '16 routes',
     label: locale === 'el' ? 'Αναρρίχηση' : 'Climbing',
     caption: locale === 'el' ? 'αναρριχητικό πεδίο του Μικρού' : 'climbing routes at Mikro',
   },
   {
+    icon: 'stay',
     value: locale === 'el' ? '5 καταλύματα' : '5 guesthouses',
     label: locale === 'el' ? 'Φιλοξενία' : 'Hospitality',
     caption:
@@ -63,6 +68,7 @@ const statsItems = [
         : 'traditional stays in historic mansions',
   },
   {
+    icon: 'walk',
     value: locale === 'el' ? 'Πεζοδρομημένο' : 'Car-free',
     label: locale === 'el' ? 'Ήπιος Ρυθμός' : 'Pace of Life',
     caption: locale === 'el' ? 'η καρδιά του χωριού χωρίς αυτοκίνητα' : 'car-free village heart',
@@ -97,33 +103,41 @@ const jsonLd = buildHomeJsonLd();
   </section>
 
   <section class="stats-band container" aria-labelledby="stats-title">
-    <div class="stats-header">
-      <div>
-        <p class="eyebrow">{statsEyebrow}</p>
-        <h2 id="stats-title" class="section-title">{statsTitle}</h2>
-      </div>
-      <div class="stats-ctas">
-        <a class="button button-secondary stats-cta-btn" href={`/${locale}/events/`}>
-          <span>{ctaEventsLabel}</span>
-          <span class="cta-arrow" aria-hidden="true">→</span>
-        </a>
-        <a class="button button-secondary stats-cta-btn" href={`/${locale}/timeline/`}>
-          <span>{ctaTimelineLabel}</span>
-          <span class="cta-arrow" aria-hidden="true">→</span>
-        </a>
-      </div>
-    </div>
+    <div class="stats-panel">
+      <div class="stats-texture" aria-hidden="true"></div>
 
-    <div class="stats-grid">
-      {
-        statsItems.map((stat) => (
-          <div class="stat-card">
-            <p class="stat-label">{stat.label}</p>
-            <div class="stat-value">{stat.value}</div>
-            <p class="stat-caption">{stat.caption}</p>
-          </div>
-        ))
-      }
+      <div class="stats-header">
+        <div class="stats-intro">
+          <p class="eyebrow stats-eyebrow">{statsEyebrow}</p>
+          <h2 id="stats-title" class="section-title stats-title">{statsTitle}</h2>
+        </div>
+        <div class="stats-ctas">
+          <a class="button button-secondary stats-cta-btn" href={`/${locale}/events/`}>
+            <span>{ctaEventsLabel}</span>
+            <span class="cta-arrow" aria-hidden="true">→</span>
+          </a>
+          <a class="button button-secondary stats-cta-btn" href={`/${locale}/timeline/`}>
+            <span>{ctaTimelineLabel}</span>
+            <span class="cta-arrow" aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+
+      <ul class="stats-grid">
+        {
+          statsItems.map((stat, index) => (
+            <li class="stat-card" data-icon={stat.icon} style={`--stat-index:${index}`}>
+              <span class="stat-ordinal" aria-hidden="true">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <span class="stat-icon" aria-hidden="true" />
+              <p class="stat-label">{stat.label}</p>
+              <div class="stat-value">{stat.value}</div>
+              <p class="stat-caption">{stat.caption}</p>
+            </li>
+          ))
+        }
+      </ul>
     </div>
   </section>
 
@@ -371,19 +385,83 @@ const jsonLd = buildHomeJsonLd();
     padding: 4.5rem 0 2.5rem;
   }
 
+  /*
+   * The band is a single inset panel — limestone paper with a faint contour
+   * wash — so the numbers read as one almanac spread instead of loose boxes.
+   */
+  .stats-panel {
+    position: relative;
+    isolation: isolate;
+    padding: 2rem 1.25rem 2.25rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(120% 90% at 100% 0%, rgba(209, 167, 88, 0.16), transparent 55%),
+      radial-gradient(90% 80% at 0% 100%, rgba(46, 119, 118, 0.12), transparent 60%),
+      linear-gradient(168deg, var(--paper) 0%, var(--limestone) 100%);
+    box-shadow: 0 24px 60px rgba(26, 43, 38, 0.08);
+    overflow: hidden;
+  }
+
+  @media (min-width: 768px) {
+    .stats-panel {
+      padding: 2.75rem 2.5rem 3rem;
+    }
+  }
+
+  .stats-texture {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0.5;
+    background-image:
+      repeating-radial-gradient(
+        circle at 88% 8%,
+        transparent 0 22px,
+        rgba(36, 67, 63, 0.07) 22px 23px
+      ),
+      repeating-linear-gradient(to bottom, rgba(36, 67, 63, 0.05) 0 1px, transparent 1px 36px);
+    pointer-events: none;
+  }
+
   .stats-header {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    margin-bottom: 2.25rem;
+    margin-bottom: 2rem;
   }
 
-  @media (min-width: 768px) {
+  /* Hold the stacked header until the 3-column grid arrives — the Greek
+     title needs the full measure below that. */
+  @media (min-width: 900px) {
     .stats-header {
       flex-direction: row;
       align-items: flex-end;
       justify-content: space-between;
+      gap: 2rem;
     }
+  }
+
+  .stats-intro {
+    max-width: 34rem;
+  }
+
+  .stats-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .stats-eyebrow::before {
+    width: 1.75rem;
+    height: 1px;
+    background: currentColor;
+    content: '';
+  }
+
+  .stats-title {
+    font-size: clamp(1.9rem, 4vw, 3rem);
   }
 
   .stats-ctas {
@@ -392,10 +470,29 @@ const jsonLd = buildHomeJsonLd();
     gap: 0.75rem;
   }
 
+  /* Narrow screens: let the two CTAs share the row instead of stacking ragged. */
+  @media (max-width: 480px) {
+    .stats-cta-btn {
+      flex: 1 1 100%;
+    }
+  }
+
   .stats-cta-btn {
     gap: 0.5rem;
+    border-color: rgba(36, 67, 63, 0.22);
+    background: rgba(251, 249, 244, 0.7);
     font-size: 0.85rem;
     font-weight: 600;
+    backdrop-filter: blur(4px);
+    transition:
+      transform 180ms ease,
+      border-color 180ms ease,
+      background 180ms ease;
+  }
+
+  .stats-cta-btn:hover {
+    border-color: var(--deep-olive);
+    background: var(--paper);
   }
 
   .cta-arrow {
@@ -406,61 +503,229 @@ const jsonLd = buildHomeJsonLd();
     transform: translateX(3px);
   }
 
+  /* Hairline ledger: 1px gaps let the panel show through as rules. */
   .stats-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+    grid-template-columns: 1fr;
+    gap: 1px;
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--line);
+    list-style: none;
+    overflow: hidden;
+  }
+
+  /* One column on phones so long Greek compounds stay unbroken. */
+  @media (min-width: 560px) {
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
   @media (min-width: 900px) {
     .stats-grid {
       grid-template-columns: repeat(3, 1fr);
-      gap: 1.25rem;
     }
   }
 
+  /* Phones read as a compact list: glyph on the left, figures on the right. */
   .stat-card {
-    display: flex;
-    flex-direction: column;
-    padding: 1.5rem 1.4rem;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-md);
-    background: var(--paper);
-    box-shadow: 0 4px 20px rgba(26, 43, 38, 0.04);
+    position: relative;
+    display: grid;
+    min-width: 0;
+    grid-template-columns: auto 1fr;
+    align-items: start;
+    column-gap: 0.95rem;
+    padding: 1.35rem 1.15rem 1.45rem;
+    background: rgba(251, 249, 244, 0.92);
     transition:
-      transform 180ms ease,
-      box-shadow 180ms ease;
+      background 200ms ease,
+      box-shadow 200ms ease;
   }
 
-  .stat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(26, 43, 38, 0.08);
+  .stat-card > :not(.stat-icon) {
+    min-width: 0;
+    grid-column: 2;
+  }
+
+  @media (min-width: 560px) {
+    .stat-card {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .stat-card {
+      padding: 1.9rem 1.6rem 2rem;
+    }
+  }
+
+  .stat-card::after {
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--terracotta), var(--gold));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 260ms ease;
+    content: '';
+  }
+
+  .stat-card:hover,
+  .stat-card:focus-within {
+    background: var(--paper);
+    box-shadow: inset 0 0 0 100vmax rgba(209, 167, 88, 0.05);
+  }
+
+  .stat-card:hover::after,
+  .stat-card:focus-within::after {
+    transform: scaleX(1);
+  }
+
+  .stat-ordinal {
+    position: absolute;
+    top: 0.9rem;
+    right: 1rem;
+    font-family: Newsreader, Georgia, serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: rgba(36, 67, 63, 0.28);
+  }
+
+  .stat-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    grid-row: 1 / span 3;
+    border: 1px solid rgba(185, 101, 74, 0.3);
+    border-radius: 50%;
+    color: var(--terracotta);
+    background: rgba(185, 101, 74, 0.08);
+    transition:
+      transform 240ms ease,
+      background 240ms ease,
+      color 240ms ease;
+  }
+
+  /*
+   * Glyphs ride in as CSS masks rather than inline SVG: the homepage HTML is
+   * held to a hard 60 KB budget, and stylesheets are not part of it.
+   */
+  .stat-icon::before {
+    width: 1.25rem;
+    height: 1.25rem;
+    background: currentColor;
+    mask: var(--stat-glyph) center / contain no-repeat;
+    -webkit-mask: var(--stat-glyph) center / contain no-repeat;
+    content: '';
+  }
+
+  .stat-card[data-icon='cafe'] {
+    --stat-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 8h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V8Z'/%3E%3Cpath d='M16 9.5h2.25a2.25 2.25 0 0 1 0 4.5H16'/%3E%3Cpath d='M7 3v2.2M10.5 2.6v2.6M14 3v2.2'/%3E%3C/svg%3E");
+  }
+
+  .stat-card[data-icon='museum'] {
+    --stat-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 20.5h18'/%3E%3Cpath d='M5.5 20.5V12M9.8 20.5V12M14.2 20.5V12M18.5 20.5V12'/%3E%3Cpath d='M3.6 9.6 12 4.2l8.4 5.4H3.6Z'/%3E%3C/svg%3E");
+  }
+
+  .stat-card[data-icon='trail'] {
+    --stat-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='6' cy='6' r='2.4'/%3E%3Ccircle cx='18' cy='18.2' r='2.4'/%3E%3Cpath d='M6 8.4v3.4a4 4 0 0 0 4 4h5.6' stroke-dasharray='2.6 2.8'/%3E%3C/svg%3E");
+  }
+
+  .stat-card[data-icon='climb'] {
+    --stat-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2.5 20.5 9 9l3.7 6.2L15 11.4l6.5 9.1H2.5Z'/%3E%3Ccircle cx='9' cy='13.6' r='1'/%3E%3Ccircle cx='14.4' cy='16.4' r='1'/%3E%3C/svg%3E");
+  }
+
+  .stat-card[data-icon='stay'] {
+    --stat-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 10.6 12 4.2l8 6.4v9.2a.7.7 0 0 1-.7.7H4.7a.7.7 0 0 1-.7-.7v-9.2Z'/%3E%3Cpath d='M9.6 20.5v-5.8h4.8v5.8'/%3E%3C/svg%3E");
+  }
+
+  .stat-card[data-icon='walk'] {
+    --stat-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12.6' cy='4.4' r='2'/%3E%3Cpath d='M12.6 7.6 9.9 13l2.8 1.9 1 5.6'/%3E%3Cpath d='M12.7 14.9 9.6 20.5'/%3E%3Cpath d='M12.6 9.5 16.4 12'/%3E%3C/svg%3E");
+  }
+
+  @media (min-width: 560px) {
+    .stat-icon {
+      margin-bottom: 1rem;
+    }
+  }
+
+  .stat-card:hover .stat-icon {
+    transform: translateY(-2px) rotate(-4deg);
+    color: var(--paper);
+    background: var(--terracotta);
   }
 
   .stat-label {
-    margin: 0 0 0.35rem;
-    font-size: 0.72rem;
+    margin: 0 0 0.4rem;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    font-size: 0.7rem;
     font-weight: 700;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--terracotta);
+    color: var(--olive);
   }
 
   .stat-value {
     font-family: Newsreader, Georgia, serif;
-    font-size: clamp(1.8rem, 4vw, 2.4rem);
+    font-size: clamp(1.5rem, 5.2vw, 2.4rem);
     font-weight: 500;
-    line-height: 1.05;
+    line-height: 1.08;
     letter-spacing: -0.03em;
     color: var(--deep-olive);
-    margin-bottom: 0.35rem;
+    margin-bottom: 0.5rem;
+    /* Long Greek compounds must fold inside the cell, not spill past the rule. */
+    max-width: 100%;
+    overflow-wrap: break-word;
+    text-wrap: balance;
   }
 
   .stat-caption {
     margin: 0;
-    font-size: 0.88rem;
-    line-height: 1.45;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    font-size: 0.86rem;
+    line-height: 1.5;
     color: var(--muted);
+  }
+
+  /* Staggered reveal, opted into by the observer below. */
+  .stats-grid[data-reveal] .stat-card {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  .stats-grid[data-reveal='in'] .stat-card {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 520ms ease calc(var(--stat-index) * 70ms),
+      transform 520ms cubic-bezier(0.22, 1, 0.36, 1) calc(var(--stat-index) * 70ms);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stats-grid[data-reveal] .stat-card,
+    .stats-grid[data-reveal='in'] .stat-card {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    .stat-card,
+    .stat-card::after,
+    .stat-icon,
+    .cta-arrow,
+    .stats-cta-btn {
+      transition: none;
+    }
   }
 
   .map-teaser-card {
@@ -685,3 +950,23 @@ const jsonLd = buildHomeJsonLd();
     font-size: 0.85rem;
   }
 </style>
+
+<script>
+  const grid = document.querySelector<HTMLElement>('.stats-grid');
+
+  if (grid && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    grid.dataset.reveal = '';
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            grid.dataset.reveal = 'in';
+            observer.disconnect();
+          }
+        }
+      },
+      { threshold: 0.2 },
+    );
+    observer.observe(grid);
+  }
+</script>
