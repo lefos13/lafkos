@@ -42,6 +42,42 @@ test('Greek map page exposes interactive canvas, filters, and bilingual navigati
   await expect(page.getByRole('link', { name: /Μουσείο Φάμπα — περισσότερα/ })).toBeVisible();
 });
 
+test('dense map markers form accessible clusters that expand on activation', async ({ page }) => {
+  await page.goto('/el/map/');
+  const mapCanvas = page.locator('.map-canvas .maplibregl-canvas');
+  await expect(mapCanvas).toBeVisible();
+
+  /* Cluster controls remain native buttons so keyboard and assistive-technology
+   * users receive the same zoom-to-expand interaction as pointer users. */
+  const clusters = page.locator('.map-cluster-btn');
+  const clusterCounts = await clusters.allTextContents();
+  const largestClusterIndex = clusterCounts.reduce(
+    (bestIndex, count, index) =>
+      Number(count) > Number(clusterCounts[bestIndex]) ? index : bestIndex,
+    0,
+  );
+  const cluster = clusters.nth(largestClusterIndex);
+  await expect(cluster).toBeVisible();
+  await expect(cluster).toHaveAttribute('aria-label', /Μεγέθυνση για προβολή \d+ σημείων/);
+  await expect
+    .poll(() => cluster.evaluate((element) => getComputedStyle(element).transitionProperty))
+    .not.toContain('transform');
+
+  await cluster.focus();
+  await cluster.press('Enter');
+  await expect
+    .poll(() => {
+      const view = new URL(page.url()).searchParams.get('view');
+      return Number(view?.split(',')[2] ?? 0);
+    })
+    .toBeGreaterThan(13.6);
+
+  await expect(page.locator('.map-cluster-btn:focus, .map-marker-btn:focus')).toBeVisible();
+  await page.getByRole('button', { name: 'Zoom in' }).click();
+  await expect(clusters).toHaveCount(0);
+  await expect(page.locator('.map-marker-btn').first()).toBeVisible();
+});
+
 test('a selected map result creates a shareable place URL', async ({ page }) => {
   await page.goto('/el/map/');
   const mapRegion = page.locator('.map-explorer');

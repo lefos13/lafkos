@@ -38,6 +38,12 @@ import type {
 } from '../lib/content';
 import type { Locale } from '../lib/locales';
 import { parseMapState, serializeMapState, type MapState } from '../lib/map-state';
+import {
+  buildVisiblePointFeatures,
+  CLUSTER_MAX_ZOOM,
+  CLUSTER_RADIUS,
+  POINT_FOCUS_ZOOM,
+} from '../lib/map-points';
 import { getCopy } from '../lib/ui-copy';
 import { getGeometryBounds, haversineDistanceMeters } from '../lib/geometry';
 import { buildSrcSet, getOptimizedImageUrl, IMAGE_PRESETS } from '../lib/images';
@@ -189,6 +195,7 @@ function findNearbyMarker(
   waypoints: MapFeature[],
   categories: string[],
   isTrailVisible: boolean,
+  visibleLeafKeys: ReadonlySet<string>,
 ): MapFeature | null {
   let bestMatch: MapFeature | null = null;
   let minDistance = Infinity;
@@ -197,6 +204,7 @@ function findNearbyMarker(
   const activePlaces = places.filter(
     (p) =>
       p.geometry.type === 'Point' &&
+      visibleLeafKeys.has(p.properties.entityKey) &&
       (categories.length === 0 || categories.includes(p.properties.category)),
   );
 
@@ -226,7 +234,7 @@ function findNearbyMarker(
   // 2. Check visible waypoints (if trails are active)
   if (isTrailVisible) {
     for (const wp of waypoints) {
-      if (wp.geometry.type !== 'Point') continue;
+      if (wp.geometry.type !== 'Point' || !visibleLeafKeys.has(wp.properties.entityKey)) continue;
       const coords = wp.geometry.coordinates;
       const pt = map.project(coords);
       const dist = Math.hypot(screenPoint.x - pt.x, screenPoint.y - pt.y);
@@ -253,7 +261,8 @@ export default function MapExplorer({
   const mapElement = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
-  const markerRefs = useRef<MapMarker[]>([]);
+  const markerCacheRef = useRef<Map<string, MapMarker>>(new Map());
+  const visibleLeafKeysRef = useRef<Set<string>>(new Set());
   const popupRef = useRef<MapLibrePopup | null>(null);
   const stateRef = useRef<MapState>(initialState ?? { categories: [] });
   const mapDataRef = useRef<MapData>(mapData);
@@ -313,7 +322,7 @@ export default function MapExplorer({
       if (feature.geometry.type === 'Point') {
         map.flyTo({
           center: feature.geometry.coordinates,
-          zoom: Math.max(map.getZoom(), 15.5),
+          zoom: Math.max(map.getZoom(), POINT_FOCUS_ZOOM),
           duration: 650,
         });
       } else {
@@ -484,10 +493,26 @@ export default function MapExplorer({
         }
       });
 
-      if (!map.getSource('lafkos-places')) {
-        map.addSource('lafkos-places', {
+      /* Keep every visible map point in one source so MapLibre can decide which
+       * leaves remain individually interactive while the HTML layer follows it. */
+      if (!map.getSource('lafkos-map-points')) {
+        map.addSource('lafkos-map-points', {
           type: 'geojson',
-          data: featureCollection(mapData.places) as never,
+          data: featureCollection(
+            buildVisiblePointFeatures(mapDataRef.current, stateRef.current.categories),
+          ) as never,
+          cluster: true,
+          clusterRadius: CLUSTER_RADIUS,
+          clusterMaxZoom: CLUSTER_MAX_ZOOM,
+          maxzoom: CLUSTER_MAX_ZOOM + 1,
+        });
+      }
+      if (!map.getLayer('lafkos-map-points-loader')) {
+        map.addLayer({
+          id: 'lafkos-map-points-loader',
+          type: 'circle',
+          source: 'lafkos-map-points',
+          paint: { 'circle-radius': 1, 'circle-opacity': 0 },
         });
       }
       if (!map.getSource('lafkos-trails')) {
@@ -655,6 +680,7 @@ export default function MapExplorer({
           mapDataRef.current.waypoints,
           stateRef.current.categories,
           stateRef.current.categories.length === 0 || stateRef.current.categories.includes('trail'),
+          visibleLeafKeysRef.current,
         );
         const hoveredSource = map.getSource('lafkos-hovered-trail') as GeoJSONSource | undefined;
         if (nearbyMarker) {
@@ -698,6 +724,7 @@ export default function MapExplorer({
           mapDataRef.current.waypoints,
           stateRef.current.categories,
           stateRef.current.categories.length === 0 || stateRef.current.categories.includes('trail'),
+          visibleLeafKeysRef.current,
         );
         if (nearbyMarker) {
           if (nearbyMarker.properties.kind === 'place') {
@@ -735,6 +762,7 @@ export default function MapExplorer({
           mapDataRef.current.waypoints,
           stateRef.current.categories,
           stateRef.current.categories.length === 0 || stateRef.current.categories.includes('trail'),
+          visibleLeafKeysRef.current,
         );
         if (nearbyMarker) {
           if (nearbyMarker.properties.kind === 'place') {
@@ -777,7 +805,7 @@ export default function MapExplorer({
         );
         if (targetPlace && targetPlace.geometry.type === 'Point') {
           map.setCenter(targetPlace.geometry.coordinates);
-          map.setZoom(15.5);
+          map.setZoom(POINT_FOCUS_ZOOM);
         }
       }
       map.on('moveend', () => {
@@ -795,8 +823,9 @@ export default function MapExplorer({
         popupRef.current.remove();
         popupRef.current = null;
       }
-      markerRefs.current.forEach((marker) => marker.remove());
-      markerRefs.current = [];
+      markerCacheRef.current.forEach((marker) => marker.remove());
+      markerCacheRef.current.clear();
+      visibleLeafKeysRef.current.clear();
       map.remove();
       mapRef.current = null;
       if (pmtilesUrl) {
@@ -812,13 +841,17 @@ export default function MapExplorer({
   useEffect(() => {
     const map = mapRef.current;
     if (!map || status !== 'ready') return;
-    const placesSource = map.getSource('lafkos-places') as GeoJSONSource | undefined;
-    if (placesSource) placesSource.setData(featureCollection(mapData.places) as never);
+    const pointsSource = map.getSource('lafkos-map-points') as GeoJSONSource | undefined;
+    if (pointsSource) {
+      pointsSource.setData(
+        featureCollection(buildVisiblePointFeatures(mapData, state.categories)) as never,
+      );
+    }
     const trailsSource = map.getSource('lafkos-trails') as GeoJSONSource | undefined;
     if (trailsSource) {
       trailsSource.setData(featureCollection(trailVisible ? mapData.trails : []) as never);
     }
-  }, [mapData, status, trailVisible]);
+  }, [mapData, state.categories, status, trailVisible]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -844,8 +877,6 @@ export default function MapExplorer({
   useEffect(() => {
     const map = mapRef.current;
     if (!map || status !== 'ready') return;
-    markerRefs.current.forEach((marker) => marker.remove());
-    markerRefs.current = [];
 
     interface MarkerLabelItem {
       key: string;
@@ -856,139 +887,252 @@ export default function MapExplorer({
       isDistant: boolean;
     }
 
-    /* Keep regional place markers visually subordinate to village markers while
-     * preserving their full interactive affordance and label collision handling. */
     const labelItems: MarkerLabelItem[] = [];
+    if (!map.getSource('lafkos-map-points')) return;
+    const featuresByKey = new Map<string, MapFeature>(
+      [...mapData.places, ...mapData.waypoints].map(
+        (feature) => [feature.properties.entityKey, feature] as [string, MapFeature],
+      ),
+    );
 
-    mapData.places
-      .filter((feature) => feature.geometry.type === 'Point')
-      .forEach((feature) => {
-        if (state.categories.length > 0 && !state.categories.includes(feature.properties.category))
-          return;
-        const category = categories.find((cat) => cat.id === feature.properties.category);
-        const isSelected = selected?.properties.entityKey === feature.properties.entityKey;
-        const coordinates =
-          feature.geometry.type === 'Point' ? feature.geometry.coordinates : defaultCenter;
-        const isDistant =
-          haversineDistanceMeters(coordinates, LAFKOS_VILLAGE_CENTER) >
-          DISTANT_PLACE_THRESHOLD_METERS;
+    /* Native clustering determines which leaves are on screen. HTML markers are
+     * cached by stable source identity so render updates only add, move, or
+     * remove the markers represented by the current source query. */
+    const clusterSize = (count: number): 'small' | 'medium' | 'large' =>
+      count < 10 ? 'small' : count < 50 ? 'medium' : 'large';
 
-        const markerButton = document.createElement('button');
-        markerButton.type = 'button';
-        markerButton.className = `map-marker-btn ${isDistant ? 'map-marker-btn--distant' : ''} ${
-          isSelected ? 'is-selected' : ''
-        }`;
-        markerButton.setAttribute('aria-label', feature.properties.title);
+    let pendingFocusTransfer: (() => void) | null = null;
 
-        const pinElem = document.createElement('span');
-        pinElem.className = `map-marker ${isDistant ? 'map-marker--distant' : ''} ${
-          isSelected ? 'is-selected' : ''
-        }`;
-        if (category?.color) {
-          pinElem.style.setProperty('--marker-bg', category.color);
-          if (!isSelected) pinElem.style.backgroundColor = category.color;
+    function transferFocusAfterExpansion(center: Coordinate, expandedKey: string) {
+      pendingFocusTransfer = null;
+      requestAnimationFrame(() => {
+        const activeMap = mapRef.current;
+        if (!activeMap || activeMap !== map) return;
+        const centerPoint = activeMap.project(center);
+        let nearestElement: HTMLElement | null = null;
+        let nearestDistance = Infinity;
+
+        for (const [key, marker] of markerCacheRef.current) {
+          if (key === expandedKey) continue;
+          const point = activeMap.project(marker.getLngLat());
+          const distance = Math.hypot(point.x - centerPoint.x, point.y - centerPoint.y);
+          if (distance < nearestDistance) {
+            nearestElement = marker.getElement();
+            nearestDistance = distance;
+          }
         }
-        pinElem.innerHTML = `<span aria-hidden="true">${category?.icon || '✦'}</span>`;
 
-        const labelElem = document.createElement('span');
-        labelElem.className = `map-marker-label ${
-          isDistant ? 'map-marker-label--distant' : ''
-        } ${isSelected ? 'is-visible' : ''}`;
+        if (nearestElement) nearestElement.focus({ preventScroll: true });
+        else activeMap.getCanvas().focus({ preventScroll: true });
+      });
+    }
+
+    function updateLeafMarkerElement(
+      markerButton: HTMLButtonElement,
+      feature: MapFeature,
+      category: Category | undefined,
+      isSelected: boolean,
+      isDistant: boolean,
+    ): HTMLSpanElement {
+      const isWaypoint = feature.properties.kind === 'waypoint';
+      const buttonClassName = `map-marker-btn ${
+        isWaypoint ? 'map-marker-btn--waypoint' : isDistant ? 'map-marker-btn--distant' : ''
+      } ${isSelected ? 'is-selected' : ''}`;
+      if (markerButton.className !== buttonClassName) markerButton.className = buttonClassName;
+      const accessibleLabel = isWaypoint
+        ? `${feature.properties.title} — ${feature.properties.summary}`
+        : feature.properties.title;
+      if (markerButton.getAttribute('aria-label') !== accessibleLabel) {
+        markerButton.setAttribute('aria-label', accessibleLabel);
+      }
+
+      let pinElem = markerButton.querySelector<HTMLSpanElement>('.map-marker');
+      if (!pinElem) {
+        pinElem = document.createElement('span');
+        const iconElem = document.createElement('span');
+        iconElem.setAttribute('aria-hidden', 'true');
+        pinElem.appendChild(iconElem);
+      }
+      const pinClassName = `map-marker ${
+        isWaypoint ? 'map-marker--waypoint' : isDistant ? 'map-marker--distant' : ''
+      } ${isSelected ? 'is-selected' : ''}`;
+      if (pinElem.className !== pinClassName) pinElem.className = pinClassName;
+      pinElem.style.removeProperty('background-color');
+      pinElem.style.removeProperty('--marker-bg');
+      if (!isWaypoint && category?.color) {
+        pinElem.style.setProperty('--marker-bg', category.color);
+        if (!isSelected) pinElem.style.backgroundColor = category.color;
+      }
+      const iconElem = pinElem.firstElementChild as HTMLSpanElement;
+      const icon = isWaypoint ? '●' : category?.icon || '✦';
+      if (iconElem.textContent !== icon) iconElem.textContent = icon;
+
+      let labelElem = markerButton.querySelector<HTMLSpanElement>('.map-marker-label');
+      if (!labelElem) {
+        labelElem = document.createElement('span');
         labelElem.setAttribute('aria-hidden', 'true');
+      }
+      const labelClassName = `map-marker-label ${
+        isWaypoint ? 'map-marker-label--waypoint' : isDistant ? 'map-marker-label--distant' : ''
+      } ${isSelected ? 'is-visible' : ''}`;
+      if (labelElem.className !== labelClassName) labelElem.className = labelClassName;
+      if (labelElem.textContent !== feature.properties.title) {
         labelElem.textContent = feature.properties.title;
+      }
+      if (pinElem.parentElement !== markerButton || labelElem.parentElement !== markerButton) {
+        markerButton.replaceChildren(pinElem, labelElem);
+      }
+      return labelElem;
+    }
 
-        markerButton.appendChild(pinElem);
-        markerButton.appendChild(labelElem);
+    const syncMarkers = () => {
+      labelItems.length = 0;
+      if (!map.getSource('lafkos-map-points')) {
+        markerCacheRef.current.forEach((marker) => marker.remove());
+        markerCacheRef.current.clear();
+        visibleLeafKeysRef.current.clear();
+        return;
+      }
+      const sourceFeatures = map.querySourceFeatures('lafkos-map-points');
+      const nextKeys = new Set<string>();
+      const leafKeys = new Set<string>();
+      const seenClusters = new Set<number>();
+      const seenLeaves = new Set<string>();
 
-        const handleMarkerClick = (e: MouseEvent) => {
-          e.stopPropagation();
-          selectFeature(feature, true);
-        };
-        const stopEvent = (e: Event) => {
-          e.stopPropagation();
-        };
+      sourceFeatures.forEach((sourceFeature) => {
+        const properties = sourceFeature.properties || {};
+        const coordinates =
+          sourceFeature.geometry.type === 'Point'
+            ? (sourceFeature.geometry.coordinates as Coordinate)
+            : undefined;
+        if (!coordinates) return;
+        if (properties.cluster) {
+          const clusterId = Number(properties.cluster_id);
+          if (!Number.isFinite(clusterId) || seenClusters.has(clusterId)) return;
+          seenClusters.add(clusterId);
+          const key = `cluster:${clusterId}`;
+          nextKeys.add(key);
+          const count = Number(properties.point_count) || 0;
+          let marker = markerCacheRef.current.get(key);
+          if (!marker) {
+            const markerButton = document.createElement('button');
+            markerButton.type = 'button';
+            markerButton.className = 'map-cluster-btn';
+            const countElem = document.createElement('span');
+            countElem.className = 'map-cluster-count';
+            markerButton.appendChild(countElem);
+            const clusterMarker = new MapMarker({
+              element: markerButton,
+              anchor: 'center',
+            }).setLngLat(coordinates);
+            markerButton.addEventListener('click', (event) => {
+              event.stopPropagation();
+              const clusterSource = map.getSource('lafkos-map-points') as GeoJSONSource | undefined;
+              if (!clusterSource) return;
+              const center = clusterMarker.getLngLat().toArray() as Coordinate;
+              void clusterSource
+                .getClusterExpansionZoom(clusterId)
+                .then((zoom) => {
+                  if (mapRef.current !== map) return;
+                  if (pendingFocusTransfer) map.off('moveend', pendingFocusTransfer);
+                  pendingFocusTransfer = () => transferFocusAfterExpansion(center, key);
+                  map.once('moveend', pendingFocusTransfer);
+                  map.easeTo({ center, zoom, duration: 450 });
+                })
+                .catch(() => {});
+            });
+            markerButton.addEventListener('mousedown', (event) => event.stopPropagation());
+            markerButton.addEventListener('pointerdown', (event) => event.stopPropagation());
+            markerButton.addEventListener('touchstart', (event) => event.stopPropagation());
+            marker = clusterMarker.addTo(map);
+            markerCacheRef.current.set(key, marker);
+          }
+          const button = marker.getElement() as HTMLButtonElement;
+          button.dataset.size = clusterSize(count);
+          button.setAttribute(
+            'aria-label',
+            locale === 'el'
+              ? `Μεγέθυνση για προβολή ${count} σημείων`
+              : `Zoom in to view ${count} points`,
+          );
+          const countElem = button.querySelector('.map-cluster-count');
+          if (countElem) countElem.textContent = String(count);
+          const currentPosition = marker.getLngLat();
+          if (currentPosition.lng !== coordinates[0] || currentPosition.lat !== coordinates[1]) {
+            marker.setLngLat(coordinates);
+          }
+          return;
+        }
 
-        markerButton.addEventListener('click', handleMarkerClick);
-        markerButton.addEventListener('mousedown', stopEvent);
-        markerButton.addEventListener('pointerdown', stopEvent);
-        markerButton.addEventListener('touchstart', stopEvent);
-        markerRefs.current.push(
-          new MapMarker({ element: markerButton, anchor: 'bottom' })
-            .setLngLat(coordinates)
-            .addTo(map),
+        const entityKey = String(properties.entityKey || '');
+        const feature = featuresByKey.get(entityKey);
+        if (!feature || feature.geometry.type !== 'Point' || seenLeaves.has(entityKey)) return;
+        seenLeaves.add(entityKey);
+        leafKeys.add(entityKey);
+        nextKeys.add(`leaf:${entityKey}`);
+        const leafCoordinates = feature.geometry.coordinates;
+        const category = categories.find((cat) => cat.id === feature.properties.category);
+        const isSelected = selectedRef.current?.properties.entityKey === entityKey;
+        const isWaypoint = feature.properties.kind === 'waypoint';
+        const isDistant =
+          !isWaypoint &&
+          haversineDistanceMeters(leafCoordinates, LAFKOS_VILLAGE_CENTER) >
+            DISTANT_PLACE_THRESHOLD_METERS;
+        let marker = markerCacheRef.current.get(`leaf:${entityKey}`);
+        if (!marker) {
+          const markerButton = document.createElement('button');
+          markerButton.type = 'button';
+          markerButton.addEventListener('click', (event) => {
+            event.stopPropagation();
+            if (feature.properties.kind === 'place') selectFeature(feature, true);
+            else setSelected(feature);
+          });
+          const stopEvent = (event: Event) => event.stopPropagation();
+          markerButton.addEventListener('mousedown', stopEvent);
+          markerButton.addEventListener('pointerdown', stopEvent);
+          markerButton.addEventListener('touchstart', stopEvent);
+          marker = new MapMarker({
+            element: markerButton,
+            anchor: isWaypoint ? 'center' : 'bottom',
+          })
+            .setLngLat(leafCoordinates)
+            .addTo(map);
+          markerCacheRef.current.set(`leaf:${entityKey}`, marker);
+        }
+        const markerButton = marker.getElement() as HTMLButtonElement;
+        const labelElem = updateLeafMarkerElement(
+          markerButton,
+          feature,
+          category,
+          isSelected,
+          isDistant,
         );
-
         labelItems.push({
-          key: feature.properties.entityKey,
-          coordinates,
-          labelElem,
+          key: entityKey,
+          coordinates: leafCoordinates,
+          labelElem: labelElem as HTMLElement,
           title: feature.properties.title,
-          priority: isSelected ? 0 : 1,
+          priority: isSelected ? 0 : isWaypoint ? 2 : 1,
           isDistant,
         });
       });
 
-    if (trailVisible) {
-      mapData.waypoints.forEach((feature) => {
-        if (feature.geometry.type !== 'Point') return;
-        const isSelected = selected?.properties.entityKey === feature.properties.entityKey;
-
-        const markerButton = document.createElement('button');
-        markerButton.type = 'button';
-        markerButton.className = `map-marker-btn map-marker-btn--waypoint ${isSelected ? 'is-selected' : ''}`;
-        markerButton.setAttribute(
-          'aria-label',
-          `${feature.properties.title} — ${feature.properties.summary}`,
-        );
-
-        const pinElem = document.createElement('span');
-        pinElem.className = `map-marker map-marker--waypoint ${isSelected ? 'is-selected' : ''}`;
-        pinElem.innerHTML = '<span aria-hidden="true">●</span>';
-
-        const labelElem = document.createElement('span');
-        labelElem.className = `map-marker-label map-marker-label--waypoint ${isSelected ? 'is-visible' : ''}`;
-        labelElem.setAttribute('aria-hidden', 'true');
-        labelElem.textContent = feature.properties.title;
-
-        markerButton.appendChild(pinElem);
-        markerButton.appendChild(labelElem);
-
-        const handleWaypointClick = (e: MouseEvent) => {
-          e.stopPropagation();
-          setSelected(feature);
-        };
-        const stopEvent = (e: Event) => {
-          e.stopPropagation();
-        };
-
-        markerButton.addEventListener('click', handleWaypointClick);
-        markerButton.addEventListener('mousedown', stopEvent);
-        markerButton.addEventListener('pointerdown', stopEvent);
-        markerButton.addEventListener('touchstart', stopEvent);
-        markerRefs.current.push(
-          new MapMarker({ element: markerButton, anchor: 'center' })
-            .setLngLat(feature.geometry.coordinates)
-            .addTo(map),
-        );
-
-        labelItems.push({
-          key: feature.properties.entityKey,
-          coordinates: feature.geometry.coordinates,
-          labelElem,
-          title: feature.properties.title,
-          priority: isSelected ? 0 : 2,
-          isDistant: false,
-        });
+      visibleLeafKeysRef.current = leafKeys;
+      markerCacheRef.current.forEach((marker, key) => {
+        if (!nextKeys.has(key)) {
+          marker.remove();
+          markerCacheRef.current.delete(key);
+        }
       });
-    }
+      updateLabels();
+    };
 
     const MIN_LABEL_ZOOM = 14.6;
 
     function updateLabels() {
-      if (!mapRef.current) return;
-      const map = mapRef.current;
+      if (!map || mapRef.current !== map) return;
       const zoom = map.getZoom();
-      const selectedKey = selected?.properties.entityKey;
+      const selectedKey = selectedRef.current?.properties.entityKey;
       const container = map.getContainer();
       const mapWidth = container.clientWidth || 800;
       const mapHeight = container.clientHeight || 600;
@@ -1110,23 +1254,20 @@ export default function MapExplorer({
       });
     }
 
-    let frameId: number | null = null;
-    function onMove() {
-      if (frameId) cancelAnimationFrame(frameId);
-      frameId = requestAnimationFrame(updateLabels);
-    }
-
-    map.on('move', onMove);
-    updateLabels();
+    map.on('render', syncMarkers);
+    syncMarkers();
 
     return () => {
-      if (frameId) cancelAnimationFrame(frameId);
-      map.off('move', onMove);
+      if (pendingFocusTransfer) map.off('moveend', pendingFocusTransfer);
+      map.off('render', syncMarkers);
+      markerCacheRef.current.forEach((marker) => marker.remove());
+      markerCacheRef.current.clear();
+      visibleLeafKeysRef.current.clear();
     };
   }, [
     categories,
-    mapData.places,
-    mapData.waypoints,
+    locale,
+    mapData,
     selected?.properties.entityKey,
     state.categories,
     status,
@@ -1148,7 +1289,7 @@ export default function MapExplorer({
           if (targetFeature) {
             if (targetFeature.geometry.type === 'Point') {
               map.setCenter(targetFeature.geometry.coordinates);
-              map.setZoom(15.5);
+              map.setZoom(POINT_FOCUS_ZOOM);
             } else {
               const bounds = getGeometryBounds(targetFeature.geometry);
               if (bounds) {

@@ -58,8 +58,8 @@ function createLineFeature(
 describe('map point clustering constants', () => {
   it('exports the expected clustering constants', () => {
     expect(CLUSTER_RADIUS).toBe(44);
-    expect(CLUSTER_MAX_ZOOM).toBe(16);
-    expect(POINT_FOCUS_ZOOM).toBe(17);
+    expect(CLUSTER_MAX_ZOOM).toBe(14);
+    expect(POINT_FOCUS_ZOOM).toBe(16);
   });
 });
 

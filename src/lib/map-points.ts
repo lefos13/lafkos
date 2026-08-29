@@ -7,8 +7,8 @@
 import type { CategoryId, MapData, MapFeature } from './content';
 
 export const CLUSTER_RADIUS = 44;
-export const CLUSTER_MAX_ZOOM = 16;
-export const POINT_FOCUS_ZOOM = 17;
+export const CLUSTER_MAX_ZOOM = 14;
+export const POINT_FOCUS_ZOOM = 16;
 
 export function buildVisiblePointFeatures(
   mapData: MapData,
