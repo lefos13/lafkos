@@ -25,19 +25,23 @@ When asked to add, draft, update, or batch import cultural places, hiking routes
 To prevent data loss and prevent spawning excessive production deployments via Sanity Webhooks, all agents **MUST** strictly adhere to these rules:
 
 #### Rule 1: Sanity Studio / Content Lake is the Authoritative Master
+
 - Sanity CMS is the primary editorial source of truth for all production content.
 - Any changes made by editors or users directly in the Sanity Studio UI take precedence over static seed files.
 
 #### Rule 2: STRICT BAN on Unverified Bulk Imports (Webhook & Deployment Protection)
+
 - **NEVER by any means trigger bulk dataset imports (`pnpm studio:import-seed` or `sanity dataset import`) without explicit prior user confirmation.**
 - Bulk imports stream documents across multiple transaction chunks, causing Sanity to fire multiple webhook requests in rapid succession that spawn dozens of redundant Vercel production deployments.
 
 #### Rule 3: Single Document Imports Only & Multi-Import Verification Threshold
+
 - **Only single-document granular imports (`scripts/import-entry.ts --direct`) are allowed by default.**
 - Even with granular direct imports, agents must consider that each direct import triggers a production deployment via the CMS webhook.
 - **If more than 1 or 2 direct imports are needed, the agent MUST first notify the user and obtain explicit acceptance before triggering them.**
 
 #### Rule 4: ALWAYS Pull Cloud Edits Before Modifying Content
+
 - When updating local seed files or synchronizing with the CMS, you **MUST ALWAYS** pull live cloud content first:
   ```bash
   pnpm studio:pull-content
@@ -51,6 +55,7 @@ To prevent data loss and prevent spawning excessive production deployments via S
   # 3. Import seed into Sanity (ONLY with explicit user approval):
   pnpm studio:import-seed
   ```
+
 ### Core Invariants from the Skill:
 
 1. **Always Bilingual:** Every entry requires full Greek (`el`) and English (`en`) translations.
@@ -82,6 +87,7 @@ To prevent data loss and prevent spawning excessive production deployments via S
   ```bash
   pnpm studio:import-seed
   ```
+
 ## 3. Data Structure Evolution & Synchronization Contract
 
 When modifying or adding fields to content models, you **MUST** update all 7 boundary layers in lockstep:
@@ -96,7 +102,46 @@ When modifying or adding fields to content models, you **MUST** update all 7 bou
 
 ---
 
-## 4. Verification & Quality Gates
+## 4. Quick Start, Key Files & Gotchas
+
+```bash
+pnpm install
+pnpm dev        # Astro dev server on http://localhost:4321
+pnpm preview    # Serve the last production build locally
+```
+
+No environment variables are required for normal page work: without Sanity credentials the
+adapter serves the embedded seed archive and the footer reports the fallback source.
+
+Key files:
+
+| Concern                                      | File                                                      |
+| -------------------------------------------- | --------------------------------------------------------- |
+| Public content contract and Zod schemas      | `src/lib/content.ts`                                      |
+| Sanity/seed adapter boundary                 | `src/lib/content-api.ts`, `src/lib/sanity-transform.ts`   |
+| Page shell, canonical, hreflang, social tags | `src/layouts/BaseLayout.astro`, `src/lib/urls.ts`         |
+| JSON-LD graphs                               | `src/lib/structured-data.ts`                              |
+| Built-site SEO/link/payload audit            | `src/lib/seo-audit.ts`, `scripts/audit-seo.ts`            |
+| Map island and clustering                    | `src/components/MapExplorer.tsx`, `src/lib/map-points.ts` |
+| AI/agent index (`/llms.txt`)                 | `src/lib/llms.ts`, `src/pages/llms.txt.ts`                |
+
+Gotchas:
+
+- The production origin is duplicated in `astro.config.mjs`, `src/lib/urls.ts`, `public/robots.txt`,
+  and `vercel.json`. Change all four together; contracts assert the current host.
+- Root `/` is a permanent redirect, deliberately `noindex`, and filtered out of the sitemap.
+- Keep the `maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url` import. Without it the built worker
+  chunk 404s and the map never finishes loading.
+- Remote images are resized only for allowlisted hosts in `src/lib/images.ts` (Wikimedia, Sanity CDN,
+  Unsplash). Add a host there before relying on responsive variants.
+- Sanity Studio cannot import from `src/`; the YouTube URL validator is intentionally duplicated in
+  `studio/schemaTypes.ts` and must stay in sync.
+- Page titles are capped by `formatPageTitle()`; long editorial titles drop the brand suffix instead
+  of being truncated. Detail pages must still pass a stable `alternateHref` for translated slugs.
+
+---
+
+## 5. Verification & Quality Gates
 
 Before finalizing changes, run the project verification suite:
 
