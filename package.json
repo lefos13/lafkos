@@ -25,30 +25,30 @@
     "vercel-ignore": "bash scripts/ignore-app-build.sh"
   },
   "dependencies": {
-    "@astrojs/react": "^6.0.4",
-    "@astrojs/sitemap": "^3.7.0",
-    "@sanity/client": "^8.1.0",
+    "@astrojs/react": "^6.0.6",
+    "@astrojs/sitemap": "^3.7.4",
+    "@sanity/client": "^8.11.0",
     "@sanity/image-url": "^2.1.1",
-    "astro": "^7.2.4",
-    "maplibre-gl": "^6.4.1",
+    "astro": "^7.4.2",
+    "maplibre-gl": "^6.15.0",
     "pmtiles": "^4.5.0",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "zod": "^4.4.3"
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.5",
-    "@playwright/test": "^1.62.1",
-    "@types/node": "^24.0.0",
-    "@types/react": "^19.2.0",
-    "@types/react-dom": "^19.2.0",
-    "@typescript-eslint/parser": "^8.67.0",
-    "eslint": "^9.39.0",
-    "eslint-plugin-astro": "^1.5.0",
-    "prettier": "^3.6.2",
+    "@astrojs/check": "^0.9.12",
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^24.19.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@typescript-eslint/parser": "^8.72.0",
+    "eslint": "^9.39.5",
+    "eslint-plugin-astro": "^1.7.0",
+    "prettier": "^3.9.10",
     "prettier-plugin-astro": "^0.14.1",
-    "tsx": "^4.23.12",
+    "tsx": "^4.23.15",
     "typescript": "^5.9.3",
-    "vitest": "^4.1.11"
+    "vitest": "^4.1.12"
   }
 }
