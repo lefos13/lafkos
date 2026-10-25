@@ -96,10 +96,15 @@ const canonicalUrl = getAbsoluteCanonicalUrl(canonicalPath);
   alternateHref={`/${other}/stories/${story.slug[other]}/`}
 >
   <article class="container story-page">
-    <nav class="story-breadcrumb" aria-label="Breadcrumb">
+    <nav
+      class="story-breadcrumb"
+      aria-label={locale === 'el' ? 'Πλοήγηση διαδρομής' : 'Breadcrumb'}
+    >
       <a href={`/${locale}/`} class="story-back-link">{backToGuideLabel}</a>
       <span class="breadcrumb-separator" aria-hidden="true">/</span>
-      <span class="breadcrumb-current">{story.eyebrow[locale]}</span>
+      <a href={`/${locale}/stories/`} class="story-back-link">{ui.navStories}</a>
+      <span class="breadcrumb-separator" aria-hidden="true">/</span>
+      <span class="breadcrumb-current">{story.title[locale]}</span>
     </nav>
 
     <header class="story-hero-header">

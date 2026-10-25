@@ -75,17 +75,31 @@ const canonicalUrl = getAbsoluteCanonicalUrl(canonicalPath);
   jsonLd={jsonLd}
 >
   <article class="container">
-    <div class="detail-hero">
-      <div class="detail-media">
-        <ResponsiveImage
-          src={place.images[0].src}
-          alt={place.images[0].alt}
-          preset="hero"
-          loading="eager"
-          decoding="async"
-          fetchpriority="high"
-        />
-      </div>
+    <nav
+      class="story-breadcrumb"
+      aria-label={locale === 'el' ? 'Πλοήγηση διαδρομής' : 'Breadcrumb'}
+    >
+      <a href={`/${locale}/`} class="story-back-link">{ui.backToHome}</a>
+      <span class="breadcrumb-separator" aria-hidden="true">/</span>
+      <a href={`/${locale}/places/`} class="story-back-link">{ui.navPlaces}</a>
+      <span class="breadcrumb-separator" aria-hidden="true">/</span>
+      <span class="breadcrumb-current">{place.title[locale]}</span>
+    </nav>
+    <div class:list={['detail-hero', { 'detail-hero--no-media': !primaryImage }]}>
+      {
+        primaryImage && (
+          <div class="detail-media">
+            <ResponsiveImage
+              src={primaryImage.src}
+              alt={primaryImage.alt}
+              preset="hero"
+              loading="eager"
+              decoding="async"
+              fetchpriority="high"
+            />
+          </div>
+        )
+      }
       <div class="detail-copy">
         <p class="eyebrow">{category?.label[locale]} · {place.eyebrow[locale]}</p>
         <h1 class="page-title">{place.title[locale]}</h1>

@@ -77,18 +77,31 @@ const canonicalUrl = getAbsoluteCanonicalUrl(canonicalPath);
   alternateHref={`/${otherLocale(locale)}/trails/${trail.slug[otherLocale(locale)]}/`}
 >
   <article class="container">
-    <div class="detail-hero">
-      <div class="detail-media">
-        <ResponsiveImage
-          src={trail.waypoints[0]?.image?.src ??
-            'https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=1400&q=82'}
-          alt={trail.waypoints[0]?.image?.alt ?? trail.title[locale]}
-          preset="hero"
-          loading="eager"
-          decoding="async"
-          fetchpriority="high"
-        />
-      </div>
+    <nav
+      class="story-breadcrumb"
+      aria-label={locale === 'el' ? 'Πλοήγηση διαδρομής' : 'Breadcrumb'}
+    >
+      <a href={`/${locale}/`} class="story-back-link">{ui.backToHome}</a>
+      <span class="breadcrumb-separator" aria-hidden="true">/</span>
+      <a href={`/${locale}/trails/`} class="story-back-link">{ui.navTrails}</a>
+      <span class="breadcrumb-separator" aria-hidden="true">/</span>
+      <span class="breadcrumb-current">{trail.title[locale]}</span>
+    </nav>
+    <div class:list={['detail-hero', { 'detail-hero--no-media': !primaryImage }]}>
+      {
+        primaryImage && (
+          <div class="detail-media">
+            <ResponsiveImage
+              src={primaryImage.src}
+              alt={primaryImage.alt}
+              preset="hero"
+              loading="eager"
+              decoding="async"
+              fetchpriority="high"
+            />
+          </div>
+        )
+      }
       <div class="detail-copy">
         <p class="eyebrow">{category?.label[locale]} · {trail.eyebrow[locale]}</p>
         <h1 class="page-title">{trail.title[locale]}</h1>

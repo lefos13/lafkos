@@ -1803,6 +1803,12 @@ img {
     align-items: center;
     padding: 4rem 0 6rem;
   }
+  .detail-hero--no-media {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .detail-hero--no-media .detail-copy {
+    max-width: 48rem;
+  }
   .detail-media {
     order: 2;
   }
