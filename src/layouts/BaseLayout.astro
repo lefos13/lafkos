@@ -3,7 +3,7 @@ import '../styles/global.css';
 import { otherLocale, type Locale } from '../lib/locales';
 import { getCopy } from '../lib/ui-copy';
 import { fetchSanityContent } from '../lib/content-api';
-import { getLocalizedUrlPaths } from '../lib/urls';
+import { formatPageTitle, getLocalizedUrlPaths } from '../lib/urls';
 import { serializeJsonLd } from '../lib/structured-data';
 
 interface Props {
@@ -111,10 +111,10 @@ const socialImageType = inferImageType(
 
 /*
  * Page title composition:
- * Composes a unique title string with the brand suffix, avoiding duplicate brand suffixes
- * if the provided title already includes 'Lafkos Guide'.
+ * Composes a unique title string with the brand suffix when it fits the SERP
+ * budget; long editorial titles keep their full wording without truncation.
  */
-const pageTitle = title.includes('Lafkos Guide') ? title : `${title} · Lafkos Guide`;
+const pageTitle = formatPageTitle(title);
 const dataset = await fetchSanityContent();
 const activeSource = contentSource ?? dataset.source;
 const isCms = activeSource === 'sanity';
@@ -128,12 +128,17 @@ const navTimelineLabel = locale === 'el' ? 'Χρονολόγιο' : 'Timeline';
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="theme-color" content="#24433f" />
-    <meta name="build-revision" content="2026-08-20-csp-2" />
     <meta name="description" content={description} />
     {author && <meta name="author" content={author} />}
     {robots && <meta name="robots" content={robots} />}
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap"
+    />
+    <slot name="head" />
     <link rel="canonical" href={canonical} />
     <link rel="alternate" hreflang={locale} href={canonical} />
     <link rel="alternate" hreflang={alternateLocale} href={alternateUrl} />
@@ -146,8 +151,6 @@ const navTimelineLabel = locale === 'el' ? 'Χρονολόγιο' : 'Timeline';
     <meta property="og:locale" content={locale === 'el' ? 'el_GR' : 'en_US'} />
     <meta property="og:locale:alternate" content={locale === 'el' ? 'en_US' : 'el_GR'} />
     <meta property="og:image" content={socialImageUrl} />
-    <meta property="og:image:url" content={socialImageUrl} />
-    <meta property="og:image:secure_url" content={socialImageUrl} />
     <meta property="og:image:alt" content={socialImageAlt} />
     {socialImageWidth && <meta property="og:image:width" content={socialImageWidth} />}
     {socialImageHeight && <meta property="og:image:height" content={socialImageHeight} />}

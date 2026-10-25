@@ -250,14 +250,19 @@ describe('Structured Data & Safe JSON-LD Contracts', () => {
         expect(article.publisher.name).toBe('Lafkos Guide');
         expect(article.publisher.url).toBe(`${canonicalSiteOrigin}/`);
 
-        // Author and dates should only be defined if present in editorial metadata
+        // Author and dates should only be defined if present in editorial metadata;
+        // otherwise the publishing organization is the factual author fallback.
         if (editorial.author) {
           expect(article.author).toEqual({
             '@type': 'Person',
             name: editorial.author,
           });
         } else {
-          expect(article.author).toBeUndefined();
+          expect(article.author).toEqual({
+            '@type': 'Organization',
+            name: 'Lafkos Guide',
+            url: `${canonicalSiteOrigin}/`,
+          });
         }
 
         if (editorial.publishedAt) {

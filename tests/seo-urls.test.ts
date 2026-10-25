@@ -1,7 +1,12 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { getLocalizedUrlPaths, normalizeTrailingSlash } from '../src/lib/urls';
+import {
+  formatPageTitle,
+  getLocalizedUrlPaths,
+  normalizeTrailingSlash,
+  SERP_TITLE_MAX_LENGTH,
+} from '../src/lib/urls';
 
 /*
  * These small contract tests protect the URL signals that search engines use
@@ -34,6 +39,17 @@ describe('SEO URL contracts', () => {
       alternatePath: '/el/about/',
       xDefaultPath: '/el/about/',
     });
+  });
+
+  it('adds the brand suffix only when the result stays inside the SERP budget', () => {
+    expect(formatPageTitle('Αργαλαστή')).toBe('Αργαλαστή · Lafkos Guide');
+
+    const longTitle = 'Δημοτικό Σχολείο & Γήπεδο Λαύκου — Graffiti Αντετοκούνμπο';
+    expect(formatPageTitle(longTitle)).toBe(longTitle);
+    expect(formatPageTitle(longTitle).length).toBeLessThanOrEqual(SERP_TITLE_MAX_LENGTH);
+
+    expect(formatPageTitle('Η ιστορία · Lafkos Guide')).toBe('Η ιστορία · Lafkos Guide');
+    expect(formatPageTitle('  spaced   title  ')).toBe('spaced title · Lafkos Guide');
   });
 
   it('configures the production host, permanent root redirect, and sitemap exclusion', () => {

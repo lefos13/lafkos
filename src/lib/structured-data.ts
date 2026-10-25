@@ -343,9 +343,10 @@ export interface SchemaArticle {
       url: string;
     };
   };
-  author?: {
-    '@type': 'Person';
+  author: {
+    '@type': 'Person' | 'Organization';
     name: string;
+    url?: string;
   };
   datePublished?: string;
   dateModified?: string;
@@ -407,14 +408,16 @@ export function buildStoryJsonLd({
         url: logoUrl,
       },
     },
-    ...(editorial?.author
+    author: editorial?.author
       ? {
-          author: {
-            '@type': 'Person',
-            name: editorial.author,
-          },
+          '@type': 'Person',
+          name: editorial.author,
         }
-      : {}),
+      : {
+          '@type': 'Organization',
+          name: 'Lafkos Guide',
+          url: rootUrl,
+        },
     ...(editorial?.publishedAt ? { datePublished: editorial.publishedAt } : {}),
     ...(editorial?.modifiedAt
       ? { dateModified: editorial.modifiedAt }

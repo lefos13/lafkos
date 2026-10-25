@@ -49,6 +49,26 @@ export function getLocalizedUrlPaths({
 export const DEFAULT_SITE_ORIGIN = 'https://lafkos-guide.vercel.app';
 
 /*
+ * Keeps visible titles inside the ~60-character SERP budget. The brand suffix is
+ * dropped only when it would push an otherwise complete editorial title past the
+ * limit; titles that already name the brand are left untouched.
+ */
+export const SERP_TITLE_MAX_LENGTH = 60;
+export const SITE_BRAND_NAME = 'Lafkos Guide';
+
+export function formatPageTitle(
+  title: string,
+  brand: string = SITE_BRAND_NAME,
+  maxLength: number = SERP_TITLE_MAX_LENGTH,
+): string {
+  const cleaned = title.replace(/\s+/g, ' ').trim();
+  if (!cleaned) return brand;
+  if (cleaned.includes(brand)) return cleaned;
+  const withBrand = `${cleaned} · ${brand}`;
+  return withBrand.length <= maxLength ? withBrand : cleaned;
+}
+
+/*
  * Generates the absolute canonical URL for any site path, guaranteeing the
  * production origin and enforced trailing slash contract.
  */
