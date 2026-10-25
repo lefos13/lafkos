@@ -88,6 +88,22 @@ const jsonLd = buildHomeJsonLd();
   darkHeader
   jsonLd={jsonLd}
 >
+  <link
+    slot="head"
+    rel="preload"
+    as="image"
+    href="https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/%CE%9B%CE%B1%CF%8D%CE%BA%CE%BF%CF%82_DJI_5252.jpg/960px-%CE%9B%CE%B1%CF%8D%CE%BA%CE%BF%CF%82_DJI_5252.jpg"
+    media="(max-width: 899px)"
+    fetchpriority="high"
+  />
+  <link
+    slot="head"
+    rel="preload"
+    as="image"
+    href="https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/%CE%9B%CE%B1%CF%8D%CE%BA%CE%BF%CF%82_DJI_5252.jpg/1280px-%CE%9B%CE%B1%CF%8D%CE%BA%CE%BF%CF%82_DJI_5252.jpg"
+    media="(min-width: 900px)"
+    fetchpriority="high"
+  />
   <section class="hero">
     <div class="hero-content">
       <p class="eyebrow">Νότιο Πήλιο · South Pelion</p>
