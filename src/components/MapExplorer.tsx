@@ -46,6 +46,7 @@ import {
 } from '../lib/map-points';
 import { getCopy } from '../lib/ui-copy';
 import { getGeometryBounds, haversineDistanceMeters } from '../lib/geometry';
+import { escapeHtml } from '../lib/html';
 import { buildSrcSet, getOptimizedImageUrl, IMAGE_PRESETS } from '../lib/images';
 
 interface Props {
@@ -71,6 +72,14 @@ function featureCollection(features: MapFeature[]) {
 function detailUrl(locale: Locale, properties: MapFeatureProperties) {
   const kind = properties.kind === 'place' ? 'places' : 'trails';
   return `/${locale}/${kind}/${properties.slug}/`;
+}
+
+function prefersReducedMotion(): boolean {
+  return (
+    typeof window !== 'undefined' &&
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  );
 }
 
 function sanitizeFilter(expr: unknown): unknown {
@@ -317,13 +326,14 @@ export default function MapExplorer({
       trail: feature.properties.kind === 'trail' ? feature.properties.entityKey : undefined,
     };
     writeState(next);
+    const motionDuration = prefersReducedMotion() ? 0 : 650;
     if (mapRef.current) {
       const map = mapRef.current;
       if (feature.geometry.type === 'Point') {
         map.flyTo({
           center: feature.geometry.coordinates,
           zoom: Math.max(map.getZoom(), POINT_FOCUS_ZOOM),
-          duration: 650,
+          duration: motionDuration,
         });
       } else {
         const bounds = getGeometryBounds(feature.geometry);
@@ -331,7 +341,7 @@ export default function MapExplorer({
           map.fitBounds(bounds, {
             padding: { top: 60, bottom: 60, left: 60, right: 60 },
             maxZoom: 15.5,
-            duration: 650,
+            duration: motionDuration,
           });
         } else {
           const coordinates =
@@ -341,7 +351,7 @@ export default function MapExplorer({
           map.flyTo({
             center: coordinates,
             zoom: Math.max(map.getZoom(), 15),
-            duration: 650,
+            duration: motionDuration,
           });
         }
       }
@@ -352,10 +362,11 @@ export default function MapExplorer({
       if (itemElem) {
         const itemTop = itemElem.offsetTop - list.offsetTop;
         const itemBottom = itemTop + itemElem.offsetHeight;
+        const behavior = prefersReducedMotion() ? 'auto' : 'smooth';
         if (itemTop < list.scrollTop) {
-          list.scrollTo({ top: itemTop, behavior: 'smooth' });
+          list.scrollTo({ top: itemTop, behavior });
         } else if (itemBottom > list.scrollTop + list.clientHeight) {
-          list.scrollTo({ top: itemBottom - list.clientHeight, behavior: 'smooth' });
+          list.scrollTo({ top: itemBottom - list.clientHeight, behavior });
         }
       }
     }
@@ -387,7 +398,7 @@ export default function MapExplorer({
         mapRef.current?.flyTo({
           center: [position.coords.longitude, position.coords.latitude],
           zoom: 16,
-          duration: 850,
+          duration: prefersReducedMotion() ? 0 : 850,
         });
         setLocationState('idle');
       },
@@ -1037,7 +1048,11 @@ export default function MapExplorer({
                   if (pendingFocusTransfer) map.off('moveend', pendingFocusTransfer);
                   pendingFocusTransfer = () => transferFocusAfterExpansion(center, key);
                   map.once('moveend', pendingFocusTransfer);
-                  map.easeTo({ center, zoom, duration: 450 });
+                  map.easeTo({
+                    center,
+                    zoom,
+                    duration: prefersReducedMotion() ? 0 : 450,
+                  });
                 })
                 .catch(() => {});
             });
@@ -1254,12 +1269,35 @@ export default function MapExplorer({
       });
     }
 
-    map.on('render', syncMarkers);
+    /* MapLibre emits `render` for every animation frame. Reconciling cluster
+     * leaves, HTML markers, and label collisions that often forces layout work
+     * during pan and zoom, so coalesce updates to at most one every 100ms. */
+    const SYNC_INTERVAL_MS = 100;
+    let syncTimer: number | undefined;
+    let lastSyncAt = 0;
+    const syncMarkersThrottled = () => {
+      if (syncTimer !== undefined) return;
+      const elapsed = performance.now() - lastSyncAt;
+      if (elapsed >= SYNC_INTERVAL_MS) {
+        lastSyncAt = performance.now();
+        syncMarkers();
+        return;
+      }
+      syncTimer = window.setTimeout(() => {
+        syncTimer = undefined;
+        if (mapRef.current !== map) return;
+        lastSyncAt = performance.now();
+        syncMarkers();
+      }, SYNC_INTERVAL_MS - elapsed);
+    };
+
+    map.on('render', syncMarkersThrottled);
     syncMarkers();
 
     return () => {
       if (pendingFocusTransfer) map.off('moveend', pendingFocusTransfer);
-      map.off('render', syncMarkers);
+      window.clearTimeout(syncTimer);
+      map.off('render', syncMarkersThrottled);
       markerCacheRef.current.forEach((marker) => marker.remove());
       markerCacheRef.current.clear();
       visibleLeafKeysRef.current.clear();
@@ -1340,39 +1378,40 @@ export default function MapExplorer({
     const thumbSrcset = thumbRaw
       ? buildSrcSet(thumbRaw, IMAGE_PRESETS.mapThumbnail.widths)
       : undefined;
-    const thumbSrcsetAttr = thumbSrcset
-      ? ` srcset="${thumbSrcset}" sizes="${IMAGE_PRESETS.mapThumbnail.sizes}"`
-      : '';
 
     const popupDiv = document.createElement('div');
     popupDiv.className = 'map-popover-content';
+    const badgeLabel =
+      selected.properties.kind === 'place'
+        ? category?.label[locale] || ''
+        : selected.properties.kind === 'trail'
+          ? selected.properties.routeType === 'drive'
+            ? locale === 'el'
+              ? 'Οδική διαδρομή'
+              : 'Drive route'
+            : selected.properties.routeType === 'mixed'
+              ? locale === 'el'
+                ? 'Μικτή διαδρομή'
+                : 'Drive & walk'
+              : locale === 'el'
+                ? 'Διαδρομή'
+                : 'Trail'
+          : locale === 'el'
+            ? 'Στάση διαδρομής'
+            : 'Trail stop';
     popupDiv.innerHTML = `
-      ${thumbUrl ? `<div class="map-popover-media"><img src="${thumbUrl}"${thumbSrcsetAttr} alt="${selected.properties.title}" loading="lazy" decoding="async" /></div>` : ''}
+      ${
+        thumbUrl
+          ? `<div class="map-popover-media"><img src="${escapeHtml(thumbUrl)}"${thumbSrcset ? ` srcset="${escapeHtml(thumbSrcset)}" sizes="${escapeHtml(IMAGE_PRESETS.mapThumbnail.sizes)}"` : ''} alt="${escapeHtml(selected.properties.title)}" loading="lazy" decoding="async" /></div>`
+          : ''
+      }
       <div class="map-popover-body">
-        <span class="map-popover-badge" style="background-color: ${category?.color || '#b66c45'}">
-          ${
-            selected.properties.kind === 'place'
-              ? category?.label[locale] || ''
-              : selected.properties.kind === 'trail'
-                ? selected.properties.routeType === 'drive'
-                  ? locale === 'el'
-                    ? 'Οδική διαδρομή'
-                    : 'Drive route'
-                  : selected.properties.routeType === 'mixed'
-                    ? locale === 'el'
-                      ? 'Μικτή διαδρομή'
-                      : 'Drive & walk'
-                    : locale === 'el'
-                      ? 'Διαδρομή'
-                      : 'Trail'
-                : locale === 'el'
-                  ? 'Στάση διαδρομής'
-                  : 'Trail stop'
-          }
+        <span class="map-popover-badge" style="background-color: ${escapeHtml(category?.color || '#b66c45')}">
+          ${escapeHtml(badgeLabel)}
         </span>
-        <h4 class="map-popover-title">${selected.properties.title}</h4>
-        <p class="map-popover-summary">${selected.properties.summary}</p>
-        <a class="map-popover-link" href="${link}" target="_blank" rel="noreferrer">
+        <h4 class="map-popover-title">${escapeHtml(selected.properties.title)}</h4>
+        <p class="map-popover-summary">${escapeHtml(selected.properties.summary)}</p>
+        <a class="map-popover-link" href="${escapeHtml(link)}" target="_blank" rel="noreferrer">
           <span>${locale === 'el' ? 'Περισσότερα' : 'Learn more'}</span>
           <span class="map-popover-arrow">↗</span>
         </a>
@@ -1445,6 +1484,7 @@ export default function MapExplorer({
             type="button"
             onClick={toggleFullscreen}
             aria-label={isFullscreen ? ui.exitFullscreen : ui.fullscreen}
+            aria-pressed={isFullscreen}
             title={isFullscreen ? ui.exitFullscreen : ui.fullscreen}
           >
             <span className="btn-icon" aria-hidden="true">
@@ -1459,6 +1499,7 @@ export default function MapExplorer({
           className={`filter-chip ${state.categories.length === 0 ? 'is-active' : ''}`}
           type="button"
           onClick={() => writeState({ ...state, categories: [] })}
+          aria-pressed={state.categories.length === 0}
         >
           {ui.all}
         </button>
@@ -1475,6 +1516,7 @@ export default function MapExplorer({
                   : [...state.categories, category.id],
               })
             }
+            aria-pressed={state.categories.includes(category.id)}
           >
             <span aria-hidden="true">{category.icon}</span> {category.label[locale]}
           </button>
@@ -1506,7 +1548,8 @@ export default function MapExplorer({
         >
           <div className="map-results-head">
             <span>
-              {visibleFeatures.length} {locale === 'el' ? 'σημεία' : 'features'}
+              {visibleFeatures.length}{' '}
+              {visibleFeatures.length === 1 ? ui.mapFeatureSingular : ui.mapFeaturePlural}
             </span>
             <div className="map-results-actions">
               <span className="map-hint">{ui.mapHint}</span>
@@ -1515,13 +1558,15 @@ export default function MapExplorer({
                 type="button"
                 onClick={() => setIsListHidden((prev) => !prev)}
                 aria-label={isListHidden ? ui.showList : ui.hideList}
+                aria-expanded={!isListHidden}
+                aria-controls="map-result-list"
                 title={isListHidden ? ui.showList : ui.hideList}
               >
                 <span aria-hidden="true">{isListHidden ? '▼' : '▲'}</span>
               </button>
             </div>
           </div>
-          <div className="map-result-list" ref={listRef}>
+          <div className="map-result-list" id="map-result-list" ref={listRef}>
             {visibleFeatures.map((feature) => {
               const active = selected?.properties.entityKey === feature.properties.entityKey;
               const category = categories.find((item) => item.id === feature.properties.category);

@@ -706,8 +706,7 @@ img {
   padding: 0.16rem 0.52rem;
   border-radius: 999px;
   color: var(--deep-olive);
-  background: rgba(251, 249, 244, 0.94);
-  backdrop-filter: blur(4px);
+  background: rgba(251, 249, 244, 0.97);
   border: 1px solid rgba(36, 67, 63, 0.18);
   box-shadow: 0 2px 7px rgba(26, 43, 38, 0.14);
   font-size: 0.68rem;
@@ -901,7 +900,6 @@ img {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  transition: max-height 200ms ease;
 }
 .map-results-head {
   flex-shrink: 0;
@@ -914,6 +912,7 @@ img {
   color: var(--deep-olive);
   font-size: 0.76rem;
   font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 .map-results-actions {
   display: flex;
@@ -929,8 +928,8 @@ img {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.45rem;
-  height: 1.45rem;
+  width: 2.5rem;
+  height: 2.5rem;
   padding: 0;
   border: 1px solid var(--line);
   border-radius: 50%;
@@ -989,6 +988,7 @@ img {
   font-family: Newsreader, Georgia, serif;
   font-size: 1.15rem;
   font-weight: 500;
+  overflow-wrap: anywhere;
 }
 .map-result-button small {
   display: -webkit-box;
@@ -1043,8 +1043,8 @@ img {
   z-index: 61 !important;
 }
 .maplibregl-popup-close-button {
-  width: 1.5rem !important;
-  height: 1.5rem !important;
+  width: 2rem !important;
+  height: 2rem !important;
   font-size: 0.95rem !important;
   font-weight: 700 !important;
   line-height: 1 !important;
@@ -1669,9 +1669,9 @@ img {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 2.15rem;
-    height: 2.15rem;
-    min-width: 2.15rem;
+    width: 2.75rem;
+    height: 2.75rem;
+    min-width: 2.75rem;
     padding: 0;
     border-radius: 50%;
   }
