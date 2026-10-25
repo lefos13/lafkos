@@ -37,6 +37,8 @@ body {
   margin: 0;
   min-width: 320px;
   background: var(--limestone);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 body,
 button,
@@ -83,6 +85,7 @@ img {
   font-weight: 500;
   line-height: 0.88;
   letter-spacing: -0.055em;
+  text-wrap: balance;
 }
 .page-title {
   margin: 0;
@@ -91,6 +94,7 @@ img {
   font-weight: 500;
   line-height: 0.94;
   letter-spacing: -0.045em;
+  text-wrap: balance;
 }
 .section-title {
   margin: 0;
@@ -99,12 +103,14 @@ img {
   font-weight: 500;
   line-height: 0.98;
   letter-spacing: -0.035em;
+  text-wrap: balance;
 }
 .lede {
   max-width: 38rem;
   color: var(--muted);
   font-size: 1.08rem;
   line-height: 1.65;
+  text-wrap: pretty;
 }
 .skip-link {
   position: fixed;
@@ -378,6 +384,8 @@ img {
   font-size: 2rem;
   font-weight: 500;
   line-height: 1;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
 }
 .feature-card p {
   max-width: 30rem;
@@ -385,6 +393,7 @@ img {
   color: rgba(251, 249, 244, 0.78);
   font-size: 0.9rem;
   line-height: 1.45;
+  text-wrap: pretty;
 }
 .story-card {
   display: grid;
@@ -408,10 +417,13 @@ img {
   font-size: 2rem;
   font-weight: 500;
   line-height: 1;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
 }
 .story-card p {
   color: var(--muted);
   line-height: 1.55;
+  text-wrap: pretty;
 }
 
 .map-section {
@@ -515,6 +527,7 @@ img {
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
+  min-height: 2.5rem;
   padding: 0.5rem 0.72rem;
   border: 1px solid var(--line);
   border-radius: 999px;
@@ -1224,6 +1237,7 @@ img {
   color: #455650;
   font-size: 1.06rem;
   line-height: 1.8;
+  text-wrap: pretty;
 }
 .prose-copy ul {
   padding-left: 1.3rem;
@@ -1372,6 +1386,8 @@ img {
   line-height: 1.02;
   letter-spacing: -0.04em;
   color: var(--ink);
+  text-wrap: balance;
+  overflow-wrap: anywhere;
 }
 .story-lede {
   max-width: 44rem;
@@ -1379,6 +1395,7 @@ img {
   font-size: clamp(1.1rem, 2vw, 1.3rem);
   line-height: 1.6;
   color: var(--muted);
+  text-wrap: pretty;
 }
 .story-feature-media {
   margin: 0 0 3.5rem;
@@ -1446,6 +1463,7 @@ img {
   font-size: 1.12rem;
   line-height: 1.85;
   color: #2b3a36;
+  text-wrap: pretty;
 }
 .story-first-paragraph::first-letter {
   float: left;
